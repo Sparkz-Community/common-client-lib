@@ -1,0 +1,49 @@
+#TabStepper {
+  .__tab_stepper {
+    width: 100%;
+    display: grid;
+    position: relative;
+    grid-template-rows: 30px 8px;
+    align-items: center;
+    justify-items: center;
+    cursor: pointer;
+
+    .__tab_text {
+      height: 100%;
+      width: 100%;
+      border-radius: inherit;
+      transition: background .15s linear;
+      cursor: pointer;
+    }
+
+    .__progress_bar {
+      transition: all .2s linear;
+      height: 100%;
+      width: 100%;
+      position: relative;
+      background: #eeeeee;
+      cursor: pointer;
+
+      .__progress_fill {
+        z-index: 1;
+        transition: all .5s linear;
+        position: absolute;
+        height: 8px;
+        left: 0;
+        top: 0;
+        border-radius: inherit;
+      }
+
+      .__tab_fill {
+        z-index: 1;
+        transition: all .15s ease-out;
+        position: absolute;
+        height: 8px;
+        width: 100%;
+        left: 0;
+        top: 0;
+        border-radius: inherit;
+      }
+    }
+  }
+}

@@ -1,0 +1,224 @@
+#cornerDetailsCard {
+  .wrapper {
+    background: white;
+    //margin: auto;
+    position: relative;
+    overflow: hidden;
+    //border-radius: 10px 10px 10px 10px;
+    box-shadow: 0;
+    transform: scale(0.95);
+    transition: box-shadow 0.5s, transform 0.5s;
+
+    &:hover {
+      transform: scale(1);
+      box-shadow: 5px 20px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .container {
+      width: 100%;
+      height: 100%;
+
+      .bottom {
+        width: 200%;
+        height: 20%;
+        transition: transform 0.5s;
+
+        &.clicked {
+          transform: translateX(-50%);
+        }
+
+        h1 {
+          margin: 0;
+          padding: 0;
+        }
+
+        p {
+          margin: 0;
+          padding: 0;
+        }
+
+        .left {
+          height: 100%;
+          width: 50%;
+          background: #f4f4f4;
+          position: relative;
+          float: left;
+
+          .details {
+            padding: 7px 10px;
+            float: left;
+            width: calc(100% - 88px);
+            height: 100%;
+          }
+
+          .add {
+            float: right;
+            //width: calc(30% - 2px);
+            width: 88px;
+            height: 100%;
+            background: #f1f1f1;
+            transition: background 0.5s;
+            border-left: solid thin rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+
+            p {
+              color: white;
+              font-size: 10px;
+              text-transform: uppercase;
+              font-weight: 500;
+              display: none;
+            }
+
+            i {
+              font-size: 40px;
+              //padding: 30px;
+              color: #254053;
+              transition: transform 0.5s;
+            }
+
+            &:hover {
+              background: #a6cdde;
+            }
+
+            &:hover i {
+              transform: translateY(5px);
+              color: #00394b;
+            }
+            &:hover p{
+              display: inline;
+            }
+          }
+        }
+
+        .right {
+          width: 50%;
+          background: #a6cdde;
+          color: white;
+          float: right;
+          height: 200%;
+          overflow: hidden;
+
+          .details {
+            padding: 7px 10px;
+            float: right;
+            width: calc(100% - 88px);
+            height: 50%;
+          }
+
+          .done {
+            //width: calc(30% - 2px);
+            width: 88px;
+            float: left;
+            transition: transform 0.5s;
+            border-right: solid thin rgba(255, 255, 255, 0.3);
+            height: 50%;
+            background: #4CAF50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            i {
+              font-size: 40px;
+              color: white;
+            }
+          }
+
+          .remove {
+            //width: calc(30% - 1px);
+            width: 88px;
+            clear: both;
+            border-right: solid thin rgba(255, 255, 255, 0.3);
+            height: 50%;
+            background: #bc3b59;
+            transition: transform 0.5s, background 0.5s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+
+            &:hover {
+              background: #9b2847;
+            }
+
+            &:hover i {
+              transform: translateY(5px);
+            }
+
+            i {
+              transition: transform 0.5s;
+              font-size: 40px;
+              color: white;
+            }
+          }
+
+          &:hover {
+            .remove,
+            .done {
+              transform: translateY(-100%);
+            }
+          }
+        }
+      }
+    }
+
+    .inside {
+      z-index: 9;
+      background: rgba(37, 37, 37, 0.95);
+      color: #ffffff;
+      width: 140px;
+      height: 140px;
+      position: absolute;
+      top: -70px;
+      right: -70px;
+      border-radius: 0px 0px 200px 200px;
+      transition: all 0.5s, border-radius 2s, top 1s;
+      overflow: hidden;
+
+      .icon {
+        position: absolute;
+        right: 85px;
+        top: 85px;
+        color: white;
+
+        i {
+          font-size: 30px;
+          color: white;
+        }
+      }
+
+      &:hover {
+        width: 100%;
+        height: calc(100% - var(--bottom-height));
+        right: 0;
+        top: 0;
+        border-radius: 0;
+
+        .icon {
+          opacity: 0;
+          right: 15px;
+          top: 15px;
+        }
+
+        .contents {
+          opacity: 1;
+          transform: scale(1);
+          transform: translateY(0);
+        }
+      }
+
+      .contents {
+        height: 100%;
+        padding: 5%;
+        opacity: 0;
+        transform: scale(0.5);
+        transform: translateY(-200%);
+        transition: opacity 0.2s, transform 0.8s;
+      }
+    }
+  }
+}

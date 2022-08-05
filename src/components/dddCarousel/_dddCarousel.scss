@@ -1,0 +1,119 @@
+#dddCarousel {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+
+  overflow: hidden;
+  background: #111;
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  #drag-container, #spin-container {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin: auto;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+  }
+
+  #drag-container {
+    -webkit-transform: rotateX(-15deg);
+    transform: rotateX(-15deg);
+  }
+
+  #spin-container {
+    -webkit-transform: rotateX(0deg);
+    transform: rotateX(0deg);
+  }
+
+  #drag-container img, #drag-container video {
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 200px;
+    font-size: 50px;
+    text-align: center;
+    -webkit-box-shadow: 0 0 8px #fff;
+    box-shadow: 0 0 8px #fff;
+    -webkit-box-reflect: below 10px linear-gradient(transparent, transparent, #0005);
+    object-fit: cover;
+  }
+
+  #drag-container img:hover, #drag-container video:hover {
+    -webkit-box-shadow: 0 0 15px #fffd;
+    box-shadow: 0 0 15px #fffd;
+    -webkit-box-reflect: below 10px linear-gradient(transparent, transparent, #0007);
+    transform: scale(1.2);
+    cursor: pointer;
+    top: -2rem;
+  }
+
+  #drag-container h1 {
+    font-family: Serif;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%) rotateX(90deg);
+    transform: translate(-50%, -50%) rotateX(90deg);
+    color: #fff;
+    font-size: 80pt;
+    line-height: 5.5rem;
+    text-align: center;
+  }
+
+  #ground {
+    width: 900px;
+    height: 900px;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%) rotateX(90deg);
+    transform: translate(-50%, -50%) rotateX(90deg);
+    background: -webkit-radial-gradient(center center, farthest-side, #9993, transparent);
+    background: -moz-radial-gradient(center center, farthest-side, #9993, transparent);
+  }
+
+  #music-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+
+  #control-bar {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    transition: all 0.3s ease;
+    color: white;
+    font-size: 36px;
+
+    position: absolute;
+    bottom: 2rem;
+    right: 1rem;
+    list-style: none;
+    margin: 0 10px;
+
+    border-radius: 47%;
+
+    width: 70px;
+    background-color: #555;
+  }
+}
+

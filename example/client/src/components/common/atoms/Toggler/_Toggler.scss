@@ -1,0 +1,128 @@
+#toggler {
+
+  .tgl-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    .acs {
+      .tgl {
+        //&:checked + .tgl-btn:before {
+        //  content-visibility: hidden;
+        //}
+
+        &:checked + .tgl-btn:after {
+          left: 35%;
+          border: calc(1vw * var(--size-ratio)) solid var(--toggle-border-color-on);
+          transition: all 450ms ease-in-out;
+        }
+        &:checked + .tgl-btn:after, .tgl-btn-text {
+          content: attr(data-tg-on);
+        }
+      }
+
+      .tgl-input {
+        + .tgl-btn {
+          position: absolute;
+          top: 49%;
+          left: 50%;
+          cursor: pointer;
+
+          width: calc(22vw * var(--size-ratio));
+          height: calc(var(--height) * var(--size-ratio));
+          background-color: var(--switch-background-color-off);
+
+          border-radius: calc(var(--border-radius) * var(--size-ratio));
+          border: calc(1vw * var(--size-ratio)) solid var(--switch-border-color-off);
+
+          user-select: none;
+          display: inline-block;
+
+          font-weight: bold;
+          font-size: calc(4vw * var(--size-ratio));
+          color: var(--toggle-text-color);
+
+          transform: translate(-50%, -50%);
+          transition: all 450ms ease-in-out;
+
+          &:after,
+          &:before {
+            width: calc(14vw * var(--size-ratio));
+            height: calc(var(--height) * var(--size-ratio));
+            //background-color: white;
+            position: absolute;
+            border-radius: calc(var(--border-radius) * var(--size-ratio));
+            top: -12.5%;
+            left: -4%;
+            transition: all 450ms ease-in-out;
+            transform-origin: right center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+          }
+
+
+          &:before {
+            display: none;
+          }
+
+
+          &:after {
+            left: -5%;
+            border-radius: calc(var(--border-radius) * var(--size-ratio));
+            border: calc(1vw * var(--size-ratio)) solid var(--toggle-border-color-off);
+            background: var(--toggle-background-color-off);
+            transition: all 450ms ease-in-out;
+          }
+          &:after, .tgl-btn-text {
+            content: attr(data-tg-off);
+          }
+        }
+
+        .tgl-input::before, .tgl-input::after {
+          transform-origin: right center;
+
+        }
+
+        &:checked + .tgl-btn {
+          border: calc(1vw * var(--size-ratio)) solid var(--switch-border-color-on);
+          background: var(--switch-background-color-on);
+          //-webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+          //box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.5);
+        }
+
+      }
+      #cb10:indeterminate.tgl-input {
+          + .tgl-btn {
+            border: calc(1vw * var(--size-ratio)) solid var(--switch-border-color-interm);
+            background: var(--switch-background-color-interm);
+
+            &:after {
+              transition: all 450ms ease-in-out;
+              left: 15%;
+              background: var(--toggle-background-color-interm);
+              border: calc(1vw * var(--size-ratio)) solid var(--toggle-border-color-interm);
+              content: attr(data-tg-interm);
+            }
+          }
+        }
+      //input[indeterminate].tgl-input {
+      //  + .tgl-btn {
+      //    border: calc(1vw * var(--size-ratio)) solid var(--switch-border-color-interm);
+      //    background: var(--switch-background-color-interm);
+      //
+      //    &:after {
+      //      transition: all 450ms ease-in-out;
+      //      left: 15%;
+      //      background: var(--toggle-background-color-interm);
+      //      border: calc(1vw * var(--size-ratio)) solid var(--toggle-border-color-interm);
+      //      content: attr(data-tg-interm);
+      //    }
+      //  }
+      //}
+    }
+
+  }
+}

@@ -1,0 +1,154 @@
+// https://codepen.io/HighFlyer/pen/BQdxgZ?editors=1100
+
+#tabNavbar {
+  z-index: var(--nav-z-index);
+  padding: 0;
+  position: fixed;
+  right: 0;
+  bottom: 75px;
+  -webkit-transform: var(--position-transform);
+  -moz-transform: var(--position-transform);
+  -ms-transform: var(--position-transform);
+  -o-transform: var(--position-transform);
+  transform: var(--position-transform);
+  height: fit-content;
+
+  .li-direction {
+    display: flex;
+    flex-direction: var(--position-li-direction);
+    align-items: center;
+  }
+
+  a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 12pt;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+  ul li {
+    text-align: var(--position-li-text-align);
+    display: block;
+    margin: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: var(--position-li-border-radius);
+    -moz-border-radius: var(--position-li-border-radius);
+    border-radius: var(--position-li-border-radius);
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    -ms-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+  }
+  ul li:hover {
+     -webkit-transform: var(--position-transform--hover);
+    -moz-transform: var(--position-transform--hover);
+    -ms-transform: var(--position-transform--hover);
+    -o-transform: var(--position-transform--hover);
+    transform: var(--position-transform--hover);
+    background: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+  }
+  ul li:hover a {
+    color: #000;
+  }
+
+  ul li .icon {
+    color: var(--icon-color);
+    background: var(--icon-background);
+    margin: var(--position-icon-margin);
+    padding: 10px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  ul li:hover .icon {
+    color: var(--icon-color--hover);
+    background: var(--icon-background--hover);
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    -ms-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+  }
+
+  ul li .img {
+    color: var(--icon-color);
+    background: var(--icon-background);
+    margin: var(--position-icon-margin);
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  ul li:hover .img {
+    color: var(--icon-color--hover);
+    background: var(--icon-background--hover);
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    -ms-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+  }
+}
+#tabNavbar:deep{
+  ul li .icon div {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    overflow: visible !important;
+  }
+
+  li.router-link-exact-active-li {
+    background: rgba(255, 255, 255, 0.7);
+
+    a {
+      color: #000;
+    }
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+
+      a {
+        color: #fff;
+      }
+    }
+  }
+  .router-link-exact-active {
+    color: var(--icon-color--hover) !important;
+    background: var(--icon-background--hover) !important;
+  }
+  li:hover .router-link-exact-active {
+    color: var(--icon-color) !important;
+    background: var(--icon-background) !important;
+  }
+}

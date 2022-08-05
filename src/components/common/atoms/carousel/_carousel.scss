@@ -1,0 +1,24 @@
+.carousel-wrapper {
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.carousel-top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: fit-content;
+  overflow: hidden;
+}
+
+.carousel-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: fit-content;
+  overflow: hidden;
+}
+
+.carousel-top .item, .carousel-bottom .item {
+  margin: 15px 40px;
+}

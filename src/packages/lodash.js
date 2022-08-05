@@ -1,0 +1,27 @@
+const lodash = {
+  $lodash: require('lodash'),
+  $lfind: require('lodash/find'),
+  $lget: require('lodash/get'),
+  $lset: require('lodash/set'),
+  $lunset: require('lodash/unset'),
+  $lmerge: require('lodash/merge'),
+  $lmergeWith: require('lodash/mergeWith'),
+  $lcloneDeep: require('lodash/cloneDeep'),
+  $lorderBy: require('lodash/orderBy'),
+  $lomitBy: require('lodash/omitBy'),
+  $ldebounce: require('lodash/debounce'),
+  $lunionWith: require('lodash/unionWith'),
+  $lupperFirst: require('lodash/upperFirst'),
+  $lcamelCase: require('lodash/camelCase'),
+  $lisEmpty: require('lodash/isEmpty'),
+  $lisEqual: require('lodash/isEqual'),
+  $lisNil: require('lodash/isNil'),
+  $ltruncate: require('lodash/truncate'),
+  $lassign: require('lodash/assign'),
+  $lpick: require('lodash/pick'),
+  $lcapitalize: require('lodash/capitalize'),
+  $lflattenDeep: require('lodash/flattenDeep'),
+  $lgroupBy: require('lodash/groupBy'),
+};
+
+export default lodash;

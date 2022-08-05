@@ -1,0 +1,39 @@
+#PhotoBtn {
+  position: relative;
+
+  .circle {
+    position: absolute;
+    top: 12%;
+    left: 12%;
+    bottom: 12%;
+    right: 12%;
+    border-radius: 100%;
+    background-color: var(--circle-background-color);
+    opacity: 1;
+  }
+
+  .ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    border-radius: 100%;
+    border: 0.5em solid var(--ring-color);
+    opacity: 0.8;
+  }
+
+  .circle, .ring {
+    transition: all 0.25s;
+    cursor: pointer;
+  }
+
+  &:active .ring {
+    opacity: 1;
+  }
+
+  &:active .circle {
+    opacity: 0.5;
+  }
+}

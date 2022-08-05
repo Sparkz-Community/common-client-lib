@@ -1,0 +1,798 @@
+#toggle-it {
+
+  .tgl-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    .tgl {
+      display: none;
+
+      // add default box-sizing for this scope
+      &,
+      &:after,
+      &:before,
+      & *,
+      & *:after,
+      & *:before,
+      & + .tgl-btn {
+        box-sizing: border-box;
+
+        &::selection {
+          background: none;
+        }
+      }
+
+      + .tgl-btn {
+        outline: 0;
+        display: block;
+        width: 4em;
+        height: 2em;
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+
+        &:after,
+        &:before {
+          position: relative;
+          display: block;
+          content: "";
+          width: 50%;
+          height: 100%;
+        }
+
+        &:after {
+          left: 0;
+        }
+
+        &:before {
+          display: none;
+        }
+      }
+
+      &:checked + .tgl-btn:after {
+        left: 50%;
+      }
+    }
+
+    // themes
+    .tgl-light {
+      + .tgl-btn {
+        background: #f0f0f0;
+        border: solid 1px rgba(0, 0, 0, 0.1);
+        border-radius: 2em;
+        padding: 2px;
+        transition: all .4s ease;
+
+        &:after {
+          border-radius: 50%;
+          background: #fff;
+          transition: all .2s ease;
+        }
+      }
+
+      &:checked + .tgl-btn {
+        background: #9FD6AE;
+      }
+    }
+
+    .tgl-ios {
+      + .tgl-btn {
+        background: #fbfbfb;
+        border-radius: 2em;
+        padding: 2px;
+        transition: all .4s ease;
+        border: 1px solid #e8eae9;
+
+        &:after {
+          border-radius: 2em;
+          background: #fbfbfb;
+          transition: left .3s cubic-bezier(
+              0.175, 0.885, 0.320, 1.275
+          ),
+          padding .3s ease, margin .3s ease;
+          box-shadow: 0 0 0 1px rgba(0, 0, 0, .1),
+          0 4px 0 rgba(0, 0, 0, .08);
+        }
+
+        &:hover:after {
+          will-change: padding;
+        }
+
+        &:active {
+          box-shadow: inset 0 0 0 2em #e8eae9;
+
+          &:after {
+            padding-right: .8em;
+          }
+        }
+      }
+
+      &:checked + .tgl-btn {
+        background: #86d993;
+
+        &:active {
+          box-shadow: none;
+
+          &:after {
+            margin-left: -.8em;
+          }
+        }
+      }
+    }
+
+    .tgl-skewed {
+      + .tgl-btn {
+        overflow: hidden;
+        transform: skew(-10deg);
+        backface-visibility: hidden;
+        transition: all .2s ease;
+        font-family: sans-serif;
+        background: #888;
+
+        &:after,
+        &:before {
+          transform: skew(10deg);
+          display: inline-block;
+          transition: all .2s ease;
+          width: 100%;
+          text-align: center;
+          position: absolute;
+          line-height: 2em;
+          font-weight: bold;
+          color: #fff;
+          text-shadow: 0 1px 0 rgba(0, 0, 0, .4);
+        }
+
+        &:after {
+          left: 100%;
+          content: attr(data-tg-on);
+        }
+
+        &:before {
+          left: 0;
+          content: attr(data-tg-off);
+        }
+
+        &:active {
+          background: #888;
+
+          &:before {
+            left: -10%;
+          }
+        }
+      }
+
+      &:checked + .tgl-btn {
+        background: #86d993;
+
+        &:before {
+          left: -100%;
+        }
+
+        &:after {
+          left: 0;
+        }
+
+        &:active:after {
+          left: 10%;
+        }
+      }
+    }
+
+    .tgl-flat {
+      + .tgl-btn {
+        padding: 2px;
+        transition: all .2s ease;
+        background: #fff;
+        border: 4px solid #dbdbdb;
+        border-radius: 2em;
+
+        &:after {
+          transition: all .2s ease;
+          background: #dbdbdb;
+          content: "";
+          border-radius: 1em;
+        }
+      }
+
+      &:checked + .tgl-btn {
+        border: 4px solid #7FC6A6;
+
+        &:after {
+          left: 50%;
+          background: #7FC6A6;
+        }
+      }
+    }
+
+    .tgl-flip {
+      + .tgl-btn {
+        padding: 2px;
+        transition: all .2s ease;
+        font-family: sans-serif;
+        perspective: 100px;
+
+        &:after,
+        &:before {
+          display: inline-block;
+          transition: all .4s ease;
+          width: 100%;
+          text-align: center;
+          position: absolute;
+          line-height: 2em;
+          font-weight: bold;
+          color: #fff;
+          position: absolute;
+          top: 0;
+          left: 0;
+          backface-visibility: hidden;
+          border-radius: 4px;
+        }
+
+        &:after {
+          content: attr(data-tg-on);
+          background: #02C66F;
+          transform: rotateY(-180deg);
+        }
+
+        &:before {
+          background: #FF3A19;
+          content: attr(data-tg-off);
+        }
+
+        &:active:before {
+          transform: rotateY(-20deg);
+        }
+      }
+
+      &:checked + .tgl-btn {
+        &:before {
+          transform: rotateY(180deg);
+        }
+
+        &:after {
+          transform: rotateY(0);
+          left: 0;
+          background: #7FC6A6;
+        }
+
+        &:active:after {
+          transform: rotateY(20deg);
+        }
+      }
+    }
+
+
+    .rocker {
+      display: inline-block;
+      position: relative;
+      /*
+      SIZE OF SWITCH
+      ==============
+      All sizes are in em - therefore
+      changing the font-size here
+      will change the size of the switch.
+      See .rocker-large below as example.
+      */
+      font-size: .7em;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      color: #888;
+      width: 7em;
+      height: 4em;
+      overflow: hidden;
+      border-bottom: 0.5em solid #eee;
+      padding: 2px;
+      transition: all .2s ease;
+      font-family: sans-serif;
+    }
+
+    .rocker-large {
+      font-size: 2em; /* Sizes the switch */
+      margin: 1em;
+    }
+
+    .rocker::before {
+      content: "";
+      position: absolute;
+      top: 0.5em;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #999;
+      border: 0.5em solid #eee;
+      border-bottom: 0;
+    }
+
+    .rocker input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .tgl-rocker {
+
+      &:checked + .switch-left {
+        background-color: #0084d0;
+        color: #fff;
+        bottom: 0px;
+        left: 0.5em;
+        height: 2.5em;
+        width: 3em;
+        transform: rotate(0deg) skewX(0deg);
+      }
+
+      &:checked + .switch-left::before {
+        background-color: transparent;
+        width: 3.0833em;
+      }
+
+      &:checked + .switch-left + .switch-right {
+        background-color: #ddd;
+        color: #888;
+        bottom: 0.4em;
+        right: 0.8em;
+        height: 2.4em;
+        width: 2.75em;
+        transform: rotate(-15deg) skewX(-15deg);
+      }
+
+      &:checked + .switch-left + .switch-right::before {
+        background-color: #ccc;
+      }
+
+      /* Keyboard Users */
+      &:focus + .switch-left {
+        color: #333;
+      }
+
+      &:checked:focus + .switch-left {
+        color: #fff;
+      }
+
+      &:focus + .switch-left + .switch-right {
+        color: #fff;
+      }
+
+      &:checked:focus + .switch-left + .switch-right {
+        color: #333;
+      }
+    }
+
+    .switch-left,
+    .switch-right {
+      cursor: pointer;
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 2.5em;
+      width: 3em;
+      transition: 0.2s;
+    }
+
+    .switch-left {
+      height: 2.4em;
+      width: 2.75em;
+      left: 0.85em;
+      bottom: 0.4em;
+      background-color: #ddd;
+      transform: rotate(15deg) skewX(15deg);
+    }
+
+    .switch-right {
+      right: 0.5em;
+      bottom: 0;
+      background-color: #bd5757;
+      color: #fff;
+    }
+
+    .switch-left::before,
+    .switch-right::before {
+      content: "";
+      position: absolute;
+      width: 0.4em;
+      height: 2.45em;
+      bottom: -0.45em;
+      background-color: #ccc;
+      transform: skewY(-65deg);
+    }
+
+    .switch-left::before {
+      left: -0.4em;
+    }
+
+    .switch-right::before {
+      right: -0.375em;
+      background-color: transparent;
+      transform: skewY(65deg);
+    }
+
+
+    .tgl-check {
+      $clouds: #ecf0f1;
+      $turquoise: #1abc9c;
+      $greensea: #16a085;
+      $night: #485e7d;
+      $midnight: #2c3e50;
+      $transition: all .5s ease;
+
+      + .tgl-btn {
+        background: $midnight;
+        border: solid 1px rgba(0, 0, 0, 0.1);
+        border-radius: 2em;
+        padding: 2px;
+        transition: all .4s ease;
+
+        &:after {
+          border-radius: 50%;
+          background: $night;
+          transition: all .2s ease;
+        }
+      }
+
+      &:checked + .tgl-btn {
+        background: $greensea;
+      }
+
+      &:checked + .tgl-btn:after {
+        background: $turquoise;
+      }
+    }
+
+    .teeter-totter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+
+      // checkbox
+      .checkbox {
+        position: relative;
+        width: 80px;
+        height: 36px;
+        background-color: transparent;
+      }
+
+      .checkbox input, .checkbox-inner:before, .checkbox-inner span, .checkbox-inner label {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .checkbox input {
+        opacity: 0;
+        z-index: 3;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      .checkbox-inner {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        border: 2px solid #FFFFFF;
+        border-radius: 18px;
+        overflow: hidden;
+        transform: rotate(-12deg);
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.15);
+        transition-property: transform;
+        transition-timing-function: linear;
+        transition-delay: 0;
+        transition-duration: .32s;
+      }
+
+      .checkbox-inner:before {
+        content: "";
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        box-shadow: inset 0 10px 16px 0 rgba(0, 0, 0, 0.28);
+      }
+
+      .checkbox-inner span {
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        background-color: #9CC838;
+        transform-origin: right;
+        transition-property: transform;
+        transition-timing-function: cubic-bezier(.2, .585, 2, .875);
+        transition-delay: .32s;
+        transition-duration: 1.6s;
+      }
+
+      .checkbox-inner label {
+        position: absolute;
+        z-index: 2;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-image: radial-gradient(50% 88% at 0 0, #FFFFFF 3%, #F5F5F5 97%);
+        transition-property: left;
+        transition-timing-function: cubic-bezier(1, .885, 2, .875);
+        transition-delay: .32s;
+        transition-duration: 1.32s;
+      }
+
+      .checkbox__on, .checkbox__off {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        transition: opacity .32s linear 0s;
+      }
+
+      .checkbox__on {
+        right: 100%;
+        margin-right: 16px;
+        opaciy: 1;
+      }
+
+      .checkbox__off {
+        left: 100%;
+        margin-left: 16px;
+        opacity: .24;
+      }
+
+      .checkbox input:checked + .checkbox-inner {
+        transform: rotate(12deg);
+      }
+
+      .checkbox input:checked + .checkbox-inner label {
+        left: calc(100% - 32px);
+      }
+
+      .checkbox input:checked + .checkbox-inner span {
+        transform: scaleX(0);
+      }
+
+      .checkbox input:checked ~ .checkbox__on {
+        opacity: .24;
+      }
+
+      .checkbox input:checked ~ .checkbox__off {
+        opacity: 1;
+      }
+    }
+
+
+    .tgl-light {
+      + .tgl-btn {
+        background: #f0f0f0;
+        border: solid 1px rgba(0, 0, 0, 0.1);
+        border-radius: 2em;
+        padding: 2px;
+        transition: all .4s ease;
+
+        &:after {
+          border-radius: 50%;
+          background: #fff;
+          transition: all .2s ease;
+        }
+      }
+
+      &:checked + .tgl-btn {
+        background: #9FD6AE;
+      }
+    }
+
+
+    .round-switch {
+      /*
+      SIZE OF SWITCH
+      ==============
+      Sizes are driven off of variable
+      $sizeRatio.
+      */
+      $sizeRatio: .20;
+
+      input {
+        display: none;
+      }
+
+      .on,
+      .off {
+        position: absolute;
+        text-align: center;
+        -webkit-text-shadow: inset 1px 1px 1px black;
+        width: 100%;
+      }
+
+      .on {
+        color: #bbb;
+
+        @if $sizeRatio >= .22 {
+          top: 10px;
+        }
+        @else {
+          top: 7px;
+        }
+
+        -webkit-transition: all 0.1s;
+        font-family: sans-serif;
+      }
+
+      .off {
+        @if $sizeRatio >= .22 {
+          bottom: 5px;
+        }
+        @else {
+          bottom: 3px;
+        }
+
+        -webkit-transition: all 0.1s;
+        transform: scaleY(0.85);
+      }
+
+      .but {
+        background-color: #272727;
+        border-radius: 400px 400px 400px 400px / 400px 400px 300px 300px;
+        border-bottom-width: 0px;
+
+        box-shadow: inset 8px 6px 5px -7px rgba(0, 0, 0, 1),
+        inset -8px 6px 5px -7px rgba(0, 0, 0, 1),
+        inset 0 -3px 2px -2px rgba(200, 200, 200, 0.5),
+        0 3px 3px -2px rgba(0, 0, 0, 1),
+        inset 0 -230px 60px -200px rgba(255, 255, 255, 0.2),
+        inset 0 220px 40px -200px rgba(0, 0, 0, 0.3);
+        display: block;
+
+        @if $sizeRatio >= .45 {
+          font-size: calc(27px * #{$sizeRatio});
+        }
+        @else if $sizeRatio < .45  {
+          @if $sizeRatio >= .27 {
+            font-size: 12px;
+          }
+          @else if $sizeRatio < .27  {
+            @if $sizeRatio >= .22 {
+              font-size: 10px;
+            }
+            @else {
+              font-size: 9px;
+            }
+
+          }
+        }
+
+
+        height: calc(178px * #{$sizeRatio});
+        position: relative;
+        -webkit-transition: all 0.2s;
+        width: calc(200px * #{$sizeRatio});
+      }
+
+      .back {
+        background-color: black;
+        background-image: -webkit-linear-gradient(
+            0deg,
+            transparent 30%,
+            transparent 70%
+        ),
+        -webkit-linear-gradient(0deg, rgba(150, 150, 150, 0) 30%, rgba(
+              150,
+              150,
+              150,
+              0.1
+          ) 50%, rgba(150, 150, 150, 0) 70%);
+        border-radius: calc(105px * #{$sizeRatio});
+        box-shadow: 30px 30px 30px -20px rgba(0, 0, 0, 0.3),
+        -30px 30px 30px -20px rgba(0, 0, 0, 0.3), 0 30px 30px 0px rgba(0, 0, 0, 0.3),
+        inset 0 -1px 0 0 #333;
+        box-sizing: border-box;
+        height: calc(210px * #{$sizeRatio});
+        padding: calc(4px * #{$sizeRatio}) calc(4px * #{$sizeRatio});
+        -webkit-transition: all 0.2s;
+        width: calc(210px * #{$sizeRatio});
+      }
+
+      .round {
+        background: black;
+        background: -webkit-linear-gradient(270deg, #444, #222);
+        border-radius: calc(130px * #{$sizeRatio});
+        -webkit-box-sizing: border-box;
+
+        @if $sizeRatio >= .7 {
+          box-shadow: 0px 0px 0px 8px rgba(0, 0, 0, 0.1),
+          0px 0px 3px 1px rgba(0, 0, 0, 1),
+          inset 0 8px 3px -8px rgba(255, 255, 255, 0.4);
+        }
+        @else {
+          box-shadow: 0px 0px 0px 5px rgba(0, 0, 0, 0.1),
+          0px 0px 3px 1px rgba(0, 0, 0, 1),
+          inset 0 5px 3px -5px rgba(255, 255, 255, 0.4);
+        }
+
+        height: calc(260px * #{$sizeRatio});
+        margin: 5px auto;
+        padding: calc(25px * #{$sizeRatio});
+        width: calc(260px * #{$sizeRatio});
+
+        color: white;
+        font-family: sans-serif;
+
+
+        @if $sizeRatio >= .45 {
+          font-size: calc(27px * #{$sizeRatio});
+        }
+        @else if $sizeRatio < .45  {
+          @if $sizeRatio >= .27 {
+            font-size: 12px;
+          }
+          @else if $sizeRatio < .27  {
+            @if $sizeRatio >= .22 {
+              font-size: 10px;
+            }
+            @else {
+              font-size: 9px;
+            }
+
+          }
+        }
+
+      }
+
+      //input:checked + .back .on,
+      //input:checked + .back .off {
+      //  text-shadow: inset 1px 1px 1px black;
+      //}
+
+      input:checked + .back .on {
+        color: #999;
+        top: 10px;
+        -webkit-transform: scaleY(0.85);
+      }
+
+      input:checked + .back .off {
+        color: #bbb;
+        bottom: 5px;
+        -webkit-transform: scaleY(1);
+      }
+
+      input:checked + .back .but {
+        background: #232323 -webkit-radial-gradient(50% 15%, circle closest-corner, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
+        border-radius: 400px 400px 400px 400px / 300px 300px 400px 400px;
+        box-shadow: inset 8px -4px 5px -7px rgba(0, 0, 0, 1),
+        inset -8px -4px 5px -7px rgba(0, 0, 0, 1),
+        0 -3px 8px -4px rgba(250, 250, 250, 0.4),
+        inset 0 3px 4px -2px rgba(10, 10, 10, 1),
+        inset 0 280px 40px -200px rgba(0, 0, 0, 0.2),
+        inset 0 -200px 40px -200px rgba(180, 180, 180, 0.2);
+        margin-top: calc(20px * #{$sizeRatio});
+      }
+
+      input:checked + .back {
+        background-image: -webkit-linear-gradient(90deg, black 30%, transparent 70%),
+        -webkit-linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, rgba(
+              250,
+              250,
+              250,
+              0.4
+          ) 50%, rgba(150, 150, 150, 0) 100%);
+        box-shadow: 30px 30px 30px -20px rgba(0, 0, 0, 0.1),
+        -30px 30px 30px -20px rgba(0, 0, 0, 0.1), 0 30px 30px 0px rgba(0, 0, 0, 0.2),
+        inset 0 1px 2px 0 rgba(0, 0, 0, 0.6);
+        padding: calc(2px * #{$sizeRatio}) calc(4px * #{$sizeRatio});
+      }
+
+      .round,
+      #cb9,
+      .back,
+      .but,
+      .on,
+      .off {
+        user-select: none;
+      }
+
+    }
+
+
+  }
+
+}

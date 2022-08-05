@@ -14,7 +14,8 @@ import {upperCaseFirst} from 'upper-case-first';
 import {spongeCase} from 'sponge-case';
 
 import {lodash} from './packages';
-import {useCssVars} from './composables';
+
+import {useCssVars, useRouters} from './composables';
 
 
 const install = (app, {prefix} = {}) => {
@@ -49,6 +50,12 @@ const install = (app, {prefix} = {}) => {
   app.provide('$enumValues', enumValues);
 
   app.mixin({
+    setup() {
+      return {
+        ...useCssVars(),
+        ...useRouters(),
+      };
+    },
     data() {
       return {
         $windowWidth: typeof window !== 'undefined' ? window.outerWidth : 0,
@@ -77,53 +84,11 @@ const install = (app, {prefix} = {}) => {
       });
     },
     methods: {
-      ...useCssVars(),
       $isLoading(val, options = {}) {
         if (val) {
           this.$q.loading.show({...options});
         } else {
           this.$q.loading.hide();
-        }
-      },
-      $routerPreserve({name, params, query, hash, path} = {}) {
-        let routerObj = {};
-        if (params && JSON.stringify(params) !== JSON.stringify(this.$route.params)) routerObj.params = params;
-        if (query && JSON.stringify(query) !== JSON.stringify(this.$route.query)) routerObj.query = query;
-        if (hash && JSON.stringify(hash) !== JSON.stringify(this.$route.hash)) routerObj.hash = hash;
-        if (name && name !== this.$route.name) routerObj.name = name;
-        if (path && path !== this.$route.path) routerObj.path = path;
-        if (Object.keys(routerObj).length) {
-          let obj = {
-            ...{
-              params: this.$route.params,
-              query: this.$route.query,
-              hash: this.$route.hash,
-            },
-            ...routerObj,
-          };
-          this.$router.push(obj).catch((err) => {
-            throw new Error(`iy-common-client-lib -> global mixin -> $routerPreserve -> $router.push: ${err}.`);
-          });
-        }
-      },
-      $rHistory({name, params, query, hash, path} = {}) {
-        let routerObj = {};
-        if (params && JSON.stringify(params) !== JSON.stringify(this.$route.params)) routerObj.params = params;
-        if (query && JSON.stringify(query) !== JSON.stringify(this.$route.query)) routerObj.query = query;
-        if (hash && JSON.stringify(hash) !== JSON.stringify(this.$route.hash)) routerObj.hash = hash;
-        if (name && name !== this.$route.name) routerObj.name = name;
-        if (path && path !== this.$route.path) routerObj.path = path;
-        if (Object.keys(routerObj).length) {
-          let obj = {
-            ...{
-              params: this.$route.params,
-              query: this.$route.query,
-              hash: this.$route.hash,
-            },
-            ...routerObj,
-          };
-          const {href} = this.$router.resolve(obj);
-          window.history.pushState({}, null, href);
         }
       },
       $searchExactMatch(item_list, search_query, keys_list) {

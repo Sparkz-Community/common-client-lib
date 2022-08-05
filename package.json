@@ -1,6 +1,6 @@
 {
   "name": "@iy4u/common-client-lib",
-  "version": "5.0.5",
+  "version": "0.0.0",
   "description": "IY Foundation Common Library",
   "author": "IY Foundation Development <dev@iy4u.com>",
   "license": "MIT",
@@ -47,7 +47,6 @@
     "uuid": "^8.3.2",
     "vue-advanced-cropper": "^2.8.3",
     "vue-plaid-link2": "^0.2.2",
-    "vuex": "^4.0.2",
     "webrtc-adapter": "^8.1.0"
   },
   "devDependencies": {
@@ -70,8 +69,8 @@
   },
   "peerDependencies": {
     "@iy4u/form-gen-client-lib": "2.x",
-    "@feathersjs/vuex": "^4.0.1-pre.7",
     "quasar": "2.x",
-    "vue": "3.x"
+    "vue": "3.x",
+    "vue-router": "4.x"
   }
 }

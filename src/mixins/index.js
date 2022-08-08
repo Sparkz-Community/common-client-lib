@@ -1,4 +1,3 @@
-import makeFindPaginateMixin from './makeFindPaginateMixin';
 import queryMixin from './queryMixin';
 import routerMixin from './routerMixin';
 import rruleMixin from './rruleMixin';
@@ -8,7 +7,6 @@ import DarkMixin from './DarkMixin.js';
 import inputMixin from './inputMixin';
 
 export {
-  makeFindPaginateMixin,
   queryMixin,
   inputMixin,
   routerMixin,

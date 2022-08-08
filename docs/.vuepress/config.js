@@ -32,7 +32,7 @@ module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        '@iy4u/common-client-lib': resolve(__dirname, '../../src')
+        '@sparkz-community/common-client-lib': resolve(__dirname, '../../src')
       }
     }
   },

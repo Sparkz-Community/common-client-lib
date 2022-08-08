@@ -45,7 +45,7 @@
 <script>
   import {makeFindPaginateMixin} from '../../../';
   import SelectInput
-    from '@iy4u/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput';
+    from '@sparkz-community/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput';
 
   export default {
     name: 'AccountSearch',

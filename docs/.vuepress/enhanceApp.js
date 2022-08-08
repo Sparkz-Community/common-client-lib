@@ -1,4 +1,4 @@
-import * as iyCommonClientLib from '@iy4u/common-client-lib'
+import * as iyCommonClientLib from '@sparkz-community/common-client-lib'
 import '../../assets/main.css'
 
 export default ({

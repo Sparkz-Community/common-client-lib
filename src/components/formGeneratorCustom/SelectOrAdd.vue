@@ -87,7 +87,7 @@
 <script>
   import SelectInput
     from '@sparkz-community/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput.vue';
-  import isEmpty from '@sparkz-community/common-client-lib/src/utils/isEmpty.js';
+  import isEmpty from '../../utils/isEmpty.js';
 
   export default {
     name: 'SelectOrAdd',

@@ -25,7 +25,6 @@
   "dependencies": {
     "card-validator": "^8.1.1",
     "change-case": "^4.1.2",
-    "enquire.js": "^2.1.6",
     "gsap": "^3.7.0",
     "is-lower-case": "^2.0.2",
     "is-upper-case": "^2.0.2",

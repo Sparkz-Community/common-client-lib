@@ -44,13 +44,13 @@
 
 <script>
   import {makeFindPaginateMixin} from '../../../';
-  import SelectInput
-    from '@sparkz-community/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput';
+  // import SelectInput
+  //   from '@sparkz-community/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput';
 
   export default {
     name: 'AccountSearch',
     components: {
-      SelectInput,
+      // SelectInput,
     },
     props: {
       filterOut: {

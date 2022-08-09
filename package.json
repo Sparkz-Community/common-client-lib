@@ -67,7 +67,6 @@
     "vuepress-plugin-demo-code": "^0.5.2"
   },
   "peerDependencies": {
-    "@sparkz-community/form-gen-client-lib": "0.x",
     "feathers-pinia": "0.x",
     "pinia": "2.x",
     "quasar": "2.x",

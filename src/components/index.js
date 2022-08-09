@@ -1,7 +1,6 @@
 import tabNavbar from './common/atoms/tabNavbar/tabNavbar.vue';
 import tabStepper from './common/atoms/tabStepper/tabStepper.vue';
 import draggableResizable from './common/atoms/draggableResizable/draggableResizable.vue';
-import PaginateList from './common/substance/pagination/PaginateList.vue';
 import flipHoverCard from './common/atoms/flipHoverCard/flipHoverCard';
 import cornerDetailsCard from './common/atoms/cornerDetailsCard/cornerDetailsCard';
 import flipClickCard from './common/atoms/flipClickCard/flipClickCard';
@@ -24,7 +23,6 @@ export {
   tabNavbar,
   tabStepper,
   draggableResizable,
-  PaginateList,
   flipHoverCard,
   cornerDetailsCard,
   flipClickCard,

@@ -85,14 +85,14 @@
 </template>
 
 <script>
-  // import SelectInput
-  //   from '@sparkz-community/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput.vue';
+  import SelectInput
+    from '@sparkz-community/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput.vue';
   import isEmpty from '../../utils/isEmpty.js';
 
   export default {
     name: 'SelectOrAdd',
     components: {
-      // SelectInput,
+      SelectInput,
     },
     props: {
       path: {

@@ -1,5 +1,5 @@
 <template>
-  <div id="FDataTable" :style="{...cssVars}" v-bind="$attrs['div-attrs']">
+  <div id="FDataTable" :style="{...cssVars}" v-bind="attrs['div-attrs']">
     <q-table :title="title"
              :data="data"
              :columns="finalColumns"
@@ -8,10 +8,10 @@
              v-model:expanded="expanded"
              :filter="search"
              :grid="grid"
-             :loading="isFindDataPending"
-             v-model:pagination="pagination"
+             :loading="isPending"
+             v-model:pagination="tablePagination"
              @request="setPagination"
-             v-bind="$attrs['attrs']">
+             v-bind="attrs['attrs']">
       <template v-slot:top-right>
         <slot name="top-right">
           <div style="display: flex; justify-content: space-evenly; align-items: center; flex-wrap: wrap; gap: 15px">
@@ -27,13 +27,11 @@
                            v-model="formData"
                            class="q-mr-lg"
                            :fields="formFields"
-                           :service="service"
-                           :serviceClass="serviceClass"
+                           :model="model"
                            :params="params"
                            :root-field-path="rootFieldPath"
                            :create-title="createTitle"
-                           @saved="dataRefresh"
-                           v-bind="$attrs['add-or-update-attrs']">
+                           v-bind="attrs['add-or-update-attrs']">
               <template v-for="slot in Object.keys($slots)"
                         v-slot:[slot]="slotProps">
                 <slot :name="slot" v-bind="slotProps"></slot>
@@ -42,7 +40,7 @@
 
             <slot name="btn-toggle">
               <q-btn-toggle v-model="grid"
-                            v-bind="$attrs['q-btn-toggle-attrs']"
+                            v-bind="attrs['q-btn-toggle-attrs']"
                             :options="[
                               {icon: 'fas fa-th-large', value: true, slot: 'grid'},
                               {icon: 'fas fa-th-list', value: false, slot: 'table'}
@@ -146,7 +144,7 @@
             <span v-else style="white-space: normal;">
 <!--              <v-clamp autoresize :max-lines="1" :max-height="24" @clampchange="$set(isClamped, col.name + props.pageIndex, $event)">-->
                 {{ col.value }}
-<!--              </v-clamp>-->
+              <!--              </v-clamp>-->
               <q-tooltip v-if="isClamped[col.name + props.pageIndex]"
                          content-style="font-size: 14pt;"
                          transition-show="scale"
@@ -159,7 +157,8 @@
         </q-tr>
         <q-tr v-if="props.expand" :props="props" class="expand">
           <q-td colspan="100%">
-            <slot name="expand" v-bind="{...props, col: props.cols.find(col => col.name === $lget(expandMeta,`${props.pageIndex}.expandKey`)), colName: $lget(expandMeta,`${props.pageIndex}.expandKey`)}"></slot>
+            <slot name="expand"
+                  v-bind="{...props, col: props.cols.find(col => col.name === $lget(expandMeta,`${props.pageIndex}.expandKey`)), colName: $lget(expandMeta,`${props.pageIndex}.expandKey`)}"></slot>
           </q-td>
         </q-tr>
       </template>
@@ -270,7 +269,7 @@
 <!--                        <v-clamp autoresize :max-lines="1" :max-height="24"-->
                                  @clampchange="$set(isClamped, col.name + props.pageIndex, $event)">
                           {{ col.value }}
-<!--                        </v-clamp>-->
+                        <!--                        </v-clamp>-->
                         <q-tooltip v-if="isClamped[col.name + props.pageIndex]"
                                    content-style="font-size: 14pt;"
                                    transition-show="scale"
@@ -292,7 +291,10 @@
 </template>
 
 <script>
-  import {makeFindPaginateMixin, routerMixin} from '../../../../../mixins';
+  import {computed, inject, reactive, ref} from 'vue';
+  import {routerMixin} from '../../../../../mixins';
+  import {useFindPaginate} from '../../../../../composables';
+
 
   // import VClamp from 'vue-clamp';
 
@@ -312,8 +314,8 @@
       createTitle: {
         type: String,
       },
-      service: {
-        type: String,
+      model: {
+        type: Object,
         required: true,
       },
       infinite: {
@@ -334,19 +336,16 @@
         type: String,
       },
       query: {
-        type: [Function, Object],
+        type: Object,
         default() {
           return {};
         },
       },
       params: {
-        type: [Function, Object],
+        type: Object,
         default() {
           return {};
         },
-      },
-      serviceClass: {
-        type: String,
       },
       columns: {
         type: Array,
@@ -376,43 +375,64 @@
         default: true,
       },
     },
-    mixins: [
-      makeFindPaginateMixin({
-        name: 'data',
-        infinite() {
-          return this.infinite;
-        },
-        advanced() {
-          return this.advanced;
-        },
-        service() {
-          return this.service;
-        },
-        query() {
-          let query = {
-            ...(typeof this.query === 'function' ? this.query() : this.query),
-          };
+    setup(props) {
+      let $lget = inject('$lget');
+      let $lset = inject('$lset');
 
-          if (this.search && this.search !== '') {
-            let $or = this.$lget(query, '$or', []);
-            $or.push({
-              [this.rootFieldPath]: {$regex: `${this.search}`, $options: 'igm'},
-            });
-            this.$lset(query, '$or', $or);
-          }
-          return {
-            $sort: this.sort,
-            ...query,
-          };
-        },
-        params() {
-          return {
-            debounce: 500,
-            ...(typeof this.params === 'function' ? this.params() : this.params),
-            qid: this.qid,
-          };
-        },
-      }),
+      const search = ref('');
+
+      const sort = reactive({
+        [props.rootFieldPath]: 1,
+        createdAt: -1,
+      });
+
+      const query = computed(() => {
+        let newQuery = {
+          ...props.query,
+        };
+
+        if (search.value && search.value !== '') {
+          let $or = $lget(newQuery, '$or', []);
+          $or.push({
+            [props.rootFieldPath]: {$regex: `${search.value}`, $options: 'igm'},
+          });
+          $lset(newQuery, '$or', $or);
+        }
+        return {
+          $sort: sort,
+          ...newQuery,
+        };
+      });
+      const params = computed(() => {
+        return {
+          debounce: 500,
+          ...props.params,
+        };
+      });
+      const {items: data, isPending, pagination, toPage, latestQuery, paginationData} = useFindPaginate({
+        limit: props.limit,
+        skip: props.skip,
+        model: props.model,
+        query,
+        params,
+        qid: props.qid,
+        infinite: props.infinite,
+      });
+
+      const total = computed(() => {
+        return $lget(latestQuery, 'response.total', $lget(paginationData, `${props.qid}.mostRecent.total`, 0));
+      });
+      return {
+        search,
+        sort,
+        data,
+        isPending,
+        pagination,
+        toPage,
+        total,
+      };
+    },
+    mixins: [
       routerMixin({
         name: 'FDataTable',
         runWhen() {
@@ -437,23 +457,18 @@
     data() {
       return {
         isClamped: {},
-        sort: {
-          [this.rootFieldPath]: 1,
-          createdAt: -1,
-        },
         formData: {},
         oldFormData: {},
         grid: false,
-        pagination: {
+        tablePagination: {
           sortBy: 'desc',
           descending: false,
           page: 1,
           rowsPerPage: 12,
-          rowsNumber: this.dataTotal,
+          rowsNumber: this.total,
         },
         expanded: [],
         expandMeta: {},
-        search: '',
         selected: [],
         visibleColumns: this.columns.reduce((acc, col) => {
           if (!['actions'].includes(col.name) && !col.required && !this.$lget(col, 'hidden')) {
@@ -464,38 +479,11 @@
       };
     },
     watch: {
-      $attrs: {
-        immediate: true,
-        deep: true,
-        handler(newVal) {
-          // attrs defaults
-          this.$lset(newVal, 'attrs.row-key', this.$lget(newVal, 'attrs.row-key', '_id'));
-          this.$lset(newVal, 'attrs.grid-header', this.$lget(newVal, 'attrs.grid-header', true));
-          this.$lset(newVal, 'attrs.dense', this.$lget(newVal, 'attrs.dense', true));
-          this.$lset(newVal, 'attrs.color', this.$lget(newVal, 'attrs.color', 'primary'));
-          this.$lset(newVal, 'attrs.class', this.$lget(newVal, 'attrs.class', 'my-sticky-header-column-table'));
-          this.$lset(newVal, 'attrs.card-container-class', this.$lget(newVal, 'attrs.card-container-class', 'grid-content'));
-          this.$lset(newVal, 'attrs.rows-per-page-options', this.$lget(newVal, 'attrs.rows-per-page-options', [5, 12, 25, 50, 100, 200, 0]));
-          this.$lset(newVal, 'attrs.selection', this.$lget(newVal, 'attrs.selection', 'multiple'));
-
-          // div-attrs defaults
-          // this.$lset(newVal, 'div-attrs.class', this.$lget(newVal, 'div-attrs.class', 'col-12 col-sm-6'));
-
-          // q-btn-toggle-attrs defaults
-          this.$lset(newVal, 'q-btn-toggle-attrs.no-caps', this.$lget(newVal, 'q-btn-toggle-attrs.no-caps', true));
-          this.$lset(newVal, 'q-btn-toggle-attrs.rounded', this.$lget(newVal, 'q-btn-toggle-attrs.rounded', true));
-          this.$lset(newVal, 'q-btn-toggle-attrs.unelevated', this.$lget(newVal, 'q-btn-toggle-attrs.unelevated', true));
-          this.$lset(newVal, 'q-btn-toggle-attrs.toggle-color', this.$lget(newVal, 'q-btn-toggle-attrs.toggle-color', 'primary'));
-          this.$lset(newVal, 'q-btn-toggle-attrs.text-color', this.$lget(newVal, 'q-btn-toggle-attrs.text-color', 'primary'));
-          this.$lset(newVal, 'q-btn-toggle-attrs.class', this.$lget(newVal, 'q-btn-toggle-attrs.class', 'q-mr-lg'));
-          this.$lset(newVal, 'q-btn-toggle-attrs.style', this.$lget(newVal, 'q-btn-toggle-attrs.style', 'border: 1px solid var(--q-color-primary);'));
-        },
-      },
       limit: {
         immediate: true,
         handler(newVal, oldVal) {
           if (newVal && newVal !== oldVal) {
-            this.dataLimit = newVal;
+            this.pagination.$limit = newVal;
           }
         },
       },
@@ -503,12 +491,12 @@
         immediate: true,
         handler(newVal, oldVal) {
           if (newVal && newVal !== oldVal) {
-            this.dataSkip = newVal;
+            this.pagination.$skip = newVal;
           }
         },
       },
-      dataTotal(newVal) {
-        this.pagination.rowsNumber = newVal;
+      total(newVal) {
+        this.tablePagination.rowsNumber = newVal;
       },
       formData: {
         deep: true,
@@ -521,26 +509,33 @@
           }
         },
       },
-      // pagination: {
-      //   deep: true,
-      //   immediate: true,
-      //   handler(newVal) {
-      //     this.dataLimit = newVal.rowsPerPage;
-      //     this.dataCurrentPage = newVal.page;
-      //   }
-      // },
-      // 'grid': {
-      //   immediate: true,
-      //   handler(newVal) {
-      //     if (newVal) {
-      //       this.visibleColumns = this.visibleColumns.filter(name => !['actions'].includes(name));
-      //     } else {
-      //       this.visibleColumns = [...new Set([...this.visibleColumns, 'actions'])];
-      //     }
-      //   },
-      // },
     },
     computed: {
+      attrs() {
+        let newVal = {...this.$attrs};
+        // attrs defaults
+        this.$lset(newVal, 'attrs.row-key', this.$lget(newVal, 'attrs.row-key', '_id'));
+        this.$lset(newVal, 'attrs.grid-header', this.$lget(newVal, 'attrs.grid-header', true));
+        this.$lset(newVal, 'attrs.dense', this.$lget(newVal, 'attrs.dense', true));
+        this.$lset(newVal, 'attrs.color', this.$lget(newVal, 'attrs.color', 'primary'));
+        this.$lset(newVal, 'attrs.class', this.$lget(newVal, 'attrs.class', 'my-sticky-header-column-table'));
+        this.$lset(newVal, 'attrs.card-container-class', this.$lget(newVal, 'attrs.card-container-class', 'grid-content'));
+        this.$lset(newVal, 'attrs.rows-per-page-options', this.$lget(newVal, 'attrs.rows-per-page-options', [5, 12, 25, 50, 100, 200, 0]));
+        this.$lset(newVal, 'attrs.selection', this.$lget(newVal, 'attrs.selection', 'multiple'));
+
+        // div-attrs defaults
+        // this.$lset(newVal, 'div-attrs.class', this.$lget(newVal, 'div-attrs.class', 'col-12 col-sm-6'));
+
+        // q-btn-toggle-attrs defaults
+        this.$lset(newVal, 'q-btn-toggle-attrs.no-caps', this.$lget(newVal, 'q-btn-toggle-attrs.no-caps', true));
+        this.$lset(newVal, 'q-btn-toggle-attrs.rounded', this.$lget(newVal, 'q-btn-toggle-attrs.rounded', true));
+        this.$lset(newVal, 'q-btn-toggle-attrs.unelevated', this.$lget(newVal, 'q-btn-toggle-attrs.unelevated', true));
+        this.$lset(newVal, 'q-btn-toggle-attrs.toggle-color', this.$lget(newVal, 'q-btn-toggle-attrs.toggle-color', 'primary'));
+        this.$lset(newVal, 'q-btn-toggle-attrs.text-color', this.$lget(newVal, 'q-btn-toggle-attrs.text-color', 'primary'));
+        this.$lset(newVal, 'q-btn-toggle-attrs.class', this.$lget(newVal, 'q-btn-toggle-attrs.class', 'q-mr-lg'));
+        this.$lset(newVal, 'q-btn-toggle-attrs.style', this.$lget(newVal, 'q-btn-toggle-attrs.style', 'border: 1px solid var(--q-color-primary);'));
+        return newVal;
+      },
       cssVars() {
         return {
           '--table-bg': this.$q.dark.isActive ? 'var(--q-color-dark)' : ' #fff',
@@ -567,8 +562,8 @@
       },
       setPagination(newVal) {
         // console.log(newVal.pagination);
-        this.dataLimit = newVal.pagination.rowsPerPage === 0 ? this.dataTotal : newVal.pagination.rowsPerPage;
-        this.dataCurrentPage = newVal.pagination.page;
+        this.pagination.$limit = newVal.pagination.rowsPerPage === 0 ? this.total : newVal.pagination.rowsPerPage;
+        this.toPage(newVal.pagination.page);
         this.pagination = newVal.pagination;
 
         if (newVal.pagination.sortBy) {
@@ -636,7 +631,7 @@
 </script>
 
 <style scoped lang="scss">
-  #FDataTable:deep{
+  #FDataTable:deep {
     .q-table__card.my-sticky-header-column-table {
       max-height: calc(100vh - 70px);
 

@@ -57,5 +57,6 @@ export default function useFindPaginate(
     ...findMeta,
     ...paginationMeta,
     items: newItems,
+    pagination,
   };
 }

@@ -40,8 +40,6 @@
 </template>
 
 <script>
-  import {models} from '@feathersjs/vuex';
-
   export default {
     name: 'addOrUpdate',
     props: {
@@ -49,12 +47,9 @@
         type: Object,
         // required: true,
       },
-      service: {
-        type: String,
+      model: {
+        type: Object,
         required: true,
-      },
-      serviceClass: {
-        type: String,
       },
       fields: {
         type: Array,
@@ -63,7 +58,7 @@
         },
       },
       params: {
-        type: [Function, Object],
+        type: Object,
         default() {
           return {};
         },
@@ -82,10 +77,10 @@
         valid: false,
         dialogForm: false,
         formData: {
-          data: this.model,
+          data: this.newModel,
         },
         oldFormData: {
-          data: this.model,
+          data: this.newModel,
         }
       };
     },
@@ -112,18 +107,15 @@
       },
     },
     computed: {
-      className() {
-        return this.serviceClass ? this.serviceClass : this.$changeCase.pascalCase(this.service);
-      },
-      model() {
-        return new models.api[`${this.className}`]().clone();
+      newModel() {
+        return new this.model;
       },
     },
     methods: {
       addDialog() {
         this.dialogForm = true;
         this.formData = {
-          data: this.model,
+          data: this.newModel,
         };
       },
       async saveData() {
@@ -131,14 +123,14 @@
         if (self.formData.data && Object.keys(self.formData.data).length) {
           try {
             let data = await self.formData.data.save({
-              ...(typeof this.params === 'function' ? this.params() : this.params),
+              ...this.params,
               data: self.fields.reduce((acc, curr) => {
                 self.$lset(acc, curr.path, self.$lget(self.formData, `data.${curr.path}`));
                 return acc;
               }, {}),
             });
             self.formData = {
-              data: this.model,
+              data: this.newModel,
             };
             self.dialogForm = false;
             self.$emit('saved', data);

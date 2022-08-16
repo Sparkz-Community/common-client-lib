@@ -10,14 +10,7 @@ import features from './services/features';
 import integrations from './services/integrations';
 import integrationAuths from './services/integrationAuths';
 
-const modules = {
-  // example,
-};
-
-
-
-
-const plugins = {
+export {
   instances,
   vInstances,
   domains,
@@ -27,10 +20,5 @@ const plugins = {
   devices,
   features,
   integrations,
-  integrationAuths
-};
-
-export {
-  modules,
-  plugins,
+  integrationAuths,
 };

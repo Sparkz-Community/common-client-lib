@@ -2,6 +2,12 @@ import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
 const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
 
+export class VInstances extends BaseModel {
+  constructor(data, options) {
+    super(data, options);
+  }
+}
+
 export default async (
   {
     FeathersClient,
@@ -20,12 +26,6 @@ export default async (
   const {
     default: feathersClient,
   } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
-
-  class VInstances extends BaseModel {
-    constructor(data, options) {
-      super(data, options);
-    }
-  }
 
   // Define default properties here
   VInstances.instanceDefaults = function () {

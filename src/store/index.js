@@ -1,24 +1,62 @@
 // plugins
-import instances from './services/instances';
-import vInstances from './services/vInstances';
-import domains from './services/domains';
-import applications from './services/applications';
-import environments from './services/environments';
-import hosts from './services/hosts';
-import devices from './services/devices';
-import features from './services/features';
-import integrations from './services/integrations';
-import integrationAuths from './services/integrationAuths';
+import accounts, { Accounts } from './services/accounts';
+import applications, { Applications } from './services/applications';
+import devices, { Devices } from './services/devices';
+import domains, { Domains } from './services/domains';
+import environments, { Environments } from './services/environments';
+import features, { Features } from './services/features';
+import glClasses, { GLClasses } from './services/glClasses';
+import glDepartments, { GLDepartments } from './services/glDepartments';
+import hosts, { Hosts } from './services/hosts';
+import instances, { Instances } from './services/instances';
+import integrationAuths, { IntegrationAuths } from './services/integrationAuths';
+import integrations, { Integrations } from './services/integrations';
+import quickbookCompanies, { QuickbooksCompanies } from './services/quickbookCompanies';
+import vInstances, { VInstances } from './services/vInstances';
+import wallets, { Wallets } from './services/wallets';
 
-export {
-  instances,
-  vInstances,
-  domains,
+// glClasses
+// glDepartments
+// quickbookCompanies
+// wallets
+
+const classes = {
+  Accounts,
+  Applications,
+  Devices,
+  Domains,
+  Environments,
+  Features,
+  GLClasses,
+  GLDepartments,
+  Hosts,
+  Instances,
+  IntegrationAuths,
+  Integrations,
+  QuickbooksCompanies,
+  VInstances,
+  Wallets,
+};
+
+const stores = {
+  accounts,
   applications,
-  environments,
-  hosts,
   devices,
+  domains,
+  environments,
   features,
-  integrations,
+  glClasses,
+  glDepartments,
+  hosts,
+  instances,
   integrationAuths,
+  integrations,
+  quickbookCompanies,
+  vInstances,
+  wallets,
+};
+
+export default {
+  classes,
+  stores,
 };

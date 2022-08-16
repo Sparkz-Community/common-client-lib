@@ -8,6 +8,12 @@ Array.prototype.insert = function (index, ...value) {
   return this;
 };
 
+export class Features extends BaseModel {
+  constructor(data, options) {
+    super(data, options);
+  }
+}
+
 function hookCustomizer(obj_value, src_value) {
   if (Array.isArray(obj_value)) {
     let list = [...obj_value];
@@ -44,12 +50,6 @@ export default async (
     makeServicePlugin,
     BaseModel,
   } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
-
-  class Features extends BaseModel {
-    constructor(data, options) {
-      super(data, options);
-    }
-  }
 
   // Required for $FeathersVuex plugin to work after production transpile.
   Features.modelName = 'Features';

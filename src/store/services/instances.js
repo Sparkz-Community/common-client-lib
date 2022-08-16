@@ -5,6 +5,7 @@ const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
 export default async (
   {
     FeathersClient,
+    idField = '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
     extend_instance_defaults={},
@@ -59,7 +60,7 @@ export default async (
     Model,
     servicePath,
     clients: { api: feathersClient },
-    idField: '_id',
+    idField: idField,
     state,
     getters,
     actions,

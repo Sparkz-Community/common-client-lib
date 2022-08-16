@@ -291,7 +291,7 @@
 </template>
 
 <script>
-  import {computed, inject, reactive, ref} from 'vue';
+  import {computed, inject, reactive, ref, toRef} from 'vue';
   import {routerMixin} from '../../../../../mixins';
   import {useFindPaginate} from '../../../../../composables';
 
@@ -410,13 +410,13 @@
         };
       });
       const {items: data, isPending, pagination, toPage, latestQuery, paginationData} = useFindPaginate({
-        limit: props.limit,
-        skip: props.skip,
+        limit: toRef(props, 'limit'),
+        skip: toRef(props, 'skip'),
         model: props.model,
         query,
         params,
-        qid: props.qid,
-        infinite: props.infinite,
+        qid: toRef(props, 'qid'),
+        infinite: toRef(props, 'infinite'),
       });
 
       const total = computed(() => {

@@ -62,7 +62,7 @@ export default async (
     Model,
     servicePath,
     clients: { api: feathersClient },
-    idField: idField,
+    idField,
     state,
     getters,
     actions,

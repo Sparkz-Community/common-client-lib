@@ -1,44 +1,22 @@
-import {diff, lodash} from '../../index';
-
+import { defineStore, BaseModel } from 'feathers-pinia';
+import {lodash, hookCustomizer} from '../../index';
 const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
 
-
-Array.prototype.insert = function (index, ...value) {
-  this.splice(index, 0, ...value);
-  return this;
-};
-
-export class Features extends BaseModel {
+export class Hosts extends BaseModel {
   constructor(data, options) {
     super(data, options);
-  }
-}
-
-function hookCustomizer(obj_value, src_value) {
-  if (Array.isArray(obj_value)) {
-    let list = [...obj_value];
-    for (let item of src_value) {
-      let set_index = $lget(item, 'index', undefined);
-      let set_value = $lget(item, 'value', undefined);
-      if (item instanceof Object && !Array.isArray(item) && set_index !== undefined && set_value !== undefined) {
-        list.insert(set_index, set_value);
-      } else {
-        list.push(item);
-      }
-    }
-    return list;
   }
 }
 
 export default async (
   {
     FeathersClient,
+    idField = '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
     extend_instance_defaults={},
-    state = {},
+    state = () => ({}),
     getters = {},
-    mutations = {},
     actions = {},
   } = {}) => {
 
@@ -47,22 +25,7 @@ export default async (
   }
   const {
     default: feathersClient,
-    makeServicePlugin,
-    BaseModel,
   } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
-
-  // Required for $FeathersVuex plugin to work after production transpile.
-  Features.modelName = 'Features';
-
-  Features.diffOnPatch = function (data) {
-    // console.log('diffOnPatch data', data);
-    if (data['_id']) {
-      const originalObject = Features.store.state['features'].keyedById[data['_id']];
-      return diff(originalObject, data);
-    } else {
-      return data;
-    }
-  };
 
   // Define default properties here
   Features.instanceDefaults = function () {
@@ -97,27 +60,20 @@ export default async (
   }
 
 
-  const servicePlugin = makeServicePlugin({
+  const useStore = defineStore({
     Model,
-    service: feathersClient.service(servicePath),
     servicePath,
+    clients: { api: feathersClient },
+    idField: idField,
     state,
     getters,
-    mutations,
     actions,
   });
-
-  // const beforeHook = context => {
-//   // eslint-disable-next-line no-console
-//   console.log('------------->>>> beforeHook - context.method:', context.method);
-//   console.log('------------->>>> beforeHook - context.params:', context.params);
-//   console.log('------------->>>> beforeHook - context.data:', context.data);
-// };
 
   // Setup the client-side Feathers hooks.
   feathersClient.service(servicePath).hooks($lmergeWith({
     before: {
-      all: [/*beforeHook*/],
+      all: [],
       find: [],
       get: [],
       create: [],
@@ -145,7 +101,6 @@ export default async (
     },
   }, extend_hooks, hookCustomizer));
 
-  return servicePlugin;
-
+  return useStore;
 };
 

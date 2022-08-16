@@ -7,7 +7,7 @@
  */
 // export const enumValues = (values = []) => (str) => values.indexOf(str) !== -1;
 
-module.exports = function enumValues(values) {
+export default function enumValues(values) {
   console.log('values:', values);
   return function (str) {
     console.log('str:', str);

@@ -1,10 +1,10 @@
-export function slot (vm, slotName, otherwise) {
+function slot (vm, slotName, otherwise) {
   return vm.$scopedSlots[slotName] !== void 0
     ? vm.$scopedSlots[slotName]()
     : otherwise;
 }
 
-export function uniqueSlot (vm, slotName, otherwise) {
+function uniqueSlot (vm, slotName, otherwise) {
   return vm.$scopedSlots[slotName] !== void 0
     ? [].concat(vm.$scopedSlots[slotName]())
     : otherwise;
@@ -14,7 +14,7 @@ export function uniqueSlot (vm, slotName, otherwise) {
  * Source definitely exists,
  * so it's merged with the possible slot
  */
-export function mergeSlot (source, vm, slotName) {
+function mergeSlot (source, vm, slotName) {
   return vm.$scopedSlots[slotName] !== void 0
     ? source.concat(vm.$scopedSlots[slotName]())
     : source;
@@ -24,7 +24,7 @@ export function mergeSlot (source, vm, slotName) {
  * Merge with possible slot,
  * even if source might not exist
  */
-export function mergeSlotSafely (source, vm, slotName) {
+function mergeSlotSafely (source, vm, slotName) {
   if (vm.$scopedSlots[slotName] === void 0) {
     return source;
   }
@@ -34,3 +34,10 @@ export function mergeSlotSafely (source, vm, slotName) {
     ? source.concat(slot)
     : slot;
 }
+
+export {
+  slot,
+  uniqueSlot,
+  mergeSlot,
+  mergeSlotSafely,
+};

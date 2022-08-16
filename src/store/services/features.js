@@ -2,7 +2,7 @@ import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
 const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
 
-export class Hosts extends BaseModel {
+export class Features extends BaseModel {
   constructor(data, options) {
     super(data, options);
   }

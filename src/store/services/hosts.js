@@ -1,6 +1,5 @@
-import {hookCustomizer} from '../../utils';
 import { defineStore, BaseModel } from 'feathers-pinia';
-import {lodash} from '../../index';
+import {lodash, hookCustomizer} from '../../index';
 const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
 
 export default async (

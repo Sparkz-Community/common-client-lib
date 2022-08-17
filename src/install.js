@@ -18,10 +18,17 @@ import {lodash} from './packages';
 import {useCssVars, useRouters} from './composables';
 
 
-const install = (app, {prefix} = {}) => {
+const install = (app, {prefix, loadComponents = true} = {}) => {
   for (let key in components) {
     let _key = prefix ? prefix + key : key;
     app.component(_key, components[key]);
+  }
+
+  if (loadComponents) {
+    for (let key in components) {
+      let _key = prefix ? prefix + key : key;
+      app.component(_key, components[key]);
+    }
   }
 
   import('./public/icons/svg/icons.css');

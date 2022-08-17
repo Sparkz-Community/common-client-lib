@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <q-inner-loading :showing="isFindWalletsPending">
+    <q-inner-loading :showing="isPending">
       <q-spinner-gears size="50px" color="primary"/>
     </q-inner-loading>
 
@@ -39,10 +39,12 @@
 </template>
 
 <script>
-  import {models} from '@feathersjs/vuex';
-  import {mapActions} from 'vuex';
+
+  import {mapActions} from 'pinia';
   import AddWalletForm from './AddWalletForm';
-  import {makeFindPaginateMixin} from '../../';
+  import {useFindPaginate} from '../../';
+  import {reactive, ref} from 'vue';
+  import {models} from 'feathers-pinia';
 
   export default {
     name: 'my-wallets',
@@ -50,44 +52,36 @@
       AddWalletForm,
     },
     props: {
-      value: {
+      modelValue: {
         type: Object,
         required: true,
       },
     },
-    mixins: [
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'wallets',
-        name: 'wallets',
-        qid: 'wallets',
-        query() {
-          return {
-            account: this.$lget(this.value,['account','_id'])
-          };
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-    ],
-    mounted() {
-      console.log('this is accountData in mounted: ', this.accountData);
-    },
-    data() {
+    setup() {
+
+      const account =  new models.api.Accounts().clone();
+
       return {
-        isLoading: false,
-        formData: undefined,
-        newWalletDio: false,
-        accountData: {
-          account: new models.api.Accounts().clone(),
-        },
+        wallets: useFindPaginate({
+          limit: 12,
+          qid: 'wallets',
+          query: {
+            account
+          },
+          params: {
+            debounce: 500,
+          }
+        }),
+        isLoading: ref(false),
+        formData: reactive(undefined),
+        newWalletDio: ref(false),
+        accountData: reactive({
+        })
       };
     },
+
     watch: {
-      value: {
+      modelValue: {
         deep: true,
         immediate: true,
         handler(newVal) {
@@ -108,7 +102,7 @@
       async remove(data) {
         this.$q.dialog({
           title: 'Confirm',
-          message: `Would you like to delete this wallet from your ${this.$lget(this.value, ['account','name'])} account?`,
+          message: `Would you like to delete this wallet from your ${this.$lget(this.modelValue, ['account','name'])} account?`,
           ok: {
             push: true,
             color: 'primary',
@@ -121,7 +115,7 @@
             // await data.patch({
             //   data: {
             //     $pull: {
-            //       accounts: this.$lget(this.value, 'account._id'),
+            //       accounts: this.$lget(this.modelValue, 'account._id'),
             //     },
             //   },
             // });

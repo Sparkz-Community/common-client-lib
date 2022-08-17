@@ -6,7 +6,7 @@
         ... use q-card-section for it?
       -->
 
-      <q-img v-if="!loading" :src="require('../../../assets/plaid.png')"  alt="plaid"/>
+      <q-img v-if="!loading" :src="require('../../../assets/plaid.png')" alt="plaid"/>
 
       <q-spinner-grid v-else color="primary" size="xl"/>
 
@@ -21,9 +21,9 @@
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="between">
-        <q-btn :disabled="loading" @click="$emit('clear')" color="light" text-color="primary" outline label="Cancel"/>
+        <q-btn :disabled="loading" @click="emit('clear')" color="light" text-color="primary" outline label="Cancel"/>
         <plaid-link
-          :clientName="$lget(account,'email')"
+          :clientName="account?.email"
           :env="environment"
           :link_token="linkToken"
           :products="products"
@@ -38,7 +38,7 @@
   </q-dialog>
 </template>
 
-<script>
+<!--<script>
   import PlaidLink from 'vue-plaid-link2';
   // import {loadStripe} from '@stripe/stripe-js';
 
@@ -109,4 +109,75 @@
       },
     },
   };
+</script>-->
+
+<script setup>
+  import PlaidLink from 'vue-plaid-link2';
+  import {ref, defineProps, defineEmits} from 'vue';
+  import {useQuasar} from 'quasar';
+
+  const $q = useQuasar();
+  const emit = defineEmits(['clear', 'verified']);
+
+  // props
+  defineProps({
+    linkToken: {
+      type: String,
+      required: true,
+    },
+    environment: {
+      type: String,
+      required: true,
+    },
+    products: {
+      type: Array,
+      default() {
+        return ['auth'];
+      },
+    },
+    data_to_tokenize: {
+      type: Object,
+      required: true,
+    },
+    stripe_publishable: {
+      type: String,
+      required: false,
+    },
+    account: {
+      type: Object,
+      required: true,
+    },
+  });
+
+  //data
+  let loading = ref(false);
+
+  // methods
+
+  async function onSuccess(token, metadata) {
+    try {
+      loading.value = true;
+      emit('verified', {token, metadata});
+      loading.value = false;
+      emit('clear');
+    } catch (e) {
+      $q.notify({
+        type: 'negative',
+        message: `Error on access token processing: ${e.message}.`,
+      });
+      loading.value = false;
+      emit('clear');
+    }
+  }
+
+  function onExit(err, metadata) {
+    console.log({err, metadata});
+    $q.notify({
+      type: 'negative',
+      message: 'Error initializing plaid connection.',
+    });
+    loading.value = false;
+    emit('clear');
+  }
+
 </script>

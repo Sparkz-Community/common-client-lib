@@ -52,7 +52,7 @@
           v-model="selectedTab"
           animated>
           <q-tab-panel class="q-px-none" v-for="tab in tabs" :name="$lget(tab,'name')" :key="$lget(tab,'name')">
-            <slot :name="$lget(tab,'name')" v-bind="value">
+            <slot :name="$lget(tab,'name')" v-bind="modelValue">
 
             </slot>
           </q-tab-panel>
@@ -62,13 +62,13 @@
       </div>
     </q-slide-transition>
 
-    <account-form-dialog v-model="openDialog" :account="$lget(value,'account')" @saved="notifySaved"
+    <account-form-dialog v-model="openDialog" :account="$lget(modelValue,'account')" @saved="notifySaved"
                          @close="openDialog=false"/>
   </div>
 </template>
 
 <script>
-  // import {models} from '@feathersjs/vuex';
+  // import {models} from 'feathers-pinia';
   import {routerMixin} from '../../../';
   import AccountFormDialog from './AccountFormDialog';
 
@@ -79,7 +79,7 @@
 
     },
     props: {
-      value: {
+      modelValue: {
         type: Object,
         required: true,
       },
@@ -141,7 +141,7 @@
         return `background-image: url(${backgroundImage}); --card-bg-color: ${this.$q.dark.mode ? '#2f2f2f' : 'var(--q-color-accent)'}`;
       },
       account() {
-        return this.$lget(this.value, 'account', {});
+        return this.$lget(this.modelValue, 'account', {});
       },
 
 

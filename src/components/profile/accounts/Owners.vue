@@ -37,19 +37,22 @@
              @click="newOwnerDialog = true"/>
     </div>
     <account-form-dialog
-      select-existing
-      v-model="newOwnerDialog"
-      @saved="addOwner"
-      @close="newOwnerDialog=false"
-      :filter-out="[account._id, ...ownerIds]"
+        select-existing
+        v-model="newOwnerDialog"
+        @saved="addOwner"
+        @close="newOwnerDialog = false"
+        :filter-out="[account._id, ...ownerIds]"
     />
   </div>
 </template>
 
 <script>
-  import {models} from '@feathersjs/vuex';
-  import {makeFindPaginateMixin} from '../../../';
+  import {models} from 'feathers-pinia';
+  import {useFindPaginate} from '../../../';
   import AccountFormDialog from './AccountFormDialog';
+  import {Accounts} from '../../../store/services/accounts';
+  import {computed, inject, reactive, ref, watch} from 'vue';
+  import {useQuasar} from 'quasar';
 
   export default {
     name: 'Owners',
@@ -57,80 +60,52 @@
       AccountFormDialog,
     },
     props: {
-      value: {
+      modelValue: {
         type: Object,
         required: true,
       },
     },
-    mixins: [
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'accounts',
-        name: 'owners',
-        infinite: true,
-        query() {
-          return {
-            _id: {
-              $in: this.ownerIds,
-            },
-            $select: ['_id', 'name', 'email', 'avatar'],
-          };
-        },
-        params() {
-          return {
-            qid: `accountOwners-${this.$lget(this.account, '_id')}`,
-          };
+    setup(props) {
+      let $lget = inject('$lget');
+      let $lset = inject('$lset');
+      let $lcloneDeep = inject('$lcloneDeep');
+      let $q = useQuasar();
+
+      let accountData = reactive({
+        account: new models.api.Accounts().clone(),
+      });
+
+      let newOwnerDialog = ref(false);
+      let isDeleting = ref(false);
+      let isAdding = ref(false);
+      let accountSelection = ref(null);
+
+      watch(props.modelValue, (newVal, oldVal) => {
+        if (newVal && Object.keys(newVal).length && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+          accountData = $lcloneDeep(newVal);
         }
-      }),
-    ],
-    data() {
-      return {
-        accountData: {
-          account: new models.api.Accounts().clone(),
-        },
-        newOwnerDialog: false,
-        isDeleting: false,
-        isAdding: false,
-        accountSelection: null,
-      };
-    },
-    watch: {
-      value: {
-        deep: true,
-        immediate: true,
-        handler(newVal, oldVal) {
-          if (newVal && Object.keys(newVal).length && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-            this.accountData = this.$lcloneDeep(newVal);
-          }
-        },
-      },
-    },
-    computed: {
-      account() {
-        return this.$lget(this.accountData, 'account', {});
-      },
-      ownerIds() {
-        return this.$lget(this.account, 'ownership.owners', []).map(i => i.id);
-      }
-    },
-    methods: {
-      addOwner(account) {
+      }, {deep: true, immediate: true});
+
+      let account = computed(() => $lget(accountData, 'account', {}));
+      let ownerIds = computed(() => $lget(account, 'ownership.owners', []).map(i => i.id));
+
+      function addOwner (account) {
         if (account !== null) {
-          this.isAdding = true;
+          isAdding.value = true;
 
           // if the owners array doesn't exist on the account, this adds it
-          if (!this.$lget(this.accountData, 'account.ownership.owners')) {
-            this.$lset(this.accountData, 'account.ownership.owners', []);
+          if (!$lget(accountData, 'account.ownership.owners')) {
+            $lset(accountData, 'account.ownership.owners', []);
           }
 
-          this.$lget(this.accountData, 'account.ownership.owners', []).push({id: account._id});
-          this.$lget(this.accountData, 'account').patch({
+          $lget(accountData, 'account.ownership.owners', []).push({id: account._id});
+          $lget(accountData, 'account').patch({
             data: {
-              'ownership.owners': this.$lget(this.accountData, 'account.ownership.owners'),
-            }
+              'ownership.owners': $lget(accountData, 'account.ownership.owners'),
+            },
           })
             .then(() => {
-              this.$q.notify({
+              $q.notify({
                 type: 'positive',
                 message: 'Successfully added owner',
                 timeout: 10000,
@@ -142,11 +117,11 @@
                   },
                 ],
               });
-              this.isAdding = false;
-              this.newOwnerDialog = false;
+              isAdding.value = false;
+              newOwnerDialog.value = false;
             })
             .catch(err => {
-              this.$q.notify({
+              $q.notify({
                 type: 'negative',
                 message: err.message,
                 timeout: 10000,
@@ -160,20 +135,21 @@
               });
             });
         }
-      },
-      removeOwner(accountId) {
-        this.isDeleting = true;
-        let newOwners = this.$lget(this.accountData, 'account.ownership.owners', []).filter(obj => {
+      }
+
+      function removeOwner (accountId) {
+        isDeleting.value = true;
+        let newOwners = $lget(accountData, 'account.ownership.owners', []).filter(obj => {
           return obj.id !== accountId;
         });
-        this.$lset(this.accountData, 'account.ownership.owners', newOwners);
-        this.$lget(this.accountData, 'account').patch({
+        $lset(accountData, 'account.ownership.owners', newOwners);
+        $lget(accountData, 'account').patch({
           data: {
-            'ownership.owners': this.$lget(this.accountData, 'account.ownership.owners'),
-          }
+            'ownership.owners': $lget(accountData, 'account.ownership.owners'),
+          },
         })
           .then(() => {
-            this.$q.notify({
+            $q.notify({
               type: 'positive',
               message: 'Successfully removed owner',
               timeout: 10000,
@@ -185,10 +161,10 @@
                 },
               ],
             });
-            this.isDeleting = false;
+            isDeleting.value = false;
           })
           .catch(err => {
-            this.$q.notify({
+            $q.notify({
               type: 'negative',
               message: err.message,
               timeout: 10000,
@@ -201,7 +177,34 @@
               ],
             });
           });
-      },
+      }
+
+      return {
+        owners: useFindPaginate({
+          limit: 12,
+          model: Accounts,
+          qid: 'owners',
+          infinite: true,
+          query: {
+            _id: {
+              $in: ownerIds,
+            },
+            $select: ['_id', 'name', 'email', 'avatar'],
+          },
+          params: {
+            qid: `accountOwners-${$lget(account, '_id')}`,
+          },
+        }),
+        accountData,
+        newOwnerDialog,
+        isDeleting,
+        isAdding,
+        accountSelection,
+        account,
+        ownerIds,
+        addOwner,
+        removeOwner,
+      };
     },
   };
 </script>

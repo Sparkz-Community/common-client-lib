@@ -1,6 +1,6 @@
 <template>
   <select-input @input-value="search = $event"
-                @input="$emit('input', $event)"
+                @update:modelValue="$emit('update:modelValue', $event)"
                 @keydown="preventSpecialCharacter($event)"
                 v-model="selection"
                 path="auto"
@@ -43,9 +43,11 @@
 </template>
 
 <script>
-  import {makeFindPaginateMixin} from '../../../';
   import SelectInput
     from '@sparkz-community/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput';
+  import {useFindPaginate} from '../../../';
+  import {computed, ref} from 'vue';
+  import {Accounts} from '../../../store/services/accounts';
 
   export default {
     name: 'AccountSearch',
@@ -63,43 +65,45 @@
         },
       },
     },
-    mixins: [
-      makeFindPaginateMixin({
-        limit: 6,
-        service: 'accounts',
-        name: 'accounts',
-        qid: 'searchAccounts',
-        infinite: true,
-        query() {
-          let query = {
-            $sort: {
-              name: 1,
-            },
-            _id: {
-              $nin: this.filterOut ? this.filterOut : [],
-            },
-          };
+    setup(props) {
+      let search = ref('');
 
-          if (!['', null, undefined].includes(this.search)) {
-            this.$lset(query, '$or', [
-              {
-                name: {$regex: `${this.search}`, $options: 'igm'},
-              },
-              {
-                email: {$regex: `${this.search}`, $options: 'igm'},
-              },
-            ]);
-          }
-          return query;
-        },
-        params() {
-          return {
-            qid: this.qid,
+      let query = computed(() => {
+        let queryD = {
+          $sort: {
+            name: 1,
+          },
+          _id: {
+            $nin: props.filterOut ? props.filterOut : [],
+          },
+        };
+
+        if (!['', null, undefined].includes(search.value)) {
+          this.$lset(queryD, '$or', [
+            {
+              name: {$regex: `${search.value}`, $options: 'igm'},
+            },
+            {
+              email: {$regex: `${search.value}`, $options: 'igm'},
+            },
+          ]);
+        }
+        return queryD;
+      });
+
+      return {
+        accounts: useFindPaginate({
+          limit: 6,
+          model: Accounts,
+          qid: 'searchAccounts',
+          infinite: true,
+          query,
+          params: {
             debounce: 500,
-          };
-        },
-      }),
-    ],
+          }
+        }),
+      };
+    },
     data() {
       return {
         sort: undefined,

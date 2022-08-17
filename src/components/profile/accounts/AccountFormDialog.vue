@@ -1,5 +1,5 @@
 <template>
-  <q-dialog :value="value" @input="$emit('input', $event)">
+  <q-dialog :model-value="modelValue" @update:modelValue="$emit('update:modelValue', $event)">
     <q-card style="min-width: 30vw; padding: 10px; border-top: 25px solid var(--q-color-primary)">
       <q-card-section>
         <account-search v-if="selectExisting" v-model="formData" :filter-out="filterOut"/>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import {models} from '@feathersjs/vuex';
+  import {models} from 'feathers-pinia';
   import AccountSearch from './AccountSearch';
   import isEmpty from '../../../utils/isEmpty';
 
@@ -30,7 +30,7 @@
     name: 'AccountFormDialog',
     components: {AccountSearch},
     props: {
-      value: {
+      modelValue: {
         type: Boolean,
         default: false,
       },
@@ -186,7 +186,7 @@
           }
           this.$emit('saved', account);
           // this.formData = this.account;
-          this.$emit('input', this.value);
+          this.$emit('input', this.modelValue);
 
         } catch (err) {
           this.$q.notify({

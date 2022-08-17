@@ -13,13 +13,13 @@
 </template>
 
 <script>
-  import {models} from '@feathersjs/vuex';
+  import {models} from 'feathers-pinia';
 
   export default {
     name: 'AccountPhones',
 
     props: {
-      value: {
+      modelValue: {
         type: Object,
         required: true,
       },
@@ -35,7 +35,7 @@
     },
 
     watch: {
-      value: {
+      modelValue: {
         deep: true,
         immediate: true,
         handler(newVal) {

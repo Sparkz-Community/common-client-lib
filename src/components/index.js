@@ -14,7 +14,6 @@ import dddCarousel from './dddCarousel/dddCarousel';
 import ProgrCom from './ProgrCom';
 import ToggleMe from './common/atoms/ToggleMe/ToggleMe.vue';
 import SSelect from './common/atoms/SSelect';
-import DbSelect from './common/atoms/search/DbSelect';
 import FDataTable from './common/molecules/feathers/FDataTable/FDataTable';
 import VueGroupAvatar from './common/atoms/avatars/VueGroupAvatar/VueGroupAvatar';
 import VueAvatar from './common/atoms/avatars/VueGroupAvatar/VueAvatar';
@@ -36,7 +35,6 @@ export {
   ProgrCom,
   ToggleMe,
   SSelect,
-  DbSelect,
   FDataTable,
   VueGroupAvatar,
   VueAvatar,

@@ -409,7 +409,7 @@
           ...props.params,
         };
       });
-      const {items: data, isPending, pagination, toPage, latestQuery, paginationData} = useFindPaginate({
+      const {items: data, isPending, pagination, toPage, total} = useFindPaginate({
         limit: toRef(props, 'limit'),
         skip: toRef(props, 'skip'),
         model: props.model,
@@ -417,10 +417,6 @@
         params,
         qid: toRef(props, 'qid'),
         infinite: toRef(props, 'infinite'),
-      });
-
-      const total = computed(() => {
-        return $lget(latestQuery, 'response.total', $lget(paginationData, `${props.qid}.mostRecent.total`, 0));
       });
       return {
         search,

@@ -61,17 +61,20 @@
 
       const account =  new models.api.Accounts().clone();
 
+      const {items: wallets, isPending} = useFindPaginate({
+        limit: 12,
+        qid: 'wallets',
+        query: {
+          account
+        },
+        params: {
+          debounce: 500,
+        }
+      });
+
       return {
-        wallets: useFindPaginate({
-          limit: 12,
-          qid: 'wallets',
-          query: {
-            account
-          },
-          params: {
-            debounce: 500,
-          }
-        }),
+        wallets,
+        isPending,
         isLoading: ref(false),
         formData: reactive(undefined),
         newWalletDio: ref(false),

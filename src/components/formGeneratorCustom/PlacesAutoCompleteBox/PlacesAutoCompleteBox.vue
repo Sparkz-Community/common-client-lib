@@ -94,6 +94,9 @@
         },
       },
     },
+    emits: [
+      'update:modelValue'
+    ],
     data() {
       return {
         newEditedAddress: {},

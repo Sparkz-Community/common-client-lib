@@ -181,6 +181,26 @@
           });
       }
 
+      const query = computed(() =>({
+        _id: {
+          $in: $lget(account, 'membership.members', []),
+        },
+        $select: ['_id', 'name', 'email', 'avatar'],
+      }));
+
+      const params = computed(() =>({
+        qid: `accountMembers-${$lget(account, '_id')}`,
+      }));
+
+      const {items: members} = useFindPaginate({
+        limit: 12,
+        model: Accounts,
+        qid: 'members',
+        infinite: true,
+        query,
+        params
+      });
+
       return {
         accountData,
         newMemberDialog,
@@ -190,21 +210,7 @@
         account,
         addMember,
         removeMember,
-        members: useFindPaginate({
-          limit: 12,
-          model: Accounts,
-          qid: 'members',
-          infinite: true,
-          query: {
-            _id: {
-              $in: $lget(account, 'membership.members', []),
-            },
-            $select: ['_id', 'name', 'email', 'avatar'],
-          },
-          params: {
-            qid: `accountMembers-${$lget(account, '_id')}`,
-          }
-        }),
+        members,
       };
     },
   };

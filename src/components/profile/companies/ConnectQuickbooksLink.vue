@@ -17,9 +17,6 @@
         },
       },
     },
-    data() {
-      return {};
-    },
     methods: {
       async getAuthLink() {
         let self = this;

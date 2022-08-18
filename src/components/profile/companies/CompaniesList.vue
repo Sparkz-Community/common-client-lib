@@ -1,7 +1,7 @@
 <template>
   <div :class="`${companies.length ? ($q.screen.sm || $q.screen.xs) ?'column': 'row': ''} q-gutter-lg q-pa-md`">
 
-    <add-company class="col" :value="value" :style="companies.length ? 'max-width: 450px;': 'max-width: 450px;'"/>
+    <add-company class="col" :model-value="value" :style="companies.length ? 'max-width: 450px;': 'max-width: 450px;'"/>
 
     <div class="col" v-for="company in companies" :key="$lget(company,'_id')">
       <div class="box column items-center justify-center q-pa-xl" style=" position: relative">
@@ -61,7 +61,7 @@
     name: 'companies-list',
     components: {AddCompany},
     props: {
-      value: {
+      modelValue: {
         type: Object,
         required: true,
       },
@@ -70,25 +70,25 @@
     setup(props) {
       let $lget = inject('$lget');
 
-      const accountQuery = computed(()=>{
+      const query = computed(()=>{
         return {
-          _id: {$in: $lget(props.value, ['account', 'quickbooks', 'connections'], [])}
+          _id: {$in: $lget(props.modelValue, ['account', 'quickbooks', 'connections'], [])}
         };
       });
 
-      const {items:companies, isPending} = useFindPaginate({
-        limit: 5,
-        qid: 'companies',
-        model: QuickbooksCompanies,
-        infinite: true,
-        query: {
-          ...accountQuery
+      const params = computed(() =>({
+        'quickbooks/companies_fJoinHookResolversQuery': {
+          accounts: true,
         },
-        params: {
-          'quickbooks/companies_fJoinHookResolversQuery': {
-            accounts: true,
-          },
-        }
+      }));
+
+      const {items:companies, isPending} = useFindPaginate({
+        limit: ref(5),
+        qid: ref('companies'),
+        model: QuickbooksCompanies,
+        infinite: ref(true),
+        query,
+        params
       });
       const  {items:accounts} =useFindPaginate({
         limit: 5,
@@ -109,7 +109,7 @@
       };
     },
     watch: {
-      'value.account': {
+      'modelValue.account': {
         immediate: true,
         deep: true,
         handler(newVal) {
@@ -120,7 +120,7 @@
         },
       },
       defaultConnection(newVal) {
-        let account = this.$lget(this.value, 'account');
+        let account = this.$lget(this.modelValue, 'account');
         if (account && newVal !== this.$lget(account, 'quickbooks.defaultConnection', 'defaultConnection')) {
           account.patch({
             data: {
@@ -212,7 +212,7 @@
       async remove(data) {
         this.$q.dialog({
           title: 'Confirm',
-          message: `Would you like to delete this company from your ${this.$lget(this.value, ['account', 'name'])} account?`,
+          message: `Would you like to delete this company from your ${this.$lget(this.modelValue, ['account', 'name'])} account?`,
           ok: {
             push: true,
             color: 'primary',
@@ -225,7 +225,7 @@
             await data.patch({
               data: {
                 $pull: {
-                  accounts: this.$lget(this.value, 'account._id'),
+                  accounts: this.$lget(this.modelValue, 'account._id'),
                 },
               },
             });

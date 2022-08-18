@@ -15,8 +15,8 @@
         </q-item-section>
 
         <q-item-section>
-          <q-item-label>{{ member.name }}</q-item-label>
-          <q-item-label caption lines="1">{{ member.email }}</q-item-label>
+          <q-item-label>{{ member?.name }}</q-item-label>
+          <q-item-label caption lines="1">{{ member?.email }}</q-item-label>
         </q-item-section>
 
         <q-item-section side>
@@ -26,7 +26,7 @@
                   name="fas fa-trash"
                   color="negative"
                   class="cursor-pointer"
-                  @click="removeMember(member._id)"/>
+                  @click="removeMember(member?._id)"/>
         </q-item-section>
       </q-item>
     </q-list>
@@ -42,7 +42,7 @@
         v-model="newMemberDialog"
         @saved="addMember"
         @close="newMemberDialog=false"
-        :filter-out="[account._id, ...account.membership.member]"
+        :filter-out="[account._id, ...account?.membership?.member]"
     />
 
 
@@ -193,10 +193,10 @@
       }));
 
       const {items: members} = useFindPaginate({
-        limit: 12,
+        limit: ref(12),
         model: Accounts,
-        qid: 'members',
-        infinite: true,
+        qid: ref('members'),
+        infinite: ref(true),
         query,
         params
       });

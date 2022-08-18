@@ -19,7 +19,7 @@
       ConnectQuickbooksLink,
     },
     props: {
-      value: {
+      modelValue: {
         type: Object,
         required: true,
       },

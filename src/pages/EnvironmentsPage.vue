@@ -8,8 +8,7 @@
                 :params="params"
                 :columns="columns"
                 :form-fields="formFields"
-                create-title="Environment"
-                @pagination-changed="setPagination">
+                create-title="Environment">
 
     <template v-slot:expand="props">
 
@@ -105,7 +104,7 @@
         <account-profile
           tab="wallets"
           v-if="$lget(props,['row','responsibleAccount'])"
-          :value="{account: getResponsibleAccount($lget(props,['row','responsibleAccount']))}"
+          :model-value="{account: getResponsibleAccount($lget(props,['row','responsibleAccount']))}"
           square
         />
 
@@ -280,7 +279,7 @@
         <account-profile
           tab="wallets"
           v-if="$lget(props,['row','responsibleAccount'])"
-          :value="{account: getResponsibleAccount($lget(props,['row','responsibleAccount']))}"
+          :model-value="{account: getResponsibleAccount($lget(props,['row','responsibleAccount']))}"
         />
         <div v-else class="row justify-around q-gutter-md q-pa-xl">
 
@@ -334,11 +333,17 @@
   import {date} from 'quasar';
   import FDataTable from '../components/common/molecules/feathers/FDataTable/FDataTable';
   import {capitalize, kebabize} from '../utils';
-  import {makeFindPaginateMixin} from '../';
-  import {mapGetters} from 'vuex';
+  import {useFindPaginate} from '../';
+  import {mapState} from 'pinia';
   import AccountFormDialog from '../components/profile/accounts/AccountFormDialog';
-  import {models} from '@feathersjs/vuex';
+  import {models} from 'feathers-pinia';
   import AccountProfile from '../components/profile/AccountProfile';
+  import {ref} from 'vue';
+  import {computed} from 'vue/dist/vue';
+
+  import useApplicationStore from '../store/services/applications';
+  import useIntegrationAuthStore from '../store/services/integrationAuths';
+  import useAccountStore from '../store/services/accounts';
 
   export default {
     name: 'environments-page',
@@ -348,66 +353,40 @@
       FDataTable,
       // DataTableTemplate
     },
-    mixins: [
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'applications',
-        name: 'applications',
-        qid: 'applications',
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'integration-auths',
-        name: 'integrationAuths',
-        qid: 'integrationAuths',
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'accounts',
-        name: 'accounts',
-        qid: 'accounts',
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-      makeFindPaginateMixin({
-        // limit: 12,
-        service: 'accounts',
-        name: 'accounts',
-        qid: 'accounts',
-        infinite: true,
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-            paginate: false,
-          };
-        },
-      }),
-    ],
+    setup() {
+      const params = computed(() => {
+        return {
+          debounce: 500,
+        };
+      });
+
+      const {items: applications} = useFindPaginate({
+        limit: ref(12),
+        model: useApplicationStore().Model,
+        qid: ref('applications'),
+        params,
+      });
+
+      const {items: integrationAuths} = useFindPaginate({
+        limit: ref(12),
+        model: useIntegrationAuthStore().Model,
+        qid: ref('integrationAuths'),
+        params,
+      });
+
+      const {items: accounts} = useFindPaginate({
+        limit: ref(12),
+        model: useAccountStore().Model,
+        qid: ref('accounts'),
+        params,
+      });
+
+      return {
+        applications,
+        integrationAuths,
+        accounts,
+      };
+    },
     data() {
       return {
         accountCardTabs: [
@@ -447,8 +426,8 @@
       };
     },
     computed: {
-      ...mapGetters('accounts', {
-        getResponsibleAccount: 'get',
+      ...mapState(useAccountStore, {
+        getResponsibleAccount: 'getFromStore',
       }),
 
       params() {
@@ -600,20 +579,6 @@
     },
     methods: {
       capitalize, kebabize,
-      setPagination(newVal) {
-        console.log('working: ', newVal.pagination);
-        this[`${this.$lget(newVal, 'service')}Limit`] = newVal.pagination.rowsPerPage === 0 ? this[`${this.$lget(newVal, 'service')}Total`] : newVal.pagination.rowsPerPage;
-        this[`${this.$lget(newVal, 'service')}CurrentPage`] = newVal.pagination.page;
-        this.pagination = newVal.pagination;
-
-        if (newVal.pagination.sortBy) {
-          this.sort = {[newVal.pagination.sortBy]: newVal.pagination.descending ? -1 : 1};
-        } else {
-          this.sort = {
-            createdAt: -1,
-          };
-        }
-      },
       formatDate(yourDate) {
         return date.formatDate(yourDate, 'DD-MM-YYYY hh:mm A');
       },

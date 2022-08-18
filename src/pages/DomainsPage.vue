@@ -100,7 +100,9 @@
   import {date} from 'quasar';
   import FDataTable from '../components/common/molecules/feathers/FDataTable/FDataTable';
   import {capitalize, kebabize} from '../utils';
-  import {makeFindPaginateMixin} from '../';
+  import {useFindPaginate} from '../';
+  import {computed, ref} from 'vue/dist/vue';
+  import useVInstances from '../store/services/vInstances';
 
   export default {
     name: 'domains-page',
@@ -108,22 +110,26 @@
       FDataTable,
       // DataTableTemplate
     },
-    mixins: [
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'v-instances',
-        name: 'vInstances',
-        qid: 'vInstances',
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-    ],
+    setup() {
+      const vInstancesStore = useVInstances();
+
+      const params = computed(() => {
+        return {
+          debounce: 500,
+        };
+      });
+      const {items: vInstances, pagination} = useFindPaginate({
+        limit: ref(12),
+        model: vInstancesStore.Model,
+        qid: ref('vInstances'),
+        params,
+      });
+
+      return {
+        vInstances,
+        pagination,
+      };
+    },
     computed: {
       columns() {
         return [

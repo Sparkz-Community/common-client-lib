@@ -15,8 +15,7 @@
                     }"
                 :columns="columns"
                 :form-fields="formFields"
-                create-title="Host"
-                @pagination-changed="setPagination"/>
+                create-title="Host"/>
 </template>
 
 <script>
@@ -24,7 +23,12 @@
   import {date} from 'quasar';
   import FDataTable from '../components/common/molecules/feathers/FDataTable/FDataTable';
   import {capitalize, kebabize} from '../utils';
-  import {makeFindPaginateMixin} from '../';
+  import {useFindPaginate} from '../';
+  import {computed, ref} from 'vue/dist/vue';
+
+  import useApplicationStore from '../store/services/applications';
+  import useDomainStore from '../store/services/domains';
+  import useEnvironmentStore from '../store/services/environments';
 
   export default {
     name: 'v-instances-page',
@@ -32,50 +36,38 @@
       FDataTable,
       // DataTableTemplate
     },
-    mixins: [
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'applications',
-        name: 'applications',
-        qid: 'applications',
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'domains',
-        name: 'domains',
-        qid: 'domains',
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'environments',
-        name: 'environments',
-        qid: 'environments',
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-    ],
+    setup() {
+      const params = computed(() => {
+        return {
+          debounce: 500,
+        };
+      });
+
+      const {items: applications} = useFindPaginate({
+        limit: ref(12),
+        model: useApplicationStore().Model,
+        qid: ref('applications'),
+        params,
+      });
+      const {items: domains} = useFindPaginate({
+        limit: ref(12),
+        model: useDomainStore().Model,
+        qid: ref('domains'),
+        params,
+      });
+      const {items: environments} = useFindPaginate({
+        limit: ref(12),
+        model: useEnvironmentStore().Model,
+        qid: ref('environments'),
+        params,
+      });
+
+      return {
+        applications,
+        domains,
+        environments,
+      };
+    },
     computed: {
       columns() {
         return [
@@ -224,20 +216,6 @@
     },
     methods: {
       capitalize, kebabize,
-      setPagination(newVal) {
-        console.log('working: ', newVal.pagination);
-        this[`${this.$lget(newVal, 'service')}Limit`] = newVal.pagination.rowsPerPage === 0 ? this[`${this.$lget(newVal, 'service')}Total`] : newVal.pagination.rowsPerPage;
-        this[`${this.$lget(newVal, 'service')}CurrentPage`] = newVal.pagination.page;
-        this.pagination = newVal.pagination;
-
-        if (newVal.pagination.sortBy) {
-          this.sort = {[newVal.pagination.sortBy]: newVal.pagination.descending ? -1 : 1};
-        } else {
-          this.sort = {
-            createdAt: -1,
-          };
-        }
-      },
       formatDate(yourDate) {
         return date.formatDate(yourDate, 'DD-MM-YYYY hh:mm A');
       },

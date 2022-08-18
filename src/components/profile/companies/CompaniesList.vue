@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <q-inner-loading :showing="isFindCompaniesPending">
+    <q-inner-loading :showing="isPending">
       <q-spinner-gears size="50px" color="primary"/>
     </q-inner-loading>
 
@@ -50,7 +50,11 @@
 
 <script>
   import AddCompany from './AddCompany';
-  import {makeFindPaginateMixin} from '../../../';
+  import {useFindPaginate} from '../../../';
+  import {reactive, ref} from 'vue/dist/vue';
+  import {computed, inject} from 'vue';
+  import {Accounts} from '../../../store/services/accounts';
+  import {QuickbooksCompanies} from '../../../store/services/quickbookCompanies';
   // import {models} from '@feathersjs/vuex';
 
   export default {
@@ -62,55 +66,46 @@
         required: true,
       },
     },
-    mixins: [
-      makeFindPaginateMixin({
+
+    setup(props) {
+      let $lget = inject('$lget');
+
+      const accountQuery = computed(()=>{
+        return {
+          _id: {$in: $lget(props.value, ['account', 'quickbooks', 'connections'], [])}
+        };
+      });
+
+      const {items:companies, isPending} = useFindPaginate({
         limit: 5,
-        service: 'companies',
-        name: 'companies',
         qid: 'companies',
+        model: QuickbooksCompanies,
         infinite: true,
-        query() {
-          const accountQuery = {_id: {$in: this.$lget(this.value, ['account', 'quickbooks', 'connections'], [])}};
-          return {
-            ...accountQuery,
-          };
+        query: {
+          ...accountQuery
         },
-        params() {
-          return {
-            'quickbooks/companies_fJoinHookResolversQuery': {
-              accounts: true,
-            },
-          };
-        },
-      }),
-      makeFindPaginateMixin({
+        params: {
+          'quickbooks/companies_fJoinHookResolversQuery': {
+            accounts: true,
+          },
+        }
+      });
+      const  {items:accounts} =useFindPaginate({
         limit: 5,
-        service: 'accounts',
-        name: 'accounts',
         qid: 'accounts',
+        model: Accounts,
         infinite: true,
-        query() {
-          return {
-            // ...this.localQuery
-          };
-        },
-        params() {
-          return {
-            // 'accounts_fJoinHookResolversQuery': {
-            //   quickbooksConnections: true,
-            // },
-          };
-        },
-      }),
-    ],
-    data() {
+      });
+
       return {
-        localCompaniesQuery: {},
-        openEditCompany: false,
-        formData: undefined,
-        valid: false,
-        sending: false,
-        defaultConnection: undefined,
+        accounts,
+        companies,
+        isPending,
+        openEditCompany: ref(false),
+        formData: reactive(undefined),
+        valid: ref(false),
+        sending: ref(false),
+        defaultConnection: ref(undefined)
       };
     },
     watch: {

@@ -1,49 +1,29 @@
-import {diff, lodash} from '../../index';
+import { defineStore, BaseModel } from 'feathers-pinia';
+import {hookCustomizer,lodash} from '../../';
 
 const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
 
-
-Array.prototype.insert = function (index, ...value) {
-  this.splice(index, 0, ...value);
-  return this;
-};
-
-function hookCustomizer(obj_value, src_value) {
-  if (Array.isArray(obj_value)) {
-    let list = [...obj_value];
-    for (let item of src_value) {
-      let set_index = $lget(item, 'index', undefined);
-      let set_value = $lget(item, 'value', undefined);
-      if (item instanceof Object && !Array.isArray(item) && set_index !== undefined && set_value !== undefined) {
-        list.insert(set_index, set_value);
-      } else {
-        list.push(item);
-      }
-    }
-    return list;
-  }
-}
 
 
 export default async (
   {
     FeathersClient,
+    idField= '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
     extend_instance_defaults={},
     state = {},
     getters = {},
-    mutations = {},
     actions = {},
   } = {}) => {
 
   if ($lisNil(FeathersClient)) {
     throw Error('FeathersClient argument must be set');
   }
+
+
   const {
     default: feathersClient,
-    makeServicePlugin,
-    BaseModel,
   } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
 
   class Domains extends BaseModel {
@@ -51,19 +31,6 @@ export default async (
       super(data, options);
     }
   }
-
-  // Required for $FeathersVuex plugin to work after production transpile.
-  Domains.modelName = 'Domains';
-
-  Domains.diffOnPatch = function (data) {
-    // console.log('diffOnPatch data', data);
-    if (data['_id']) {
-      const originalObject = Domains.store.state['domains'].keyedById[data['_id']];
-      return diff(originalObject, data);
-    } else {
-      return data;
-    }
-  };
 
   // Define default properties here
   Domains.instanceDefaults = function () {
@@ -95,13 +62,13 @@ export default async (
   }
 
 
-  const servicePlugin = makeServicePlugin({
+  const useDomains= defineStore({
     Model,
-    service: feathersClient.service(servicePath),
     servicePath,
+    clients: { api: feathersClient },
+    idField,
     state,
     getters,
-    mutations,
     actions,
   });
 
@@ -143,7 +110,7 @@ export default async (
     },
   }, extend_hooks, hookCustomizer));
 
-  return servicePlugin;
+  return useDomains;
 
 };
 

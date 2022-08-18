@@ -119,6 +119,9 @@
         type: Object,
       },
     },
+    emits: [
+      'pagination-changed'
+    ],
     data() {
       return {
         loading: false,

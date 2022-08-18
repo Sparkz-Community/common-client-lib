@@ -29,7 +29,7 @@
       <template v-slot:top-right="scope">
         <div class="row q-gutter-sm q-mx-md items-center justify-center">
 
-          <q-input   dense debounce="300" :value="filter" @input="filterHandler" placeholder="Search">
+          <q-input   dense debounce="300" :model-value="filter" @update:model-value="filterHandler" placeholder="Search">
             <template v-slot:append>
               <q-icon name="search"/>
             </template>
@@ -69,6 +69,10 @@
         default: false,
       },
     },
+
+    emits: [
+      'filter',
+    ],
 
     data () {
       return {

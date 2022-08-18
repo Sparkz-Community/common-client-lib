@@ -1,4 +1,5 @@
-import {diff, lodash} from '../../index';
+import { defineStore, BaseModel } from 'feathers-pinia';
+import {hookCustomizer,lodash} from '../../';
 
 const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
 
@@ -8,42 +9,29 @@ Array.prototype.insert = function (index, ...value) {
   return this;
 };
 
-function hookCustomizer(obj_value, src_value) {
-  if (Array.isArray(obj_value)) {
-    let list = [...obj_value];
-    for (let item of src_value) {
-      let set_index = $lget(item, 'index', undefined);
-      let set_value = $lget(item, 'value', undefined);
-      if (item instanceof Object && !Array.isArray(item) && set_index !== undefined && set_value !== undefined) {
-        list.insert(set_index, set_value);
-      } else {
-        list.push(item);
-      }
-    }
-    return list;
-  }
-}
+
 
 export default async (
   {
     FeathersClient,
+    idField= '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
     extend_instance_defaults={},
-    state = {},
+    state =() => ({}),
     getters = {},
-    mutations = {},
     actions = {},
   } = {}) => {
 
   if ($lisNil(FeathersClient)) {
     throw Error('FeathersClient argument must be set');
   }
+
+
   const {
     default: feathersClient,
-    makeServicePlugin,
-    BaseModel,
   } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
+
 
   class Accounts extends BaseModel {
     constructor(data, options) {
@@ -51,18 +39,6 @@ export default async (
     }
   }
 
-  // Required for $FeathersVuex plugin to work after production transpile.
-  Accounts.modelName = 'Accounts';
-
-  Accounts.diffOnPatch = function (data) {
-    // console.log('diffOnPatch data', data);
-    if (data['_id']) {
-      const originalObject = Accounts.store.state['accounts'].keyedById[data['_id']];
-      return diff(originalObject, data);
-    } else {
-      return data;
-    }
-  };
 
   // Define default properties here
   Accounts.instanceDefaults = function () {
@@ -70,15 +46,80 @@ export default async (
       name: undefined,
       email: undefined,
       description: undefined,
-      phone: undefined,
-      avatar: undefined,
-      profileImg: undefined,
-      address: undefined,
+      avatar: {},
+      banner: {},
+      profileImg: '',
       addresses: [],
       phones: [],
       socialLinks: [],
+      logins: {
+        ownedBy: [],
+        members: [],
+      },
       images: [],
-      peoples: [],
+      ownership: {
+        owners: undefined,
+        owns: undefined,
+      },
+      membership: {
+        members: undefined,
+        membersOf: undefined,
+      },
+      authOwnerId: undefined,
+      authModelName: undefined,
+      responsibleForEnvironments: [],
+      settings: {
+        theme: undefined,
+        hosts: undefined,
+        instances: undefined,
+        applications: undefined,
+        domains: undefined,
+        environments: undefined,
+        accounts: undefined,
+      },
+      participant: undefined,
+      deleted: undefined,
+      deletedAt: undefined,
+      applications: [],
+      environment: undefined,
+      createdBy: {
+        account: undefined,
+        user: undefined,
+        login: undefined,
+        integration: undefined,
+        fingerprint: undefined,
+      },
+      updatedBy: {
+        account: undefined,
+        user: undefined,
+        login: undefined,
+        integration: undefined,
+        fingerprint: undefined,
+      },
+      updatedByHistory: {
+        account: undefined,
+        user: undefined,
+        login: undefined,
+        integration: undefined,
+        fingerprint: undefined,
+        updatedAt: undefined,
+      },
+      external: {
+        createdBySource: {
+          id: undefined,
+          Model: undefined,
+        },
+        updatedBySource: {
+          id: undefined,
+          Model: undefined,
+        },
+        updatedBySourceHistory: {
+          updatedBy: undefined,
+          updatedByHistoryModel: undefined,
+          updatedAt: undefined,
+        },
+        meta: undefined,
+      },
       ...extend_instance_defaults
     };
   };
@@ -102,14 +143,13 @@ export default async (
     Model = extend_class_fn(Accounts);
   }
 
-
-  const servicePlugin = makeServicePlugin({
+  const useAccounts = defineStore({
     Model,
-    service: feathersClient.service(servicePath),
     servicePath,
+    clients: { api: feathersClient },
+    idField,
     state,
     getters,
-    mutations,
     actions,
   });
 
@@ -151,7 +191,7 @@ export default async (
     },
   }, extend_hooks, hookCustomizer));
 
-  return servicePlugin;
+  return useAccounts;
 
 };
 

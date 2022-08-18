@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-bind="$attrs" seamless position="top" persistent transition-show="scale"
+  <q-dialog v-bind="attrs" seamless position="top" persistent transition-show="scale"
             transition-hide="scale">
     <q-card style="width: 350px">
       <q-linear-progress :value="1" color="primary"/>
@@ -44,10 +44,23 @@
     props: {
       secretKey: String,
     },
+    emits: ['close'],
     data() {
       return {
         copied: false,
       };
+    },
+    computed: {
+      attrs () {
+        let newVal = {...this.$attrs};
+        // attrs defaults
+        this.$lset(newVal, 'attrs.seamless', this.$lget(newVal, 'attrs.seamless', true));
+        this.$lset(newVal, 'attrs.position', this.$lget(newVal, 'attrs.position', 'top'));
+        this.$lset(newVal, 'attrs.persistent', this.$lget(newVal, 'attrs.persistent', true));
+        this.$lset(newVal, 'attrs.transition-show', this.$lget(newVal, 'attrs.transition-show', 'scale'));
+        this.$lset(newVal, 'attrs.transition-hide', this.$lget(newVal, 'attrs.transition-hide', 'scale'));
+        return newVal;
+      }
     },
     methods: {
       copy() {

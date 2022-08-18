@@ -2,13 +2,10 @@
   <q-avatar
     :size="sizeIn"
     :class="`${avatar && !bgIn ? 'bg-transparent' : dark ? bgIn ? 'bg-' + bgIn + ' text-dark' : 'bg-light' + ' text-dark' : bgIn ? 'bg-' + bgIn + ' text-light' : 'bg-dark' + ' text-light'}`"
-    :style="{
-      borderRadius: square ? '4px' : '',
-      boxShadow: bordered ? `0 0 0 3px ${bgIn ? 'var(--q-color-' + bgIn + ')' : dark ? '#fafafa' : '#101010'}` : 'none', ...$attrs.divStyle
-    }"
+    :style="attrs.divStyle"
   >
     <template v-if="!$lisEmpty(avatar)" >
-      <img :style="{objectFit: 'cover', ...$attrs.imageStyle}" :src="avatar">
+      <img :style="attrs.imageStyle" :src="avatar">
     </template>
     <template v-else-if="icon">
       <span>
@@ -56,12 +53,24 @@
       service: String,
       dark: Boolean,
       sizeIn: String,
-      value: { required: true },
+      modelValue: { required: true },
       bgIn: String,
       bordered: Boolean
     },
     watch: {},
     computed: {
+      attrs() {
+        let newVal = {...this.$attrs};
+        // div-style defaults
+        this.$lset(newVal, 'attrs.divStyle.borderRadius', this.$lget(newVal, 'attrs.divStyle.borderRadius', this.square ? '4px' : ''));
+        this.$lset(newVal, 'attrs.divStyle.boxShadow', this.$lget(newVal, 'attrs.divStyle.boxShadow', this.bordered ? `0 0 0 3px ${this.bgIn ? 'var(--q-color-' + this.bgIn + ')' : this.dark ? '#fafafa' : '#101010'}` : 'none'));
+
+        // image-style defaults
+        this.$lset(newVal, 'attrs.imageStyle.objectFit', this.$lget(newVal, 'attrs.imageStyle.objectFit', 'cover'));
+
+        return newVal;
+      },
+
       character(){
         let p = this.$lget(this.val, this.namePath, this.$lget(this.val, this.backupNamePath));
         if(p) return p.charAt(0);

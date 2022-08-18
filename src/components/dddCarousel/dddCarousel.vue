@@ -149,6 +149,10 @@
         },
       },
     },
+    emits: [
+      'update:pause',
+      'update:rotateSpeed'
+    ],
     data() {
       return {
         localRotateSpeed: this.rotateSpeed,

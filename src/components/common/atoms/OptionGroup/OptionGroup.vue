@@ -8,7 +8,7 @@
   export default {
     name: 'Optiongroup',
     props: {
-      value: {
+      modelValue: {
         required: true,
       },
       options: {
@@ -37,11 +37,15 @@
 
     },
 
+    emits: [
+      'update:modelValue',
+    ],
+
     computed: {
       model() {
-        return Array.isArray(this.value)
-          ? this.value.slice()
-          : this.value;
+        return Array.isArray(this.modelValue)
+          ? this.modelValue.slice()
+          : this.modelValue;
       },
 
       classes() {
@@ -66,12 +70,12 @@
     },
     methods: {
       __update (value) {
-        this.$emit('input', value);
+        this.$emit('update:modelValue', value);
       }
     },
 
     created () {
-      const isArray = Array.isArray(this.value);
+      const isArray = Array.isArray(this.modelValue);
 
       if (this.type === 'radio') {
         if (isArray) {

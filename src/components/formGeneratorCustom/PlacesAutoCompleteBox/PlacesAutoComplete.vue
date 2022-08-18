@@ -53,6 +53,10 @@
         validator: value => ['long_name', 'short_name'].indexOf(value) >= 0,
       },
     },
+    emits: [
+      'update:modelValue',
+      'error'
+    ],
     data() {
       return {
         input: null,

@@ -37,11 +37,11 @@
              @click="newOwnerDialog = true"/>
     </div>
     <account-form-dialog
-        select-existing
-        v-model="newOwnerDialog"
-        @saved="addOwner"
-        @close="newOwnerDialog = false"
-        :filter-out="[account._id, ...ownerIds]"
+      select-existing
+      v-model="newOwnerDialog"
+      @saved="addOwner"
+      @close="newOwnerDialog = false"
+      :filter-out="[account._id, ...ownerIds]"
     />
   </div>
 </template>
@@ -89,7 +89,7 @@
       let account = computed(() => $lget(accountData, 'account', {}));
       let ownerIds = computed(() => $lget(account, 'ownership.owners', []).map(i => i.id));
 
-      function addOwner (account) {
+      function addOwner(account) {
         if (account !== null) {
           isAdding.value = true;
 
@@ -137,7 +137,7 @@
         }
       }
 
-      function removeOwner (accountId) {
+      function removeOwner(accountId) {
         isDeleting.value = true;
         let newOwners = $lget(accountData, 'account.ownership.owners', []).filter(obj => {
           return obj.id !== accountId;
@@ -179,22 +179,27 @@
           });
       }
 
+      const query = computed(() => ({
+        _id: {
+          $in: ownerIds,
+        },
+        $select: ['_id', 'name', 'email', 'avatar'],
+      }));
+
+      const params = computed(()=>({
+        qid: `accountOwners-${$lget(account, '_id')}`,
+      }));
+
+      const {items: owners} = useFindPaginate({
+        limit: 12,
+        model: Accounts,
+        qid: 'owners',
+        infinite: true,
+        query,
+        params,
+      });
       return {
-        owners: useFindPaginate({
-          limit: 12,
-          model: Accounts,
-          qid: 'owners',
-          infinite: true,
-          query: {
-            _id: {
-              $in: ownerIds,
-            },
-            $select: ['_id', 'name', 'email', 'avatar'],
-          },
-          params: {
-            qid: `accountOwners-${$lget(account, '_id')}`,
-          },
-        }),
+        owners,
         accountData,
         newOwnerDialog,
         isDeleting,

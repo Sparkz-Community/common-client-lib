@@ -99,8 +99,10 @@
   import {date} from 'quasar';
   import FDataTable from '../components/common/molecules/feathers/FDataTable/FDataTable';
   import {capitalize, kebabize} from '../utils';
-  import {makeFindPaginateMixin} from '../';
+  import {useFindPaginate} from '../';
   import SelectOrAdd from '../components/formGeneratorCustom/SelectOrAdd';
+  import {computed, ref} from 'vue';
+  import {IntegrationAuths} from '@/store/services/integrationAuths';
 
   export default {
     name: 'integrations-page',
@@ -108,36 +110,40 @@
       FDataTable,
       // DataTableTemplate
     },
-    mixins: [
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'integration-auths',
-        name: 'integrationAuths',
-        qid: 'integrationAuths',
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'environments',
-        name: 'environments',
-        qid: 'environments',
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-    ],
+    setup() {
+
+      const integrationAuthsQuery = computed(()=>({}));
+      const integrationAuthsParams = computed(() =>({
+        debounce: 500,
+      }));
+
+      let {items: integrationAuths} = useFindPaginate({
+        // limit: toRef(props, 'limit')
+        limit: ref(12),
+        model: IntegrationAuths,
+        qid: ref('integrationAuths'),
+        query:integrationAuthsQuery,
+        params:integrationAuthsParams
+      });
+
+      const environmentsQuery = computed(()=>({}));
+      const environmentsParams = computed(() =>({
+        debounce: 500,
+      }));
+      let {items: environments} = useFindPaginate({
+        // limit: toRef(props, 'limit')
+        limit: ref(12),
+        model: IntegrationAuths,
+        qid: ref('integrationAuths'),
+        query: environmentsQuery,
+        params: environmentsParams
+      });
+      return {
+        integrationAuths,
+        environments
+      };
+    },
+
     computed: {
       columns() {
         return [

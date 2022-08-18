@@ -191,10 +191,10 @@
       }));
 
       const {items: owners} = useFindPaginate({
-        limit: 12,
+        limit: ref(12),
         model: Accounts,
-        qid: 'owners',
-        infinite: true,
+        qid: ref('owners'),
+        infinite: ref(true),
         query,
         params,
       });

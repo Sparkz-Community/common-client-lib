@@ -100,7 +100,9 @@
   import {date} from 'quasar';
   import FDataTable from '../components/common/molecules/feathers/FDataTable/FDataTable';
   import {capitalize, kebabize} from '../utils';
-  import {makeFindPaginateMixin} from '../';
+  import {useFindPaginate} from '../';
+  import {computed, ref} from 'vue/dist/vue';
+  import {Instances} from '../store/services/instances';
 
   export default {
     name: 'v-instances-page',
@@ -108,22 +110,26 @@
       FDataTable,
       // DataTableTemplate
     },
-    mixins: [
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'instances',
-        name: 'instances',
-        qid: 'instances',
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-    ],
+    setup() {
+
+      const query = computed(()=>({}));
+      const params = computed(() =>({
+        debounce: 500,
+      }));
+
+      let {items: instances} = useFindPaginate({
+        // limit: toRef(props, 'limit')
+        limit: ref(12),
+        model: Instances,
+        qid: ref('integrationAuths'),
+        query,
+        params
+      });
+      return {
+        instances
+      };
+    },
+
     computed: {
       columns() {
         return [

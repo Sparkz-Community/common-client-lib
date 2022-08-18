@@ -26,8 +26,8 @@
 
 <script>
   import {mapState, mapActions} from 'pinia';
-  // import usePlacesAutoComplete from 'stores/services/places-auto-complete';
-  // import useGeocode from 'stores/services/geocode';
+  import usePlacesAutoComplete from '../../../store/services/places-auto-complete';
+  import useGeocode from '../../../store/services/geocode';
   export default {
     name: 'PlacesAutoComplete',
     props: {
@@ -122,9 +122,9 @@
     },
     methods: {
       // ...mapMutations('places-auto-complete', {clearAddresses: 'clearAll'}),
-      ...mapActions('places-auto-complete', {clearAddresses: 'removeFromStore'}),
-      ...mapActions('places-auto-complete', {findAddresses: 'find'}),
-      ...mapActions('geocode', {findgeocoded: 'find'}),
+      ...mapActions(usePlacesAutoComplete, {clearAddresses: 'removeFromStore'}),
+      ...mapActions(usePlacesAutoComplete, {findAddresses: 'find'}),
+      ...mapActions(useGeocode, {findgeocoded: 'find'}),
       clearAll() {
         this.addresses.forEach(item => this.clearAddresses(item));
       },

@@ -99,7 +99,7 @@
   import BtnPaginator from '../pagination/BtnPaginator';
   import DefaultItem from '../avatars/DefaultItem';
   import DefaultChip from '../avatars/DefaultChip';
-  import {useFindPaginate} from '@';
+  import {useFindPaginate} from '../../../../';
   import {toRef} from 'vue';
   import {computed} from 'vue/dist/vue';
 
@@ -115,7 +115,7 @@
           qid: props.qid,
         };
       });
-      const {items: options, isPending, pagination, toPage, latestQuery, paginationData} = useFindPaginate({
+      const {items: options, isPending, toPage, latestQuery, paginationData} = useFindPaginate({
         infinite: toRef(props, 'infinite'),
         model: props.model,
         query: toRef(props, 'query'),
@@ -126,7 +126,6 @@
       return {
         options,
         isPending,
-        pagination,
         toPage,
         latestQuery,
         paginationData

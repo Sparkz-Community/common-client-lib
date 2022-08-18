@@ -9,27 +9,7 @@
         <q-radio size="xl" v-model="formData.walletFor" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
                  val="individual" label="An Individual"/>
       </div>
-      <!--      <q-input
-              v-model="formData.email"
-              label="BUSINESS EMAIL"
-              type="email"
-              :debounce="0"
-              filled
-              outline
-              dense
-              bg-color="grey-2"
-              input-class="text-grey-8 text-caption"
-              label-color="grey-6"
-              clearable
-              clear-icon="close"
-              lazy-rules="ondemand"
-              :rules="['email']"
-            >
-              <template #append>
-                <q-checkbox class="text-caption" v-model="sameAsAccountz" label="same as account's" :true-value="true" :false-value="false"/>
-              </template>
-            </q-input>
-      -->
+
     </q-card-section>
     <q-card-section>
       <q-slide-transition>

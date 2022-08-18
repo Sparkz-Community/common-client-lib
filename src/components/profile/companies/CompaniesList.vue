@@ -55,7 +55,7 @@
   import {computed, inject} from 'vue';
   import {Accounts} from '../../../store/services/accounts';
   import {QuickbooksCompanies} from '../../../store/services/quickbookCompanies';
-  // import {models} from '@feathersjs/vuex';
+
 
   export default {
     name: 'companies-list',

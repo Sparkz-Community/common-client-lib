@@ -45,6 +45,7 @@
   import {useFindPaginate} from '../../';
   import {reactive, ref} from 'vue';
   import {models} from 'feathers-pinia';
+  import useAccounts from '../../store/services/accounts';
 
   export default {
     name: 'my-wallets',
@@ -95,7 +96,7 @@
       },
     },
     methods: {
-      ...mapActions('accounts', {
+      ...mapActions(useAccounts, {
         patchAccount: 'patch',
       }),
       openEditWalletDialog(value) {

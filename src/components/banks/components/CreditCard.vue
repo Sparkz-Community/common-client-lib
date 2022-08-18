@@ -49,105 +49,12 @@
   </div>
 </template>
 
-<!--<script>
-  import validator from 'card-validator';
-
-  export default {
-    name: 'credit-card',
-    data() {
-      return {
-        width: null,
-        isFocused: false,
-        focusedElement: null,
-        previousValue: null,
-        showSecurityFields: false,
-        brand: 'fas fa-credit-card',
-        card: {
-          brand: null,
-          number: null,
-          expiration: null,
-          cvc: null,
-          postalCode: null,
-        },
-      };
-    },
-    watch: {
-      card: {
-        deep: true,
-        handler(newVal) {
-          const numberValidation = validator.number(newVal.number);
-          if (numberValidation.card) {
-            switch (numberValidation.card.type) {
-              case 'jcb':
-                this.brand = 'fab fa-cc-jcb';
-                break;
-              case 'visa':
-                this.brand = 'fab fa-cc-visa';
-                break;
-              case 'american-express':
-                this.brand = 'fab fa-cc-amex';
-                break;
-              case 'diners-club':
-                this.brand = 'fab fa-cc-diners-club';
-                break;
-              case 'discover':
-                this.brand = 'fab fa-cc-discover';
-                break;
-              case 'mastercard':
-                this.brand = 'fab fa-cc-mastercard';
-                break;
-              default:
-                this.brand = 'far fa-credit-card';
-            }
-          } else {
-            this.brand = 'fas fa-credit-card';
-          }
-
-        },
-      },
-    },
-    updated() {
-      if(this.validCard){
-        this.$emit('tokenize',this.card);
-      }
-    },
-    computed: {
-      validCard() {
-        const validCardNo = validator.number(this.card.number).isValid;
-        const validCardExpDate = validator.expirationDate(this.card.expiration).isValid;
-        const validCardCVC = validator.cvv(this.card.cvc).isValid;
-        const validPostalCode = validator.postalCode(this.card.postalCode).isValid;
-        return validCardNo && validCardExpDate && validCardCVC && validPostalCode;
-      },
-    },
-    methods: {
-      validateCardNo(value) {
-        return validator.number(value).isPotentiallyValid;
-      },
-      validateCvc(value) {
-        return validator.cvv(value).isValid;
-      },
-      validatePostalCode(value) {
-        return validator.postalCode(value).isValid;
-      },
-      validateExpirationDate(value) {
-        return validator.expirationDate(value).isValid;
-      },
-    },
-  };
-</script>-->
 <script setup>
   import validator from 'card-validator';
   import {computed, onUpdated, reactive, ref, watch, defineEmits} from 'vue';
 
   const emit = defineEmits(['tokenize']);
 
-  // the data
-  // let width = ref(null);
-  // let isFocused = ref(false);
-  // let focusedElement = ref(null);
-  // let previousValue = ref(null);
-  // let showSecurityFields = ref(false);
   let brand = ref('fas fa-credit-card');
   let card = reactive({
     brand: null,

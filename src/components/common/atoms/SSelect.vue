@@ -1,9 +1,9 @@
 <template>
-<q-select
-     @update:model-value="$emit('update:modelValue', $lget($event,'modelValue'))"
-     @input-value="filterFn"
-     v-bind="attrs"
-   >
+  <q-select
+    @update:model-value="$emit('update:modelValue', $lget($event,'modelValue'))"
+    @input-value="filterFn"
+    v-bind="attrs"
+  >
 
     <template #after-options>
       <slot name="after-options" :loadMore="loadMore" :more="hasMore">
@@ -13,10 +13,10 @@
       </slot>
     </template>
 
-     <template  v-for="(_, slot) of $slots" v-slot:[slot]="scope">
-       <slot :name="slot" v-bind="scope" />
-     </template>
-   </q-select>
+    <template  v-for="(_, slot) of $slots" v-slot:[slot]="scope">
+      <slot :name="slot" v-bind="scope" />
+    </template>
+  </q-select>
 
 </template>
 

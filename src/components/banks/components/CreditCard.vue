@@ -201,7 +201,7 @@
     return validCardNo && validCardExpDate && validCardCVC && validPostalCode;
   });
 
-  //lyfe cycle hook
+  //life cycle hook
   onUpdated(function (){
     if(validCard.value){
       emit('tokenize',card);

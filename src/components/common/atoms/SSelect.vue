@@ -36,6 +36,8 @@
   import {v4 as uuidv4} from 'uuid';
   // import DefaultItem from '../../common/atoms/avatars/DefaultItem';
   import {isEmpty} from '../../../utils';
+  import {useFindPaginate} from '@';
+  import {toRef} from 'vue/dist/vue';
 
   export default {
     name: 's-select',
@@ -106,12 +108,7 @@
       }),*/
       makeFindPaginateMixin({
         name: 'options',
-        infinite() {
-          return this.infinite;
-        },
-        service() {
-          return this.service;
-        },
+
         query() {
           console.log('hehe....',this.query);
           return this.query;
@@ -124,6 +121,19 @@
         }
       })
     ],
+    setup(props) {
+      return {
+        options: useFindPaginate({
+          limit: toRef(props, 'limit'),
+          skip: toRef(props, 'skip'),
+          model: props.model,
+          query: toRef(props, 'query'),
+          params: toRef(props, 'skip'),
+          qid: toRef(props, 'qid'),
+          infinite: toRef(props, 'infinite'),
+        })
+      };
+    },
     data(){
       return {
         query: this.queryProps,

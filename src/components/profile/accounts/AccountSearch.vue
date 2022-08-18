@@ -94,17 +94,19 @@
         return queryD;
       });
 
+      const {items: accounts} = useFindPaginate({
+        limit: 6,
+        model: Accounts,
+        qid: 'searchAccounts',
+        infinite: true,
+        query,
+        params: {
+          debounce: 500,
+        }
+      });
+
       return {
-        accounts: useFindPaginate({
-          limit: 6,
-          model: Accounts,
-          qid: 'searchAccounts',
-          infinite: true,
-          query,
-          params: {
-            debounce: 500,
-          }
-        }),
+        accounts,
       };
     },
     data() {

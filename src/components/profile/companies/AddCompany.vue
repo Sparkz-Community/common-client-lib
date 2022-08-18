@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import {models} from '@feathersjs/vuex';
+  import {models} from 'feathers-pinia';
   import ConnectQuickbooksLink from './ConnectQuickbooksLink';
 
   export default {

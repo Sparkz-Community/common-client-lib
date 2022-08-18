@@ -65,6 +65,9 @@
         },
       },
     },
+    emits: [
+      'update:modelValue',
+    ],
     setup(props) {
       let search = ref('');
 

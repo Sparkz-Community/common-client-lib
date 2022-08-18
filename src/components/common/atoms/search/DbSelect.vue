@@ -95,26 +95,41 @@
 </template>
 
 <script>
-  import {inputMixin,queryMixin} from '../../../../mixins';
+  import {inputMixin, queryMixin} from '../../../../mixins';
   import BtnPaginator from '../pagination/BtnPaginator';
   import DefaultItem from '../avatars/DefaultItem';
   import DefaultChip from '../avatars/DefaultChip';
   import {useFindPaginate} from '@';
+  import {toRef} from 'vue';
+  import {computed} from 'vue/dist/vue';
 
-  const { v4: uuidv4 } = require('uuid');
+  const {v4: uuidv4} = require('uuid');
 
   export default {
     name: 'DbSelect',
-    components: { DefaultChip, DefaultItem, BtnPaginator },
+    components: {DefaultChip, DefaultItem, BtnPaginator},
     setup(props) {
+      const params = computed(() => {
+        return {
+          ...props.params,
+          qid: props.qid,
+        };
+      });
+      const {items: options, isPending, pagination, toPage, latestQuery, paginationData} = useFindPaginate({
+        infinite: toRef(props, 'infinite'),
+        model: props.model,
+        query: toRef(props, 'query'),
+        // query: selectQStatic,
+        params,
+      });
+
       return {
-        options: useFindPaginate({
-          infinite: props.infinite,
-          model: props.model,
-          query: props.query,
-          // query: selectQStatic,
-          params: {...props.params, qid: props.qid},
-        }),
+        options,
+        isPending,
+        pagination,
+        toPage,
+        latestQuery,
+        paginationData
       };
     },
     mixins: [
@@ -129,7 +144,7 @@
         },
         idPath() {
           return this.optionValue ? this.optionValue : '_id';
-        }
+        },
       }),
       queryMixin({
         name: 'selectQ',
@@ -139,22 +154,22 @@
         },
         search() {
           return this.searchInput;
-        }
+        },
       }),
     ],
     props: {
-      select: { type: Boolean, default: true },
-      placeholder: { type:String, default: ''},
+      select: {type: Boolean, default: true},
+      placeholder: {type: String, default: ''},
       defaults: Boolean,
-      pagination: { type: Boolean, default: true },
-      paginationTop: { type: Boolean },
-      modelValue: { required: true },
-      limit: { type: Number, default: 5 },
+      pagination: {type: Boolean, default: true},
+      paginationTop: {type: Boolean},
+      modelValue: {required: true},
+      limit: {type: Number, default: 5},
       infinite: Boolean,
       multiple: Boolean,
       emitValue: Boolean,
-      optionValue: { type: String, default: '_id' },
-      model: { type: Object, required: true },
+      optionValue: {type: String, default: '_id'},
+      model: {type: Object, required: true},
       query: {
         type: Object,
         default: () => {
@@ -167,7 +182,7 @@
           return {};
         },
       },
-      qid: { type: String, default: uuidv4 },
+      qid: {type: String, default: uuidv4},
     },
     emits: [
       'total',
@@ -186,20 +201,20 @@
           if (newVal) {
             this.itmesLimit = newVal;
           }
-        }
+        },
       },
       itemsTotal: {
         immediate: true,
         handler(newVal) {
           this.$emit('total', newVal);
-        }
+        },
       },
       isFindItemsPending: {
         immediate: true,
         handler(newVal) {
           this.$emit('loading', newVal);
-        }
-      }
+        },
+      },
     },
     computed: {
       attrs() {
@@ -228,7 +243,7 @@
       },
       hasMore() {
         return this.itemsTotal > (this.itemsSkip + this.items.length);
-      }
+      },
     },
     methods: {
       loadMore() {
@@ -250,10 +265,10 @@
         }
       },
       setSearch(val) {
-        console.log('kKkKkK',this.itemsTotal);
+        console.log('kKkKkK', this.itemsTotal);
         this.searchInput = val;
-      }
-    }
+      },
+    },
   };
 </script>
 

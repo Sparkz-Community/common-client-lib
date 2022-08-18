@@ -25,6 +25,7 @@
   // import DefaultItem from '../../common/atoms/avatars/DefaultItem';
   import {isEmpty} from '../../../utils';
   import {useFindPaginate} from '../../../';
+  import {computed, toRef} from 'vue';
 
   export default {
     name: 's-select',
@@ -86,13 +87,25 @@
     ],
 
     setup(props) {
+      const params = computed(() => {
+        return {
+          ...props.params,
+          qid: props.qid,
+        };
+      });
+      const {items: options, isPending, pagination, toPage, latestQuery, paginationData} = useFindPaginate({
+        infinite: toRef(props, 'infinite'),
+        model: props.model,
+        query: toRef(props, 'queryProps'),
+        params,
+      });
       return {
-        options: useFindPaginate({
-          infinite: props.infinite,
-          model: props.model,
-          query: props.queryProps,
-          params: {...props.params, qid: props.qid},
-        }),
+        options,
+        isPending,
+        pagination,
+        toPage,
+        latestQuery,
+        paginationData
       };
     },
     data(){

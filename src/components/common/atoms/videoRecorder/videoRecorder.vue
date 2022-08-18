@@ -107,6 +107,21 @@
         },
       },
     },
+    emits: [
+      'view-change',
+      'video-change',
+      'error',
+      'video-live',
+      'started',
+      'cameras',
+      'notsupported',
+      'speakers',
+      'microphones',
+      'stoppedVideo',
+      'new-recording',
+      'delete-recording',
+      'player-loaded',
+    ],
     data() {
       return {
         source: null,

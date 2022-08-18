@@ -1,8 +1,8 @@
 <template>
-  <div id="videos" v-bind="$attrs['div-attrs']">
+  <div id="videos" v-bind="attrs['div-attrs']">
     <video id="video"
            ref="video"
-           v-bind="$attrs['attrs']"/>
+           v-bind="attrs['attrs']"/>
   </div>
 </template>
 
@@ -19,21 +19,20 @@
         cameras: [],
       };
     },
-    watch: {
-      $attrs: {
-        immediate: true,
-        deep: true,
-        handler(newVal) {
-          // attrs defaults
-          this.$lset(newVal, 'attrs.width', this.$lget(newVal, 'attrs.width', '100%'));
-          this.$lset(newVal, 'attrs.height', this.$lget(newVal, 'attrs.height', '100%'));
-          this.$lset(newVal, 'attrs.autoplay', this.$lget(newVal, 'attrs.autoplay', true));
-          this.$lset(newVal, 'attrs.playsinline', this.$lget(newVal, 'attrs.playsinline', true));
-          this.$lset(newVal, 'attrs.muted', this.$lget(newVal, 'attrs.muted', true));
+    computed: {
+      attrs() {
+        let newVal = {...this.$attrs};
+        // attrs defaults
+        this.$lset(newVal, 'attrs.width', this.$lget(newVal, 'attrs.width', '100%'));
+        this.$lset(newVal, 'attrs.height', this.$lget(newVal, 'attrs.height', '100%'));
+        this.$lset(newVal, 'attrs.autoplay', this.$lget(newVal, 'attrs.autoplay', true));
+        this.$lset(newVal, 'attrs.playsinline', this.$lget(newVal, 'attrs.playsinline', true));
+        this.$lset(newVal, 'attrs.muted', this.$lget(newVal, 'attrs.muted', true));
 
-          // div-attrs defaults
-          this.$lset(newVal, 'div-attrs.class', this.$lget(newVal, 'div-attrs.class', ''));
-        },
+        // div-attrs defaults
+        this.$lset(newVal, 'div-attrs.class', this.$lget(newVal, 'div-attrs.class', ''));
+
+        return newVal;
       },
     },
     methods: {},

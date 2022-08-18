@@ -277,6 +277,13 @@
       },
     },
 
+    emits: [
+      'edit',
+      'front-details',
+      'back-details',
+      'buy',
+    ],
+
     data() {
       return {
         tween: null,

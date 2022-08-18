@@ -48,9 +48,14 @@
         type: Array,
         data() {
           return [];
-        }
+        },
       },
     },
+    emits: [
+      'update:modelValue',
+      'close',
+      'save',
+    ],
     data() {
       return {
         formData: undefined,
@@ -67,10 +72,10 @@
       },
       formData: {
         immediate: true,
-        handler: function (newVal){
-          this.valid = !isEmpty(newVal) && !!this.$lget(newVal,'name');
-        }
-      }
+        handler: function (newVal) {
+          this.valid = !isEmpty(newVal) && !!this.$lget(newVal, 'name');
+        },
+      },
     },
     computed: {
       fields() {
@@ -171,22 +176,21 @@
               ownedBy.push(this.$lget(this.$activeLogin, '_id'));
             }
 
-            const modifiedFormData = Object.assign(this.formData,
-                                                   {
-                                                     avatar: this.$lget(this.formData, ['avatar', '0'], this.$lget(this.account, 'avatar', null)),
-                                                     banner: this.$lget(this.formData, ['banner', '0'], this.$lget(this.account, 'banner', null)),
-                                                     email: this.$lget(this.account, 'email', this.$lget(this.$authUser, 'email', null)),
-                                                     logins: {
-                                                       ownedBy,
-                                                     },
-                                                   });
+            const modifiedFormData = Object.assign(this.formData, {
+              avatar: this.$lget(this.formData, ['avatar', '0'], this.$lget(this.account, 'avatar', null)),
+              banner: this.$lget(this.formData, ['banner', '0'], this.$lget(this.account, 'banner', null)),
+              email: this.$lget(this.account, 'email', this.$lget(this.$authUser, 'email', null)),
+              logins: {
+                ownedBy,
+              },
+            });
             account = await new models.api['Accounts'](modifiedFormData).save({
               data: modifiedFormData,
             });
           }
           this.$emit('saved', account);
           // this.formData = this.account;
-          this.$emit('input', this.modelValue);
+          this.$emit('update:modelValue', this.modelValue);
 
         } catch (err) {
           this.$q.notify({

@@ -93,7 +93,16 @@
           qid: props.qid,
         };
       });
-      const {items: options, isPending, pagination, toPage, latestQuery, paginationData, total: optionsTotal, currentPage:optionsCurrentPage, skip: optionsSkip} = useFindPaginate({
+      const {
+        items: options,
+        isPending,
+        pagination,
+        toPage,
+        latestQuery,
+        paginationData,
+        total: optionsTotal,
+        currentPage: optionsCurrentPage
+      } = useFindPaginate({
         infinite: toRef(props, 'infinite'),
         model: props.model,
         query: toRef(props, 'queryProps'),
@@ -108,7 +117,6 @@
         paginationData,
         optionsTotal,
         optionsCurrentPage,
-        optionsSkip
       };
     },
     data(){
@@ -153,7 +161,7 @@
     methods: {
 
       loadMore() {
-        if (this.optionsTotal > (this.optionsSkip + this.options.length)) {
+        if (this.optionsTotal > (this.pagination.$skip + this.options.length)) {
           // console.log('loading more', this.optionsCurrentPage);
           this.optionsCurrentPage++;
         }

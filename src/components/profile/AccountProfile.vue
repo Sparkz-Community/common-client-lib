@@ -4,13 +4,13 @@
                 :tab="tab"
                 v-bind="$attrs">
     <template #wallets="value">
-      <my-wallets :value="value"/>
+      <my-wallets :model-value="value"/>
     </template>
     <template #accounts="value">
       <div :style="{display: 'flex', 'flex-wrap': 'wrap', 'flex-direction': $q.screen.lt.sm ? 'column' : undefined}">
         <div style="flex: 1;">
           <div style="text-align: center; font-size: 2.1em;">Owners</div>
-          <owners :value="value"/>
+          <owners  :model-value="value"/>
         </div>
 
         <div class="q-px-md">
@@ -19,21 +19,21 @@
 
         <div style="flex: 1;">
           <div style="text-align: center; font-size: 2.1em;">Members</div>
-          <members :value="value"/>
+          <members :model-value="value"/>
         </div>
       </div>
     </template>
     <template #qb_connections="value">
       <div style="text-align: center; font-size: 2.1em;">Quickbook Connections</div>
-      <companies-list :value="value"/>
+      <companies-list :model-value="value"/>
     </template>
 
     <template #addresses="value">
-      <account-addresses :value="value"/>
+      <account-addresses :model-value="value"/>
     </template>
 
     <template #phone-numbers="value">
-      <account-phones :value="value"/>
+      <account-phones :model-value="value"/>
     </template>
 
     <template #social-links="value">

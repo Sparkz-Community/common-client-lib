@@ -1,5 +1,5 @@
 <template>
-  <div v-bind="{class: 'fullwidth', ...$attrs.divAttrs}">
+  <div v-bind="attrs.divAttrs">
 
     <slot
       :items="items"
@@ -16,17 +16,10 @@
       <btn-paginator :pages="itemsPages" v-model="itemsCurrentPage"/>
     </div>
     <q-select
-      :options="items"
       v-if="select"
-      v-bind="{
-        placeholder,
-        useInput: true,
-        ...$attrs.selectAttrs
-      }"
-      :value="value"
-      :multiple="multiple"
-      :emit-value="emitValue"
       @input-value="searchInput = $event"
+      :modelValue="modelValue"
+      v-bind="attrs.selectAttrs"
     >
       <template v-slot:prepend v-if="$slots.prepend">
         <slot name="prepend"></slot>
@@ -60,11 +53,9 @@
         <slot name="option" :item="scope.opt" :handleInput="handleInput" :index="scope.index">
           <template v-if="defaults">
             <default-item
-              @input="handleInput(scope.opt)"
-              v-bind="{
-                value: scope.opt,
-                ...$attrs.defaultItemAttrs
-              }"
+              @update:model-value="handleInput(scope.opt)"
+              :modelValue="scope.opt"
+              v-bind="$attrs.defaultItemAttrs"
             >
               <template v-slot:side>
                 <slot name="option-side" :item="scope.opt"></slot>
@@ -78,16 +69,9 @@
           <template v-if="defaults">
             <default-chip
               v-if="hasValue && !!scope.opt"
-              :value="scope.opt"
+              :modelValue="scope.opt"
               @remove="handleInput(scope.opt)"
-              v-bind="{
-                service: emitValue ? service : undefined,
-                value: scope.opt,
-                chipAttrs: {
-                removable: true,
-                },
-                ...$attrs.defaultChipAttrs
-              }"
+              v-bind="attrs.defaultChipAttrs"
             >
             </default-chip>
           </template>
@@ -111,16 +95,43 @@
 </template>
 
 <script>
-  import {inputMixin,queryMixin,makeFindPaginateMixin} from '../../../../mixins';
+  import {inputMixin, queryMixin} from '../../../../mixins';
   import BtnPaginator from '../pagination/BtnPaginator';
   import DefaultItem from '../avatars/DefaultItem';
   import DefaultChip from '../avatars/DefaultChip';
+  import {useFindPaginate} from '@';
+  import {toRef} from 'vue';
+  import {computed} from 'vue/dist/vue';
 
-  const { v4: uuidv4 } = require('uuid');
+  const {v4: uuidv4} = require('uuid');
 
   export default {
     name: 'DbSelect',
-    components: { DefaultChip, DefaultItem, BtnPaginator },
+    components: {DefaultChip, DefaultItem, BtnPaginator},
+    setup(props) {
+      const params = computed(() => {
+        return {
+          ...props.params,
+          qid: props.qid,
+        };
+      });
+      const {items: options, isPending, pagination, toPage, latestQuery, paginationData} = useFindPaginate({
+        infinite: toRef(props, 'infinite'),
+        model: props.model,
+        query: toRef(props, 'query'),
+        // query: selectQStatic,
+        params,
+      });
+
+      return {
+        options,
+        isPending,
+        pagination,
+        toPage,
+        latestQuery,
+        paginationData
+      };
+    },
     mixins: [
       inputMixin({
         name: 'handleInput',
@@ -133,7 +144,7 @@
         },
         idPath() {
           return this.optionValue ? this.optionValue : '_id';
-        }
+        },
       }),
       queryMixin({
         name: 'selectQ',
@@ -143,38 +154,22 @@
         },
         search() {
           return this.searchInput;
-        }
+        },
       }),
-      makeFindPaginateMixin({
-        name: 'items',
-        infinite() {
-          return this.infinite;
-        },
-        service() {
-          return this.service;
-        },
-        query() {
-          return this.selectQStatic;
-        },
-        params() {
-          return { ...this.params, qid: this.qid };
-        }
-      })
     ],
     props: {
-      select: { type: Boolean, default: true },
-      placeholder: { type:String, default: ''},
+      select: {type: Boolean, default: true},
+      placeholder: {type: String, default: ''},
       defaults: Boolean,
-      pagination: { type: Boolean, default: true },
-      paginationTop: { type: Boolean },
-      value: { required: true },
-      limit: { type: Number, default: 5 },
+      pagination: {type: Boolean, default: true},
+      paginationTop: {type: Boolean},
+      modelValue: {required: true},
+      limit: {type: Number, default: 5},
       infinite: Boolean,
       multiple: Boolean,
       emitValue: Boolean,
-      optionValue: { type: String, default: '_id' },
-      service: { type: String },
-      options: Array,
+      optionValue: {type: String, default: '_id'},
+      model: {type: Object, required: true},
       query: {
         type: Object,
         default: () => {
@@ -187,8 +182,12 @@
           return {};
         },
       },
-      qid: { type: String, default: uuidv4 },
+      qid: {type: String, default: uuidv4},
     },
+    emits: [
+      'total',
+      'loading',
+    ],
     data() {
       return {
         searchInput: undefined,
@@ -202,29 +201,49 @@
           if (newVal) {
             this.itmesLimit = newVal;
           }
-        }
+        },
       },
       itemsTotal: {
         immediate: true,
         handler(newVal) {
           this.$emit('total', newVal);
-        }
+        },
       },
       isFindItemsPending: {
         immediate: true,
         handler(newVal) {
           this.$emit('loading', newVal);
-        }
-      }
+        },
+      },
     },
     computed: {
+      attrs() {
+        let newVal = {...this.$attrs};
+        // div-attrs defaults
+        this.$lset(newVal, 'attrs.divAttrs.class', this.$lget(newVal, 'attrs.divAttrs.class', 'full-width'));
+
+        // select-attrs defaults
+        this.$lset(newVal, 'attrs.selectAttrs.options', this.$lget(newVal, 'attrs.selectAttrs.options', this.items));
+        this.$lset(newVal, 'attrs.selectAttrs.placeholder', this.$lget(newVal, 'attrs.selectAttrs.placeholder', this.placeholder));
+        this.$lset(newVal, 'attrs.selectAttrs.useInput', this.$lget(newVal, 'attrs.selectAttrs.useInput', true));
+        this.$lset(newVal, 'attrs.selectAttrs.useInput', this.$lget(newVal, 'attrs.selectAttrs.useInput', true));
+        this.$lset(newVal, 'attrs.selectAttrs.multiple', this.$lget(newVal, 'attrs.selectAttrs.multiple', this.multiple));
+        this.$lset(newVal, 'attrs.selectAttrs.emit-value', this.$lget(newVal, 'attrs.selectAttrs.emit-value', this.emitValue));
+
+        // default-chip-attrs defaults
+        this.$lset(newVal, 'attrs.defaultChipAttrs.service', this.$lget(newVal, 'attrs.defaultChipAttrs.service', this.emitValue ? this.service : undefined));
+        this.$lset(newVal, 'attrs.defaultChipAttrs.chipAttrs.removable', this.$lget(newVal, 'attrs.defaultChipAttrs.chipAttrs.removable', true));
+
+        return newVal;
+      },
+
       hasValue() {
-        if (this.multiple) return this.value && this.value.length;
-        else return !this.$lisEmpty(this.value);
+        if (this.multiple) return this.modelValue && this.modelValue.length;
+        else return !this.$lisEmpty(this.modelValue);
       },
       hasMore() {
         return this.itemsTotal > (this.itemsSkip + this.items.length);
-      }
+      },
     },
     methods: {
       loadMore() {
@@ -246,10 +265,10 @@
         }
       },
       setSearch(val) {
-        console.log('kKkKkK',this.itemsTotal);
+        console.log('kKkKkK', this.itemsTotal);
         this.searchInput = val;
-      }
-    }
+      },
+    },
   };
 </script>
 

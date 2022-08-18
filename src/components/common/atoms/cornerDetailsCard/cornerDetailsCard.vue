@@ -96,6 +96,10 @@
         default: '492px',
       },
     },
+    emits: [
+      'add',
+      'remove',
+    ],
     data() {
       return {
         imgDialog: false,

@@ -1,4 +1,4 @@
-module.exports = function isEmpty(val, options = {}) {
+export default function isEmpty(val, options = {}) {
   let returnDetails = false;
   if(options && options.details) returnDetails=true;
 

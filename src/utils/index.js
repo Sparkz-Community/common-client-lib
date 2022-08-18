@@ -3,6 +3,7 @@ import diff from './diff';
 import passwordGen from './passwordGen';
 import isEmpty from './isEmpty';
 import enumValues from './EnumValues';
+import hookCustomizer from './hookCustomizer';
 import {slot, mergeSlot, uniqueSlot, mergeSlotSafely} from './slot';
 
 const singularize  = function(word) {
@@ -56,5 +57,6 @@ export {
   singularize,
   capitalize,
   kebabize,
-  camelCasize
+  camelCasize,
+  hookCustomizer,
 };

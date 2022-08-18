@@ -1,4 +1,4 @@
-module.exports = function passwordGenerator(
+export default function passwordGenerator(
   {
     length = 10,
     alpha = 'abcdefghijklmnopqrstuvwxyz',

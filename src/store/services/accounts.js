@@ -1,24 +1,21 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
-import {hookCustomizer,lodash} from '../../';
-
+import {lodash, hookCustomizer} from '../../index';
 const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
 
-
-Array.prototype.insert = function (index, ...value) {
-  this.splice(index, 0, ...value);
-  return this;
-};
-
-
+export class Accounts extends BaseModel {
+  constructor(data, options) {
+    super(data, options);
+  }
+}
 
 export default async (
   {
     FeathersClient,
-    idField= '_id',
+    idField = '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
     extend_instance_defaults={},
-    state =() => ({}),
+    state = () => ({}),
     getters = {},
     actions = {},
   } = {}) => {
@@ -26,19 +23,9 @@ export default async (
   if ($lisNil(FeathersClient)) {
     throw Error('FeathersClient argument must be set');
   }
-
-
   const {
     default: feathersClient,
   } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
-
-
-  class Accounts extends BaseModel {
-    constructor(data, options) {
-      super(data, options);
-    }
-  }
-
 
   // Define default properties here
   Accounts.instanceDefaults = function () {
@@ -46,80 +33,15 @@ export default async (
       name: undefined,
       email: undefined,
       description: undefined,
-      avatar: {},
-      banner: {},
-      profileImg: '',
+      phone: undefined,
+      avatar: undefined,
+      profileImg: undefined,
+      address: undefined,
       addresses: [],
       phones: [],
       socialLinks: [],
-      logins: {
-        ownedBy: [],
-        members: [],
-      },
       images: [],
-      ownership: {
-        owners: undefined,
-        owns: undefined,
-      },
-      membership: {
-        members: undefined,
-        membersOf: undefined,
-      },
-      authOwnerId: undefined,
-      authModelName: undefined,
-      responsibleForEnvironments: [],
-      settings: {
-        theme: undefined,
-        hosts: undefined,
-        instances: undefined,
-        applications: undefined,
-        domains: undefined,
-        environments: undefined,
-        accounts: undefined,
-      },
-      participant: undefined,
-      deleted: undefined,
-      deletedAt: undefined,
-      applications: [],
-      environment: undefined,
-      createdBy: {
-        account: undefined,
-        user: undefined,
-        login: undefined,
-        integration: undefined,
-        fingerprint: undefined,
-      },
-      updatedBy: {
-        account: undefined,
-        user: undefined,
-        login: undefined,
-        integration: undefined,
-        fingerprint: undefined,
-      },
-      updatedByHistory: {
-        account: undefined,
-        user: undefined,
-        login: undefined,
-        integration: undefined,
-        fingerprint: undefined,
-        updatedAt: undefined,
-      },
-      external: {
-        createdBySource: {
-          id: undefined,
-          Model: undefined,
-        },
-        updatedBySource: {
-          id: undefined,
-          Model: undefined,
-        },
-        updatedBySourceHistory: {
-          updatedBy: undefined,
-          updatedByHistoryModel: undefined,
-          updatedAt: undefined,
-        },
-        meta: undefined,
-      },
+      peoples: [],
       ...extend_instance_defaults
     };
   };
@@ -143,7 +65,8 @@ export default async (
     Model = extend_class_fn(Accounts);
   }
 
-  const useAccounts = defineStore({
+
+  const useStore = defineStore({
     Model,
     servicePath,
     clients: { api: feathersClient },
@@ -153,17 +76,10 @@ export default async (
     actions,
   });
 
-  // const beforeHook = context => {
-//   // eslint-disable-next-line no-console
-//   console.log('------------->>>> beforeHook - context.method:', context.method);
-//   console.log('------------->>>> beforeHook - context.params:', context.params);
-//   console.log('------------->>>> beforeHook - context.data:', context.data);
-// };
-
   // Setup the client-side Feathers hooks.
   feathersClient.service(servicePath).hooks($lmergeWith({
     before: {
-      all: [/*beforeHook*/],
+      all: [],
       find: [],
       get: [],
       create: [],
@@ -191,7 +107,6 @@ export default async (
     },
   }, extend_hooks, hookCustomizer));
 
-  return useAccounts;
-
+  return useStore;
 };
 

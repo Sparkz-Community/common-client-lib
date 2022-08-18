@@ -1,19 +1,21 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
-import {hookCustomizer,lodash} from '../../';
-
+import {lodash, hookCustomizer} from '../../index';
 const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
 
-
-
+export class Wallets extends BaseModel {
+  constructor(data, options) {
+    super(data, options);
+  }
+}
 
 export default async (
   {
     FeathersClient,
-    idField= '_id',
+    idField = '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
     extend_instance_defaults={},
-    state =() => ({}),
+    state = () => ({}),
     getters = {},
     actions = {},
   } = {}) => {
@@ -21,19 +23,9 @@ export default async (
   if ($lisNil(FeathersClient)) {
     throw Error('FeathersClient argument must be set');
   }
-
-
   const {
     default: feathersClient,
   } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
-
-  class Wallets extends BaseModel {
-    constructor(data, options) {
-      super(data, options);
-    }
-  }
-
-  // Required for $FeathersVuex plugin to work after production transpile.
 
   // Define default properties here
   Wallets.instanceDefaults = function () {
@@ -63,7 +55,7 @@ export default async (
   }
 
 
-  const useWallets = defineStore({
+  const useStore = defineStore({
     Model,
     servicePath,
     clients: { api: feathersClient },
@@ -73,17 +65,10 @@ export default async (
     actions,
   });
 
-  // const beforeHook = context => {
-//   // eslint-disable-next-line no-console
-//   console.log('------------->>>> beforeHook - context.method:', context.method);
-//   console.log('------------->>>> beforeHook - context.params:', context.params);
-//   console.log('------------->>>> beforeHook - context.data:', context.data);
-// };
-
   // Setup the client-side Feathers hooks.
   feathersClient.service(servicePath).hooks($lmergeWith({
     before: {
-      all: [/*beforeHook*/],
+      all: [],
       find: [],
       get: [],
       create: [],
@@ -111,7 +96,6 @@ export default async (
     },
   }, extend_hooks, hookCustomizer));
 
-  return useWallets;
-
+  return useStore;
 };
 

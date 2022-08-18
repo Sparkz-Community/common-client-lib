@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "description": "ir-template-server",
+  "description": "Sparkz Community Common Client Library Example Server",
   "version": "0.0.0",
   "homepage": "",
   "private": true,
@@ -9,8 +9,8 @@
     "feathers"
   ],
   "author": {
-    "name": "IonRev Development",
-    "email": "dev@ionrev.com"
+    "name": "Sparkz Community Development",
+    "email": "dev@sparkz.community"
   },
   "contributors": [],
   "bugs": {},

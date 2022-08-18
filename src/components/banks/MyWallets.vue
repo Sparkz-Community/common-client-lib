@@ -76,7 +76,6 @@
       return {
         wallets,
         isPending,
-        isLoading: ref(false),
         formData: reactive(undefined),
         newWalletDio: ref(false),
         accountData: reactive({

@@ -385,6 +385,9 @@
         },
       },
     },
+    emits: [
+      'valueChange',
+    ],
     data() {
       return {
         formData: {},

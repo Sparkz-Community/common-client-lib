@@ -1,9 +1,9 @@
 {
   "name": "client",
   "version": "0.0.0",
-  "description": "ir-template-client",
-  "productName": "ir-template-client",
-  "author": "IonRev Development <dev@ionrev.com>",
+  "description": "Sparkz Community Common Client Library Example Client",
+  "productName": "common-client-lib-example-client",
+  "author": "Sparkz Community Development <dev@sparkz.community>",
   "private": true,
   "scripts": {
     "dev": "QENV=development /usr/local/bin/npx --always-spawn quasar dev",

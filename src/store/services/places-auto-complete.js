@@ -4,11 +4,6 @@ import {hookCustomizer,lodash} from '../../';
 const {$lisNil, $lmergeWith} = lodash;
 
 
-Array.prototype.insert = function (index, ...value) {
-  this.splice(index, 0, ...value);
-  return this;
-};
-
 export class PlacesAutoComplete extends BaseModel {
   constructor(data, options) {
     super(data, options);

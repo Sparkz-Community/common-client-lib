@@ -1,5 +1,5 @@
 <template>
-  <q-dialog :value="value" @input="$emit('input', $event)">
+  <q-dialog :model-value="modelValue" @update:modelValue="$emit('update:modelValue', $event)">
     <q-card style="min-width: 30vw; padding: 10px; border-top: 25px solid var(--q-color-primary)">
       <q-card-section>
         <account-search v-if="selectExisting" v-model="formData" :filter-out="filterOut"/>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import {models} from '@feathersjs/vuex';
+  import {models} from 'feathers-pinia';
   import AccountSearch from './AccountSearch';
   import isEmpty from '../../../utils/isEmpty';
 
@@ -30,7 +30,7 @@
     name: 'AccountFormDialog',
     components: {AccountSearch},
     props: {
-      value: {
+      modelValue: {
         type: Boolean,
         default: false,
       },
@@ -48,9 +48,14 @@
         type: Array,
         data() {
           return [];
-        }
+        },
       },
     },
+    emits: [
+      'update:modelValue',
+      'close',
+      'save',
+    ],
     data() {
       return {
         formData: undefined,
@@ -67,10 +72,10 @@
       },
       formData: {
         immediate: true,
-        handler: function (newVal){
-          this.valid = !isEmpty(newVal) && !!this.$lget(newVal,'name');
-        }
-      }
+        handler: function (newVal) {
+          this.valid = !isEmpty(newVal) && !!this.$lget(newVal, 'name');
+        },
+      },
     },
     computed: {
       fields() {
@@ -171,22 +176,21 @@
               ownedBy.push(this.$lget(this.$activeLogin, '_id'));
             }
 
-            const modifiedFormData = Object.assign(this.formData,
-                                                   {
-                                                     avatar: this.$lget(this.formData, ['avatar', '0'], this.$lget(this.account, 'avatar', null)),
-                                                     banner: this.$lget(this.formData, ['banner', '0'], this.$lget(this.account, 'banner', null)),
-                                                     email: this.$lget(this.account, 'email', this.$lget(this.$authUser, 'email', null)),
-                                                     logins: {
-                                                       ownedBy,
-                                                     },
-                                                   });
+            const modifiedFormData = Object.assign(this.formData, {
+              avatar: this.$lget(this.formData, ['avatar', '0'], this.$lget(this.account, 'avatar', null)),
+              banner: this.$lget(this.formData, ['banner', '0'], this.$lget(this.account, 'banner', null)),
+              email: this.$lget(this.account, 'email', this.$lget(this.$authUser, 'email', null)),
+              logins: {
+                ownedBy,
+              },
+            });
             account = await new models.api['Accounts'](modifiedFormData).save({
               data: modifiedFormData,
             });
           }
           this.$emit('saved', account);
           // this.formData = this.account;
-          this.$emit('input', this.value);
+          this.$emit('update:modelValue', this.modelValue);
 
         } catch (err) {
           this.$q.notify({

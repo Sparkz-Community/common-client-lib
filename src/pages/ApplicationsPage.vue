@@ -233,7 +233,11 @@
   import {date} from 'quasar';
   import FDataTable from '../components/common/molecules/feathers/FDataTable/FDataTable';
   import {capitalize, kebabize} from '../utils';
-  import {makeFindPaginateMixin} from '../';
+  import {useFindPaginate} from '../';
+  import {computed, ref} from 'vue';
+
+  import useEnvironments from '../store/services/environments';
+
 
   export default {
     name: 'applications-page',
@@ -241,22 +245,26 @@
       FDataTable,
       // DataTableTemplate
     },
-    mixins: [
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'environments',
-        name: 'environments',
-        qid: 'environments',
-        query() {
-          return {};
-        },
-        params() {
-          return {
-            debounce: 500,
-          };
-        },
-      }),
-    ],
+    setup() {
+      const environmentsStore = useEnvironments();
+
+      const params = computed(() => {
+        return {
+          debounce: 500,
+        };
+      });
+      const {items: environments, pagination} = useFindPaginate({
+        limit: ref(12),
+        model: environmentsStore.Model,
+        qid: ref('environments'),
+        params,
+      });
+
+      return {
+        environments,
+        pagination,
+      };
+    },
     computed: {
       columns() {
         return [

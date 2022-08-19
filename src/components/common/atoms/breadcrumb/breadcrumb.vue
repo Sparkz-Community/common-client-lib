@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center">
-    <div v-for="(str, i) in useList" :key="`str-${i}`" :class="`text-${size} text-mb-${mbSize} flex items-center cursor-pointer`" @click="$emit('input', str)">
+    <div v-for="(str, i) in useList" :key="`str-${i}`" :class="`text-${size} text-mb-${mbSize} flex items-center cursor-pointer`" @click="$emit('update:modelValue', str)">
       <div>{{limitStr(str.text, letterLimit, '..')}}</div>
       <q-icon v-if="!!list[i + 1]" :name="icon" :size="iconSize[size]"></q-icon>
     </div>
@@ -18,6 +18,9 @@
       size: { type: String, default: 'xxs' },
       mobileSize: { type: String }
     },
+    emits: [
+      'update:modelValue',
+    ],
     computed: {
       useList(){
         if(this.list && this.list.length > this.limit){

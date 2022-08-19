@@ -1,9 +1,9 @@
 <template>
-  <q-chip class="chip_class" clickable @click="$emit('input', value)" v-bind="{dark: dark, ...chipAttrs}" @remove="$emit('remove', value)">
+  <q-chip class="chip_class" clickable @click="$emit('update:modelValue', modelValue)" v-bind="{dark: dark, ...chipAttrs}" @remove="$emit('remove', modelValue)">
     <slot name="avatar">
     <default-avatar
       v-show="!hideAvatar"
-      :value="val"
+      :model-value="val"
       :descriptionPath="descriptionPath"
       :defaultAvatar="defaultAvatar"
       :square="square"
@@ -48,7 +48,7 @@
       hideAvatar: Boolean,
       defaultName: String,
       chipAttrs: Object,
-      value: { required: true },
+      modelValue: { required: true },
       descriptionPath: { type: String, default: 'description' },
       defaultAvatar: String,
       square: Boolean,
@@ -73,6 +73,10 @@
       bgIn: String,
       bordered: Boolean
     },
+    emits: [
+      'update:modelValue',
+      'remove',
+    ],
     watch: {
 
     },

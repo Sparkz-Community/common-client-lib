@@ -109,7 +109,7 @@
   export default {
     name: 'tabNavbar',
     props: {
-      value: {
+      modelValue: {
         type: Boolean,
         default: true,
       },
@@ -208,7 +208,7 @@
               '--position-li-text-align': 'left',
               '--position-icon-margin': '0 5px 0 0',
               '--position-li-direction': 'row',
-              width: !this.value ? '250px' : '310px',
+              width: !this.modelValue ? '250px' : '310px',
             };
           }
           case 'bottom-left': {
@@ -221,7 +221,7 @@
               '--position-li-text-align': 'right',
               '--position-icon-margin': '0 0 0 5px',
               '--position-li-direction': 'row-reverse',
-              width: !this.value ? '250px' : '310px',
+              width: !this.modelValue ? '250px' : '310px',
             };
           }
           case 'top-left': {
@@ -234,7 +234,7 @@
               '--position-li-text-align': 'right',
               '--position-icon-margin': '0 0 0 5px',
               '--position-li-direction': 'row-reverse',
-              width: !this.value ? '250px' : '310px',
+              width: !this.modelValue ? '250px' : '310px',
             };
           }
           default: { // top-right
@@ -247,7 +247,7 @@
               '--position-li-text-align': 'left',
               '--position-icon-margin': '0 5px 0 0',
               '--position-li-direction': 'row',
-              width: !this.value ? '250px' : '310px',
+              width: !this.modelValue ? '250px' : '310px',
             };
           }
         }

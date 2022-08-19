@@ -1,7 +1,7 @@
 <template>
   <div :class="`${companies.length ? ($q.screen.sm || $q.screen.xs) ?'column': 'row': ''} q-gutter-lg q-pa-md`">
 
-    <add-company class="col" :value="value" :style="companies.length ? 'max-width: 450px;': 'max-width: 450px;'"/>
+    <add-company class="col" :model-value="value" :style="companies.length ? 'max-width: 450px;': 'max-width: 450px;'"/>
 
     <div class="col" v-for="company in companies" :key="$lget(company,'_id')">
       <div class="box column items-center justify-center q-pa-xl" style=" position: relative">
@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <q-inner-loading :showing="isFindCompaniesPending">
+    <q-inner-loading :showing="isPending">
       <q-spinner-gears size="50px" color="primary"/>
     </q-inner-loading>
 
@@ -50,71 +50,66 @@
 
 <script>
   import AddCompany from './AddCompany';
-  import {makeFindPaginateMixin} from '../../../';
-  // import {models} from '@feathersjs/vuex';
+  import {useFindPaginate} from '../../../';
+  import {reactive, ref} from 'vue';
+  import {computed, inject} from 'vue';
+  import {Accounts} from '../../../store/services/accounts';
+  import {QuickbooksCompanies} from '../../../store/services/quickbookCompanies';
+
 
   export default {
     name: 'companies-list',
     components: {AddCompany},
     props: {
-      value: {
+      modelValue: {
         type: Object,
         required: true,
       },
     },
-    mixins: [
-      makeFindPaginateMixin({
-        limit: 5,
-        service: 'companies',
-        name: 'companies',
-        qid: 'companies',
-        infinite: true,
-        query() {
-          const accountQuery = {_id: {$in: this.$lget(this.value, ['account', 'quickbooks', 'connections'], [])}};
-          return {
-            ...accountQuery,
-          };
+
+    setup(props) {
+      let $lget = inject('$lget');
+
+      const query = computed(()=>{
+        return {
+          _id: {$in: $lget(props.modelValue, ['account', 'quickbooks', 'connections'], [])}
+        };
+      });
+
+      const params = computed(() =>({
+        'quickbooks/companies_fJoinHookResolversQuery': {
+          accounts: true,
         },
-        params() {
-          return {
-            'quickbooks/companies_fJoinHookResolversQuery': {
-              accounts: true,
-            },
-          };
-        },
-      }),
-      makeFindPaginateMixin({
+      }));
+
+      const {items:companies, isPending} = useFindPaginate({
+        limit: ref(5),
+        qid: ref('companies'),
+        model: QuickbooksCompanies,
+        infinite: ref(true),
+        query,
+        params
+      });
+      const  {items:accounts} =useFindPaginate({
         limit: 5,
-        service: 'accounts',
-        name: 'accounts',
         qid: 'accounts',
+        model: Accounts,
         infinite: true,
-        query() {
-          return {
-            // ...this.localQuery
-          };
-        },
-        params() {
-          return {
-            // 'accounts_fJoinHookResolversQuery': {
-            //   quickbooksConnections: true,
-            // },
-          };
-        },
-      }),
-    ],
-    data() {
+      });
+
       return {
-        localCompaniesQuery: {},
-        openEditCompany: false,
-        formData: undefined,
-        valid: false,
-        sending: false,
-        defaultConnection: undefined,
+        accounts,
+        companies,
+        isPending,
+        openEditCompany: ref(false),
+        formData: reactive(undefined),
+        valid: ref(false),
+        sending: ref(false),
+        defaultConnection: ref(undefined)
       };
     },
     watch: {
-      'value.account': {
+      'modelValue.account': {
         immediate: true,
         deep: true,
         handler(newVal) {
@@ -125,7 +120,7 @@
         },
       },
       defaultConnection(newVal) {
-        let account = this.$lget(this.value, 'account');
+        let account = this.$lget(this.modelValue, 'account');
         if (account && newVal !== this.$lget(account, 'quickbooks.defaultConnection', 'defaultConnection')) {
           account.patch({
             data: {
@@ -217,7 +212,7 @@
       async remove(data) {
         this.$q.dialog({
           title: 'Confirm',
-          message: `Would you like to delete this company from your ${this.$lget(this.value, ['account', 'name'])} account?`,
+          message: `Would you like to delete this company from your ${this.$lget(this.modelValue, ['account', 'name'])} account?`,
           ok: {
             push: true,
             color: 'primary',
@@ -230,7 +225,7 @@
             await data.patch({
               data: {
                 $pull: {
-                  accounts: this.$lget(this.value, 'account._id'),
+                  accounts: this.$lget(this.modelValue, 'account._id'),
                 },
               },
             });

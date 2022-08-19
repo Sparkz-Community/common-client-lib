@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-bind="{...positions[setting].dialog, ...dialogAttrs }" :value="value" @input="$emit('input', $event)">
+  <q-dialog v-bind="{...positions[setting].dialog, ...dialogAttrs }" :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)">
     <q-card v-bind="{...positions[setting].card, ...cardAttrs }">
 
       <slot name="default">
@@ -13,7 +13,7 @@
   export default {
     name: 'CommonDialog',
     props: {
-      value: Boolean,
+      modelValue: Boolean,
       cardAttrs: {
         type: Object
       },
@@ -22,6 +22,10 @@
       },
       setting: { type: String, default: 'standard' }
     },
+    emits: [
+      'update:modelValue',
+      'close',
+    ],
     computed: {
       positions() {
         return {
@@ -109,7 +113,7 @@
     },
     methods: {
       close() {
-        this.$emit('input', false);
+        this.$emit('update:modelValue', false);
         this.$emit('close');
       }
     }

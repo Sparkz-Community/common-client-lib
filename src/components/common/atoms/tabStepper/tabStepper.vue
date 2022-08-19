@@ -62,7 +62,7 @@
       },
       textColor: String,
       trackColor: String,
-      value: {required: true},
+      modelValue: {required: true},
       tabs: {
         type: Array,
         default: function () {
@@ -70,6 +70,9 @@
         },
       },
     },
+    emits: [
+      'update:modelValue',
+    ],
     data() {
       return {
         hover: -1,
@@ -77,7 +80,7 @@
     },
     computed: {
       valueIdx(){
-        return this.emitValue ? this.tabs.map(a => a[this.optionValue]).indexOf(this.value) : this.value;
+        return this.emitValue ? this.tabs.map(a => a[this.optionValue]).indexOf(this.modelValue) : this.modelValue;
       },
       useTrackColor() {
         return this.trackColor ? this.trackColor : this.color;
@@ -94,11 +97,11 @@
     methods: {
       handleEmit(i, tab) {
         let val = this.emitValue ? tab[this.optionValue] : i;
-        this.$emit('input', val);
+        this.$emit('update:modelValue', val);
       },
       isActive(i, tab) {
         let val = this.emitValue ? tab[this.optionValue] : i;
-        return this.value === val;
+        return this.modelValue === val;
       },
     },
   };

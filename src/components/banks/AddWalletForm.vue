@@ -9,44 +9,24 @@
         <q-radio size="xl" v-model="formData.walletFor" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
                  val="individual" label="An Individual"/>
       </div>
-      <!--      <q-input
-              v-model="formData.email"
-              label="BUSINESS EMAIL"
-              type="email"
-              :debounce="0"
-              filled
-              outline
-              dense
-              bg-color="grey-2"
-              input-class="text-grey-8 text-caption"
-              label-color="grey-6"
-              clearable
-              clear-icon="close"
-              lazy-rules="ondemand"
-              :rules="['email']"
-            >
-              <template #append>
-                <q-checkbox class="text-caption" v-model="sameAsAccountz" label="same as account's" :true-value="true" :false-value="false"/>
-              </template>
-            </q-input>
-      -->
+
     </q-card-section>
     <q-card-section>
       <q-slide-transition>
         <div v-show="formData.walletFor==='individual'">
           <q-select
-            class="q-mb-lg"
-            filled
-            v-model="formData.idType"
-            :label="formData.idType? undefined:'SELECT ID TYPE'"
-            input-class="text-grey6"
-            use-input
-            dense
-            popup-content-class="text-caption"
-            input-debounce="0"
-            :options="options"
-            @filter="filterFn"
-            behavior="menu"
+              class="q-mb-lg"
+              filled
+              v-model="formData.idType"
+              :label="formData.idType? undefined:'SELECT ID TYPE'"
+              input-class="text-grey6"
+              use-input
+              dense
+              popup-content-class="text-caption"
+              input-debounce="0"
+              :options="options"
+              @filter="filterFn"
+              behavior="menu"
           >
             <template v-slot:no-option>
               <q-item>
@@ -58,11 +38,11 @@
           </q-select>
           <q-slide-transition>
             <form-generator
-              v-show="formData.idType"
-              v-model="formData"
-              :fields="fields"
-              useQform
-              v-model:valid="valid">
+                v-show="formData.idType"
+                v-model="formData"
+                :fields="fields"
+                useQform
+                v-model:valid="valid">
               <template v-for="(_, slot) of $slots" v-slot:[slot]="scope">
                 <slot :name="slot" v-bind="scope"/>
               </template>
@@ -73,53 +53,53 @@
       <q-slide-transition>
         <div class="column q-gutter-md">
           <q-input
-            v-show="formData.walletFor==='individual'"
-            v-model="formData['socialSecurityNo']"
-            placeholder="TAXPAYER'S IDENTIFICATION NUMBER (SSN / ITIN)"
-            type="text"
-            filled
-            outline
-            dense
-            mask="###-##-####"
-            bg-color="grey-2"
-            input-class="text-grey-8"
-            label-color="grey-6"
-            clearable
-            clear-icon="close"
-            lazy-rules="ondemand"
-            :rules="[this.validateSSN]"
-            hint="The IRS requires us to ask for your full SSN / ITIN. We'll keep it private."
+              v-show="formData.walletFor==='individual'"
+              v-model="formData['socialSecurityNo']"
+              placeholder="TAXPAYER'S IDENTIFICATION NUMBER (SSN / ITIN)"
+              type="text"
+              filled
+              outline
+              dense
+              mask="###-##-####"
+              bg-color="grey-2"
+              input-class="text-grey-8"
+              label-color="grey-6"
+              clearable
+              clear-icon="close"
+              lazy-rules="ondemand"
+              :rules="[this.validateSSN]"
+              hint="The IRS requires us to ask for your full SSN / ITIN. We'll keep it private."
           />
           <q-input
-            v-show="formData.walletFor==='company'"
-            v-model="formData['employersIDNumber']"
-            placeholder="EMPLOYER'S IDENTIFICATION NUMBER (EIN)"
-            type="text"
-            filled
-            outline
-            dense
-            mask="##-#######"
-            bg-color="grey-2"
-            input-class="text-grey-8 text-caption"
-            label-color="grey-6"
-            clearable
-            clear-icon="close"
-            lazy-rules="ondemand"
-            :rules="[this.validateSSN]"
-            hint="The IRS requires us to ask for your full EIN. We'll keep it private."
+              v-show="formData.walletFor==='company'"
+              v-model="formData['employersIDNumber']"
+              placeholder="EMPLOYER'S IDENTIFICATION NUMBER (EIN)"
+              type="text"
+              filled
+              outline
+              dense
+              mask="##-#######"
+              bg-color="grey-2"
+              input-class="text-grey-8 text-caption"
+              label-color="grey-6"
+              clearable
+              clear-icon="close"
+              lazy-rules="ondemand"
+              :rules="[this.validateSSN]"
+              hint="The IRS requires us to ask for your full EIN. We'll keep it private."
           />
         </div>
       </q-slide-transition>
       <plaid-prompt-dialog
-        @verified="sendVerifiedBankResults"
-        v-model="dialogPlaid"
-        :products="plaid.products"
-        :environment="plaid.environment"
-        :link-token="plaid.link_token"
-        :stripe_publishable="plaid.stripe_publishable"
-        @clear="clear"
-        :data_to_tokenize="formData"
-        :account="account"
+          @verified="sendVerifiedBankResults"
+          v-model="dialogPlaid"
+          :products="plaid.products"
+          :environment="plaid.environment"
+          :link-token="plaid.link_token"
+          :stripe_publishable="plaid.stripe_publishable"
+          @clear="clear"
+          :data_to_tokenize="formData"
+          :account="account"
       >
         <template #custom-message>
           <p> You're required to connect to your bank before submitting your information!</p>
@@ -150,8 +130,8 @@
 <script>
   import {isValid} from 'ssn-validator';
   import CreditCard from './components/CreditCard';
-  import {models} from '@feathersjs/vuex';
   import PlaidPromptDialog from './components/PlaidPromptDialog';
+  import {models} from 'feathers-pinia';
 
   const documentTypeOptions = ['State ID', 'Passport', 'Drivers License', 'Visa', 'Immigration ID', 'Military ID', 'Matricula Consular'];
 
@@ -163,6 +143,9 @@
         required: true,
       },
     },
+    emits: [
+      'close',
+    ],
     components: {CreditCard, PlaidPromptDialog},
     data() {
       return {
@@ -305,8 +288,9 @@
         try {
           this.loading = true;
           // we are going we request a plaid token from the local server
-          // this is a one time token used only here, no need to store it in vuex
-          await new models.api['VerifyBankAccount']().save();
+          // this is a one time token used only here, no need to store it in pinia
+
+          await new models.api.VerifyBankAccount().save();
           this.loading = false;
           this.dialogPlaid = true;
         } catch (e) {

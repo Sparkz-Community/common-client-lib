@@ -41,99 +41,97 @@
                    :rules="[validatePostalCode]"
           />
         </div>
-        <div class="q-px-md text-grey-8 text-caption">No monthly fees, no set up fee: You pay a transaction fee of <span class="text-bold">1.9% + $0.10</span></div>
+        <div class="q-px-md text-grey-8 text-caption">No monthly fees, no set up fee: You pay a transaction fee of <span
+          class="text-bold">1.9% + $0.10</span></div>
 
       </div>
     </slot>
   </div>
 </template>
 
-<script>
+<script setup>
   import validator from 'card-validator';
+  import {computed, onUpdated, reactive, ref, watch, defineEmits} from 'vue';
 
-  export default {
-    name: 'credit-card',
-    data() {
-      return {
-        width: null,
-        isFocused: false,
-        focusedElement: null,
-        previousValue: null,
-        showSecurityFields: false,
-        brand: 'fas fa-credit-card',
-        card: {
-          brand: null,
-          number: null,
-          expiration: null,
-          cvc: null,
-          postalCode: null,
-        },
-      };
-    },
-    watch: {
-      card: {
-        deep: true,
-        handler(newVal) {
-          const numberValidation = validator.number(newVal.number);
+  const emit = defineEmits(['tokenize']);
+
+  let brand = ref('fas fa-credit-card');
+  let card = reactive({
+    brand: null,
+    number: null,
+    expiration: null,
+    cvc: null,
+    postalCode: null,
+  });
+
+  // the watcher
+
+  watch(() => card, (currentValue) => {
+          const numberValidation = validator.number(currentValue.number);
           if (numberValidation.card) {
             switch (numberValidation.card.type) {
               case 'jcb':
-                this.brand = 'fab fa-cc-jcb';
+                brand.value = 'fab fa-cc-jcb';
                 break;
               case 'visa':
-                this.brand = 'fab fa-cc-visa';
+                brand.value = 'fab fa-cc-visa';
                 break;
               case 'american-express':
-                this.brand = 'fab fa-cc-amex';
+                brand.value = 'fab fa-cc-amex';
                 break;
               case 'diners-club':
-                this.brand = 'fab fa-cc-diners-club';
+                brand.value = 'fab fa-cc-diners-club';
                 break;
               case 'discover':
-                this.brand = 'fab fa-cc-discover';
+                brand.value = 'fab fa-cc-discover';
                 break;
               case 'mastercard':
-                this.brand = 'fab fa-cc-mastercard';
+                brand.value = 'fab fa-cc-mastercard';
                 break;
               default:
-                this.brand = 'far fa-credit-card';
+                brand.value = 'far fa-credit-card';
             }
           } else {
-            this.brand = 'fas fa-credit-card';
+            brand.value= 'fas fa-credit-card';
           }
-
         },
-      },
-    },
-    updated() {
-      if(this.validCard){
-        this.$emit('tokenize',this.card);
-      }
-    },
-    computed: {
-      validCard() {
-        const validCardNo = validator.number(this.card.number).isValid;
-        const validCardExpDate = validator.expirationDate(this.card.expiration).isValid;
-        const validCardCVC = validator.cvv(this.card.cvc).isValid;
-        const validPostalCode = validator.postalCode(this.card.postalCode).isValid;
-        return validCardNo && validCardExpDate && validCardCVC && validPostalCode;
-      },
-    },
-    methods: {
-      validateCardNo(value) {
-        return validator.number(value).isPotentiallyValid;
-      },
-      validateCvc(value) {
-        return validator.cvv(value).isValid;
-      },
-      validatePostalCode(value) {
-        return validator.postalCode(value).isValid;
-      },
-      validateExpirationDate(value) {
-        return validator.expirationDate(value).isValid;
-      },
-    },
-  };
+        {deep: true},
+  );
+
+  // the computed
+
+  let validCard = computed(function () {
+    const validCardNo = validator.number(card.number).isValid;
+    const validCardExpDate = validator.expirationDate(card.expiration).isValid;
+    const validCardCVC = validator.cvv(card.cvc).isValid;
+    const validPostalCode = validator.postalCode(card.postalCode).isValid;
+    return validCardNo && validCardExpDate && validCardCVC && validPostalCode;
+  });
+
+  //life cycle hook
+  onUpdated(function (){
+    if(validCard.value){
+      emit('tokenize',card);
+    }
+  });
+
+  // the methods
+  function validateCardNo(value) {
+    return validator.number(value).isPotentiallyValid;
+  }
+
+  function validateCvc(value) {
+    return validator.cvv(value).isValid;
+  }
+
+  function validatePostalCode(value) {
+    return validator.postalCode(value).isValid;
+  }
+
+  function validateExpirationDate(value) {
+    return validator.expirationDate(value).isValid;
+  }
+
 </script>
 <style lang="scss" scoped>
 

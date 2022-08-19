@@ -23,6 +23,8 @@ export default async (
   if ($lisNil(FeathersClient)) {
     throw Error('FeathersClient argument must be set');
   }
+
+
   const {
     default: feathersClient,
   } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;

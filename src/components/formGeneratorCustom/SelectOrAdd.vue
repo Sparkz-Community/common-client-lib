@@ -36,8 +36,8 @@
           <q-btn color="primary" icon="add" label="New" @click="openAddForm = true"/>
           <div v-if="showPaginationControls" class="row items-center q-gutter-sm">
             <span class="text-caption">Rows per page: </span>
-            <q-select input-class="text-caption" dense outlined :value="pagination.rowsPerPage"
-                      @input="changeRowsPerPage($event)" :options="pagination.rowsPerPageOptions"/>
+            <q-select input-class="text-caption" dense outlined :model-value="pagination.rowsPerPage"
+                      @update:model-value="changeRowsPerPage($event)" :options="pagination.rowsPerPageOptions"/>
             <q-btn v-if="showPaginationControls" dense flat color="primary" icon="fas fa-chevron-left" @click="decrementPage"/>
             <q-btn v-if="showPaginationControls" dense flat color=primary icon="fas fa-chevron-right" @click="incrementPage"/>
           </div>
@@ -88,6 +88,7 @@
   import SelectInput
     from '@sparkz-community/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput.vue';
   import isEmpty from '../../utils/isEmpty.js';
+  import { models } from 'feathers-pinia';
 
   export default {
     name: 'SelectOrAdd',
@@ -118,6 +119,9 @@
         type: Object,
       },
     },
+    emits: [
+      'pagination-changed'
+    ],
     data() {
       return {
         loading: false,
@@ -160,7 +164,7 @@
       async send() {
         try {
           this.sending = true;
-          const FormData = this.$FeathersVuex.api[this.modelName];
+          const FormData = models.api[this.modelName];
           const data = new FormData(this.formData).clone();
           await data.save({
             data: this.formData,

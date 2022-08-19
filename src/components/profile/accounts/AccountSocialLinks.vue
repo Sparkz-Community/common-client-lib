@@ -86,14 +86,15 @@
 </template>
 
 <script>
-  import {models} from '@feathersjs/vuex';
-  import {mapActions} from 'vuex';
+  import {models} from 'feathers-pinia';
+  import {mapActions} from 'pinia';
+  import useAccounts from '../../../store/services/accounts';
 
   export default {
     name: 'AccountSocialLinks',
 
     props: {
-      value: {
+      modelValue: {
         type: Object,
         required: true,
       },
@@ -119,7 +120,7 @@
     },
 
     watch: {
-      value: {
+      modelValue: {
         deep: true,
         immediate: true,
         handler(newVal) {
@@ -150,7 +151,7 @@
       }
     },
     methods: {
-      ...mapActions('accounts', {
+      ...mapActions(useAccounts, {
         patchAccount: 'patch',
       }),
       stopEdit() {

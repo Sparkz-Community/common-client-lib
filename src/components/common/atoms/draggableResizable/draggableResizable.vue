@@ -232,6 +232,16 @@
       }
     },
 
+    emits: [
+      'activated',
+      'deactivated',
+      'update:active',
+      'dragging',
+      'resizing',
+      'resizestop',
+      'dragstop',
+    ],
+
     data: function () {
       return {
         left: this.x,

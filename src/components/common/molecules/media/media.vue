@@ -174,6 +174,11 @@
         default: false,
       },
     },
+    emits: [
+      'started',
+      'photo',
+      'error',
+    ],
     data() {
       return {
         stream: null,

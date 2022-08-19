@@ -37,13 +37,16 @@
         type: String,
         default: 'ir-blue-grey-1'
       },
-      value: Number,
+      modelValue: Number,
       pages: Number,
       showCount: {
         type: Number,
         default: 5
       }
     },
+    emits: [
+      'update:modelValue',
+    ],
     data(){
       return {
         tab: 0,
@@ -51,7 +54,7 @@
       };
     },
     watch: {
-      value: {
+      modelValue: {
         immediate: true,
         handler(newVal){
           if((newVal || newVal === 0) && newVal !== this.tab && typeof newVal === 'number'){
@@ -65,7 +68,7 @@
         handler(newVal, oldVal){
           if((newVal || newVal === 0) && typeof newVal === 'number' && newVal !== oldVal && typeof oldVal === 'number') {
             // console.log('got tab', newVal, oldVal);
-            this.$emit('input', newVal);
+            this.$emit('update:modelValue', newVal);
           }
         }
       }

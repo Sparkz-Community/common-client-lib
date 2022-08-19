@@ -15,8 +15,8 @@
         </q-item-section>
 
         <q-item-section>
-          <q-item-label>{{ member.name }}</q-item-label>
-          <q-item-label caption lines="1">{{ member.email }}</q-item-label>
+          <q-item-label>{{ member?.name }}</q-item-label>
+          <q-item-label caption lines="1">{{ member?.email }}</q-item-label>
         </q-item-section>
 
         <q-item-section side>
@@ -26,7 +26,7 @@
                   name="fas fa-trash"
                   color="negative"
                   class="cursor-pointer"
-                  @click="removeMember(member._id)"/>
+                  @click="removeMember(member?._id)"/>
         </q-item-section>
       </q-item>
     </q-list>
@@ -38,11 +38,11 @@
     </div>
 
     <account-form-dialog
-      select-existing
-      v-model="newMemberDialog"
-      @saved="addMember"
-      @close="newMemberDialog=false"
-      :filter-out="[account._id, ...account.membership.member]"
+        select-existing
+        v-model="newMemberDialog"
+        @saved="addMember"
+        @close="newMemberDialog=false"
+        :filter-out="[account._id, ...account?.membership?.member]"
     />
 
 
@@ -50,9 +50,12 @@
 </template>
 
 <script>
-  import {models} from '@feathersjs/vuex';
-  import {makeFindPaginateMixin} from '../../../';
+  import {models} from 'feathers-pinia';
+  import {useFindPaginate} from '../../../';
   import AccountFormDialog from './AccountFormDialog';
+  import {Accounts} from '../../../store/services/accounts';
+  import {computed, inject, ref, reactive, watch} from 'vue';
+  import {useQuasar} from 'quasar';
 
   export default {
     name: 'Members',
@@ -60,77 +63,51 @@
       AccountFormDialog,
     },
     props: {
-      value: {
+      modelValue: {
         type: Object,
         required: true,
       },
     },
-    mixins: [
-      makeFindPaginateMixin({
-        limit: 12,
-        service: 'accounts',
-        name: 'members',
-        infinite: true,
-        query() {
-          return {
-            _id: {
-              $in: this.$lget(this.account, 'membership.members', []),
-            },
-            $select: ['_id', 'name', 'email', 'avatar'],
-          };
-        },
-        params() {
-          return {
-            qid: `accountMembers-${this.$lget(this.account, '_id')}`,
-          };
+    setup(props) {
+      let $lget = inject('$lget');
+      let $lset = inject('$lset');
+      let $lcloneDeep = inject('$lcloneDeep');
+      let $q = useQuasar();
+
+      let accountData = reactive({
+        account: new models.api.Accounts().clone(),
+      });
+
+      let newMemberDialog = ref(false);
+      let isDeleting = ref(false);
+      let isAdding = ref(false);
+      let accountSelection = ref(null);
+
+      watch(props.modelValue, (newVal, oldVal) => {
+        if (newVal && Object.keys(newVal).length && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+          accountData = $lcloneDeep(newVal);
         }
-      }),
-    ],
-    data() {
-      return {
-        accountData: {
-          account: new models.api.Accounts().clone(),
-        },
-        newMemberDialog: false,
-        isDeleting: false,
-        isAdding: false,
-        accountSelection: null,
-      };
-    },
-    watch: {
-      value: {
-        deep: true,
-        immediate: true,
-        handler(newVal, oldVal) {
-          if (newVal && Object.keys(newVal).length && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-            this.accountData = this.$lcloneDeep(newVal);
-          }
-        },
-      },
-    },
-    computed: {
-      account() {
-        return this.$lget(this.accountData, 'account', {});
-      },
-    },
-    methods: {
-      addMember(account) {
+      }, {deep: true, immediate: true});
+
+      let account = computed(() => $lget(accountData, 'account', {}));
+
+      function addMember(account) {
         if (account !== null) {
-          this.isAdding = true;
+          isAdding.value = true;
 
           // if the members array doesn't exist on the account, this adds it
-          if (!this.$lget(this.accountData, 'account.membership.members')) {
-            this.$lset(this.accountData, 'account.membership.members', []);
+          if (!$lget(accountData, 'account.membership.members')) {
+            $lset(accountData, 'account.membership.members', []);
           }
 
-          this.$lget(this.accountData, 'account.membership.members', []).push(account._id);
-          this.$lget(this.accountData, 'account').patch({
+          $lget(accountData, 'account.membership.members', []).push(account._id);
+          $lget(accountData, 'account').patch({
             data: {
-              'membership.members': this.$lget(this.accountData, 'account.membership.members'),
-            }
+              'membership.members': $lget(accountData, 'account.membership.members'),
+            },
           })
             .then(() => {
-              this.$q.notify({
+              $q.notify({
                 type: 'positive',
                 message: 'Successfully added member',
                 timeout: 10000,
@@ -142,11 +119,11 @@
                   },
                 ],
               });
-              this.isAdding = false;
-              this.newMemberDialog = false;
+              isAdding.value = false;
+              newMemberDialog.value = false;
             })
             .catch(err => {
-              this.$q.notify({
+              $q.notify({
                 type: 'negative',
                 message: err.message,
                 timeout: 10000,
@@ -158,21 +135,22 @@
                   },
                 ],
               });
-              this.isAdding = false;
+              isAdding.value = false;
             });
         }
-      },
-      removeMember(accountId) {
-        this.isDeleting = true;
-        const index = this.$lget(this.accountData, 'account.membership.members', []).indexOf(accountId);
-        this.$lget(this.accountData, 'account.membership.members', []).splice(index, 1);
-        this.$lget(this.accountData, 'account').patch({
+      }
+
+      function removeMember(accountId) {
+        isDeleting.value = true;
+        const index = $lget(accountData, 'account.membership.members', []).indexOf(accountId);
+        $lget(accountData, 'account.membership.members', []).splice(index, 1);
+        $lget(accountData, 'account').patch({
           data: {
-            'membership.members': this.$lget(this.accountData, 'account.membership.members'),
-          }
+            'membership.members': $lget(accountData, 'account.membership.members'),
+          },
         })
           .then(() => {
-            this.$q.notify({
+            $q.notify({
               type: 'positive',
               message: 'Successfully removed member',
               timeout: 10000,
@@ -184,10 +162,10 @@
                 },
               ],
             });
-            this.isDeleting = false;
+            isDeleting.value = false;
           })
           .catch(err => {
-            this.$q.notify({
+            $q.notify({
               type: 'negative',
               message: err.message,
               timeout: 10000,
@@ -199,9 +177,41 @@
                 },
               ],
             });
-            this.isDeleting = false;
+            isDeleting.value = false;
           });
-      },
+      }
+
+      const query = computed(() =>({
+        _id: {
+          $in: $lget(account, 'membership.members', []),
+        },
+        $select: ['_id', 'name', 'email', 'avatar'],
+      }));
+
+      const params = computed(() =>({
+        qid: `accountMembers-${$lget(account, '_id')}`,
+      }));
+
+      const {items: members} = useFindPaginate({
+        limit: ref(12),
+        model: Accounts,
+        qid: ref('members'),
+        infinite: ref(true),
+        query,
+        params
+      });
+
+      return {
+        accountData,
+        newMemberDialog,
+        isDeleting,
+        isAdding,
+        accountSelection,
+        account,
+        addMember,
+        removeMember,
+        members,
+      };
     },
   };
 </script>

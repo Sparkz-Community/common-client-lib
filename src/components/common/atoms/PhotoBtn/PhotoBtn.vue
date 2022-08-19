@@ -26,6 +26,9 @@
         default: '#ffffff',
       }
     },
+    emits: [
+      'click'
+    ],
     data() {
       return {};
     },

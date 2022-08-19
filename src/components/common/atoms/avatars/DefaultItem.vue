@@ -1,9 +1,9 @@
 <template>
-  <q-item :clickable="clickable" @click="$emit('input', val)" style="width: 100%;">
+  <q-item :clickable="clickable" @click="$emit('update:modelValue', val)" style="width: 100%;">
     <q-item-section avatar v-show="!hideAvatar">
       <slot name="avatar" :item="val">
         <default-avatar
-          :value="val"
+          :model-value="val"
           :descriptionPath="descriptionPath"
           :defaultAvatar="defaultAvatar"
           :square="square"
@@ -46,7 +46,7 @@
       titleClass: { type: String, default: 'text-xxs text-mb-xxs text-weight-bold' },
       subtitleClass: { type: String, default: 'text-xxs text-mb-xxs' },
       hideAvatar: Boolean,
-      value: { required: true },
+      modelValue: { required: true },
       descriptionPath: { type: String, default: 'description' },
       defaultAvatar: String,
       square: Boolean,
@@ -72,6 +72,9 @@
       bgIn: String,
       bordered: Boolean
     },
+    emits: [
+      'update:modelValue',
+    ],
     watch: {
       valId: {
         immediate: true,
@@ -89,10 +92,10 @@
         else return this.defaultCharacter;
       },
       valId() {
-        return this.$lget(this.value, '_id', this.value);
+        return this.$lget(this.modelValue, '_id', this.modelValue);
       },
       val() {
-        if (!this.service) return this.value;
+        if (!this.service) return this.modelValue;
         else {
           if (this.valId) {
             let v = this.$store.getters[`${this.service}/get`](this.valId);

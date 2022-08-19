@@ -30,7 +30,7 @@
               <q-spinner v-if="checkIsLoading(address._id, type)" class="q-mt-sm" color="primary" size="1.5em"/>
               <q-checkbox
                 v-else
-                @input="checkDefaults(address, type)"
+                @update:model-value="checkDefaults(address, type)"
                 v-model="address.tags[`isDefault${type}`]"
                 dense/>
               <p class="q-ma-none" style="margin-left: 5px">Default {{ type }} Address</p>
@@ -44,7 +44,7 @@
           <q-card-section>
             <q-input label="Name" v-model="addressNameInput"/>
             <div class="flex justify-between q-mt-lg">
-              <PlacesAutoCompleteBox style="flex: .7" :path="newAddress" @input="getAddress"/>
+              <PlacesAutoCompleteBox style="flex: .7" :path="newAddress" @update:model-value="getAddress"/>
               <q-select
                 label="Address Type(s)"
                 v-model="addressTypes"
@@ -63,7 +63,7 @@
 
       <q-dialog v-model="showAddressDio">
         <q-card style="min-width: 40vw;">
-          <PlacesAutoCompleteBox :value="selectedAddress" :path="newAddress"/>
+          <PlacesAutoCompleteBox :model-value="selectedAddress" :path="newAddress"/>
         </q-card>
       </q-dialog>
     </div>
@@ -71,9 +71,10 @@
 </template>
 
 <script>
-  import {models} from '@feathersjs/vuex';
-  import {mapActions} from 'vuex';
+  import {models} from 'feathers-pinia';
+  import {mapActions} from 'pinia';
   import PlacesAutoCompleteBox from '../../formGeneratorCustom/PlacesAutoCompleteBox/PlacesAutoCompleteBox';
+  import useAccounts from '../../../store/services/accounts';
 
   export default {
     name: 'account-addresses',
@@ -81,7 +82,7 @@
       PlacesAutoCompleteBox,
     },
     props: {
-      value: {
+      modelValue: {
         type: Object,
         required: true,
       },
@@ -103,7 +104,7 @@
       };
     },
     watch: {
-      value: {
+      modelValue: {
         deep: true,
         immediate: true,
         handler(newVal) {
@@ -114,7 +115,7 @@
       },
     },
     methods: {
-      ...mapActions('accounts', {
+      ...mapActions(useAccounts, {
         patchAccount: 'patch',
       }),
       getAddress(e) {

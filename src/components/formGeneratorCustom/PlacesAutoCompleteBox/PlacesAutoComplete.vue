@@ -125,12 +125,10 @@
     },
     methods: {
       // ...mapMutations('places-auto-complete', {clearAddresses: 'clearAll'}),
-      ...mapActions(usePlacesAutoComplete, {clearAddresses: 'removeFromStore'}),
+      ...mapActions(usePlacesAutoComplete, {clearAll: 'clearAll'}),
       ...mapActions(usePlacesAutoComplete, {findAddresses: 'find'}),
       ...mapActions(useGeocode, {findgeocoded: 'find'}),
-      clearAll() {
-        this.addresses.forEach(item => this.clearAddresses(item));
-      },
+
       clearInput() {
         this.input = null;
         this.$emit('update:modelValue', {

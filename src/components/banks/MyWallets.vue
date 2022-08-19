@@ -45,7 +45,7 @@
   import {useFindPaginate} from '../../';
   import {reactive, ref} from 'vue';
   import {models} from 'feathers-pinia';
-  import useAccounts from '../../store/services/accounts';
+  import useAccounts from '../../stores/services/accounts';
 
   export default {
     name: 'my-wallets',

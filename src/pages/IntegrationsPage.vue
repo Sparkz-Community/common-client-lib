@@ -102,7 +102,7 @@
   import {useFindPaginate} from '../';
   import SelectOrAdd from '../components/formGeneratorCustom/SelectOrAdd';
   import {computed, ref} from 'vue';
-  import {IntegrationAuths} from '../store/services/integrationAuths';
+  import {IntegrationAuths} from '../stores/services/integrationAuths';
 
   export default {
     name: 'integrations-page',

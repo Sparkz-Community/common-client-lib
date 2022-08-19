@@ -50,7 +50,7 @@
   import {models} from 'feathers-pinia';
   import {useFindPaginate} from '../../../';
   import AccountFormDialog from './AccountFormDialog';
-  import {Accounts} from '../../../store/services/accounts';
+  import {Accounts} from '../../../stores/services/accounts';
   import {computed, inject, reactive, ref, watch} from 'vue';
   import {useQuasar} from 'quasar';
 

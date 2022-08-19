@@ -74,7 +74,7 @@
   import {models} from 'feathers-pinia';
   import {mapActions} from 'pinia';
   import PlacesAutoCompleteBox from '../../formGeneratorCustom/PlacesAutoCompleteBox/PlacesAutoCompleteBox';
-  import useAccounts from '../../../store/services/accounts';
+  import useAccounts from '../../../stores/services/accounts';
 
   export default {
     name: 'account-addresses',

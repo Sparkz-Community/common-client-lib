@@ -47,7 +47,7 @@
     from '@sparkz-community/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput';
   import {useFindPaginate} from '../../../';
   import {computed, ref} from 'vue';
-  import {Accounts} from '../../../store/services/accounts';
+  import {Accounts} from '../../../stores/services/accounts';
 
   export default {
     name: 'AccountSearch',

@@ -26,9 +26,9 @@
   import {useFindPaginate} from '../';
   import {computed, ref} from 'vue';
 
-  import useApplicationStore from '../store/services/applications';
-  import useDomainStore from '../store/services/domains';
-  import useEnvironmentStore from '../store/services/environments';
+  import useApplicationStore from '../stores/services/applications';
+  import useDomainStore from '../stores/services/domains';
+  import useEnvironmentStore from '../stores/services/environments';
 
   export default {
     name: 'v-instances-page',

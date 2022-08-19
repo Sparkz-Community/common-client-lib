@@ -341,9 +341,9 @@
   import {ref} from 'vue';
   import {computed} from 'vue';
 
-  import useApplicationStore from '../store/services/applications';
-  import useIntegrationAuthStore from '../store/services/integrationAuths';
-  import useAccountStore from '../store/services/accounts';
+  import useApplicationStore from '../stores/services/applications';
+  import useIntegrationAuthStore from '../stores/services/integrationAuths';
+  import useAccountStore from '../stores/services/accounts';
 
   export default {
     name: 'environments-page',

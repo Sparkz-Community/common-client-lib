@@ -53,8 +53,8 @@
   import {useFindPaginate} from '../../../';
   import {reactive, ref} from 'vue';
   import {computed, inject} from 'vue';
-  import {Accounts} from '../../../store/services/accounts';
-  import {QuickbooksCompanies} from '../../../store/services/quickbookCompanies';
+  import {Accounts} from '../../../stores/services/accounts';
+  import {QuickbooksCompanies} from '../../../stores/services/quickbookCompanies';
 
 
   export default {

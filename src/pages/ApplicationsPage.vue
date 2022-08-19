@@ -236,7 +236,7 @@
   import {useFindPaginate} from '../';
   import {computed, ref} from 'vue';
 
-  import useEnvironments from '../store/services/environments';
+  import useEnvironments from '../stores/services/environments';
 
 
   export default {

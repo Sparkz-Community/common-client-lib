@@ -102,7 +102,7 @@
   import {capitalize, kebabize} from '../utils';
   import {useFindPaginate} from '../';
   import {computed, ref} from 'vue';
-  import {Instances} from '../store/services/instances';
+  import {Instances} from '../stores/services/instances';
 
   export default {
     name: 'v-instances-page',

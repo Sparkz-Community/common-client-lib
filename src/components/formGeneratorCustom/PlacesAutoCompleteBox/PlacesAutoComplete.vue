@@ -26,8 +26,8 @@
 
 <script>
   import {mapState, mapActions} from 'pinia';
-  import usePlacesAutoComplete from '../../../store/services/places-auto-complete';
-  import useGeocode from '../../../store/services/geocode';
+  import usePlacesAutoComplete from '../../../stores/services/places-auto-complete';
+  import useGeocode from '../../../stores/services/geocode';
 
   export default {
     name: 'PlacesAutoComplete',

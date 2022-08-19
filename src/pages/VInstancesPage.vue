@@ -101,7 +101,7 @@
   import FDataTable from '../components/common/molecules/feathers/FDataTable/FDataTable';
   import {capitalize, kebabize} from '../utils';
   import {useFindPaginate} from '../';
-  import {computed, ref} from 'vue/dist/vue';
+  import {computed, ref} from 'vue';
   import {Instances} from '../store/services/instances';
 
   export default {

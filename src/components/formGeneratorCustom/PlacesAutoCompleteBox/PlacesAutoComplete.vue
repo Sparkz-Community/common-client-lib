@@ -28,6 +28,7 @@
   import {mapState, mapActions} from 'pinia';
   import usePlacesAutoComplete from '../../../store/services/places-auto-complete';
   import useGeocode from '../../../store/services/geocode';
+
   export default {
     name: 'PlacesAutoComplete',
     props: {
@@ -55,7 +56,7 @@
     },
     emits: [
       'update:modelValue',
-      'error'
+      'error',
     ],
     data() {
       return {
@@ -96,9 +97,11 @@
       },
     },
     computed: {
-      ...mapState(usePlacesAutoComplete, {placeloading: 'isFindPending'}),
+      ...mapState(usePlacesAutoComplete, {
+        placeloading: 'isFindPending',
+        addresses: 'items',
+      }),
       ...mapState(useGeocode, {geoloading: 'isFindPending'}),
-      ...mapState(usePlacesAutoComplete, {addresses: 'items'}),
       loading() {
         return this.placeloading || this.geoloading;
       },

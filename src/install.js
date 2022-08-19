@@ -52,12 +52,6 @@ const install = (app, {prefix, loadComponents = true} = {}) => {
   app.provide('$enumValues', enumValues);
 
   app.mixin({
-    setup() {
-      return {
-        ...useCssVars(),
-        ...useRouters(),
-      };
-    },
     data() {
       return {
         $windowWidth: typeof window !== 'undefined' ? window.outerWidth : 0,
@@ -86,6 +80,8 @@ const install = (app, {prefix, loadComponents = true} = {}) => {
       });
     },
     methods: {
+      ...useCssVars(),
+      ...useRouters(),
       $isLoading(val, options = {}) {
         if (val) {
           this.$q.loading.show({...options});

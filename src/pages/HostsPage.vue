@@ -24,7 +24,7 @@
   import FDataTable from '../components/common/molecules/feathers/FDataTable/FDataTable';
   import {capitalize, kebabize} from '../utils';
   import {useFindPaginate} from '../';
-  import {computed, ref} from 'vue/dist/vue';
+  import {computed, ref} from 'vue';
 
   import useApplicationStore from '../store/services/applications';
   import useDomainStore from '../store/services/domains';

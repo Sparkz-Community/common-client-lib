@@ -51,7 +51,7 @@
 <script>
   import AddCompany from './AddCompany';
   import {useFindPaginate} from '../../../';
-  import {reactive, ref} from 'vue/dist/vue';
+  import {reactive, ref} from 'vue';
   import {computed, inject} from 'vue';
   import {Accounts} from '../../../store/services/accounts';
   import {QuickbooksCompanies} from '../../../store/services/quickbookCompanies';

@@ -339,7 +339,7 @@
   import {models} from 'feathers-pinia';
   import AccountProfile from '../components/profile/AccountProfile';
   import {ref} from 'vue';
-  import {computed} from 'vue/dist/vue';
+  import {computed} from 'vue';
 
   import useApplicationStore from '../store/services/applications';
   import useIntegrationAuthStore from '../store/services/integrationAuths';

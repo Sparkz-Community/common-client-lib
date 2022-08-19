@@ -1,4 +1,4 @@
-import {lodash} from '../index';
+import {lodash} from '../packages';
 const {$lget} = lodash;
 export default function hookCustomizer(obj_value, src_value) {
   Array.prototype.insert = function (index, ...value) {

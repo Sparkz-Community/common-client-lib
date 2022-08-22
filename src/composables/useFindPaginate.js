@@ -50,9 +50,9 @@ export default function useFindPaginate(
         acc = acc.concat(mostRecentQueries?.[qkey]?.ids || []);
         return acc;
       }, []);
-      return ids.value.map(id => store.itemsById[id]);
+      return ids.map(id => store.itemsById[id]);
     }
-    return items;
+    return items.value;
   });
 
   const paginationMeta = usePagination(pagination, latestQuery);

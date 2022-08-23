@@ -1,11 +1,11 @@
-import Vue from 'vue';
+import {createApp} from 'vue';
 
 // eslint-disable-next-line no-unused-vars
 const createInstance = ({ ref, el, slots, component, root, props }) => {
   let attrs = {
     ...props
   };
-  let instance = new Vue({
+  let instance = createApp({
     // ...testProgrCom,
     // propsData: { ...props },
     render (h) {
@@ -36,7 +36,7 @@ const createInstance = ({ ref, el, slots, component, root, props }) => {
         //   parent: root,
         //   propsData: slot_propsData
         // });
-        let slotInstance = new Vue({
+        let slotInstance = createApp({
           render (h) {
             const children = Object.keys(this.$slots).map(slot => h('template', { slot }, this.$slots[slot]));
             return h(slot_component, {
@@ -47,13 +47,13 @@ const createInstance = ({ ref, el, slots, component, root, props }) => {
             }, children);
           },
         });
-        slotInstance.$mount();
-        slotInstance.$forceUpdate();
+        slotInstance.mount();
+        // slotInstance.$forceUpdate();
         instance.$slots[slot_key] = [slotInstance._vnode];
       }
     });
   }
-  instance.$mount();
+  instance.mount();
   return instance;
 };
 

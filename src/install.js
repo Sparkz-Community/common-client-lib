@@ -15,7 +15,7 @@ import {spongeCase} from 'sponge-case';
 
 import {lodash} from './packages';
 
-import {useCssVars, useRouters} from './composables';
+import {useCssVars} from './composables';
 
 
 const install = (app, {prefix, loadComponents = true} = {}) => {
@@ -81,7 +81,47 @@ const install = (app, {prefix, loadComponents = true} = {}) => {
     },
     methods: {
       ...useCssVars(),
-      ...useRouters(),
+      $routerPreserve({name, params, query, hash, path} = {}) {
+        let routerObj = {};
+        if (params && JSON.stringify(params) !== JSON.stringify(this.$route.params)) routerObj.params = params;
+        if (query && JSON.stringify(query) !== JSON.stringify(this.$route.query)) routerObj.query = query;
+        if (hash && JSON.stringify(hash) !== JSON.stringify(this.$route.hash)) routerObj.hash = hash;
+        if (name && name !== this.$route.name) routerObj.name = name;
+        if (path && path !== this.$route.path) routerObj.path = path;
+        if (Object.keys(routerObj).length) {
+          let obj = {
+            ...{
+              params: this.$route.params,
+              query: this.$route.query,
+              hash: this.$route.hash,
+            },
+            ...routerObj,
+          };
+          this.$router.push(obj).catch((err) => {
+            throw new Error(`iy-common-client-lib -> global mixin -> $routerPreserve -> $router.push: ${err}.`);
+          });
+        }
+      },
+      $rHistory({name, params, query, hash, path} = {}) {
+        let routerObj = {};
+        if (params && JSON.stringify(params) !== JSON.stringify(this.$route.params)) routerObj.params = params;
+        if (query && JSON.stringify(query) !== JSON.stringify(this.$route.query)) routerObj.query = query;
+        if (hash && JSON.stringify(hash) !== JSON.stringify(this.$route.hash)) routerObj.hash = hash;
+        if (name && name !== this.$route.name) routerObj.name = name;
+        if (path && path !== this.$route.path) routerObj.path = path;
+        if (Object.keys(routerObj).length) {
+          let obj = {
+            ...{
+              params: this.$route.params,
+              query: this.$route.query,
+              hash: this.$route.hash,
+            },
+            ...routerObj,
+          };
+          const {href} = this.$router.resolve(obj);
+          window.history.pushState({}, null, href);
+        }
+      },
       $isLoading(val, options = {}) {
         if (val) {
           this.$q.loading.show({...options});

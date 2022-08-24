@@ -154,7 +154,7 @@ export default function (
             router_obj.params = this.$route.params;
           }
         }
-        if (this.$route.hash || r_hash) {
+        if ((this.$route.hash && this.$route.hash !== '') || (r_hash && r_hash !== '')) {
           let is_hash_diff = this.$route.hash !== r_hash;
           if (is_hash_diff) {
             router_obj.hash = r_hash || this.$route.hash;

@@ -10,7 +10,7 @@ export default function (
     // eslint-disable-next-line no-unused-vars
     parseQuery = (value, key) => value,
     params = {},
-    hash = {},
+    hash = '',
     runWhen = true,
   } = {}) {
   const prefix = $lcamelCase(name);
@@ -134,7 +134,7 @@ export default function (
       },
     },
     methods: {
-      [`${prefix}RouteChange`]({r_query = {}, r_params = {}, r_hash = {}} = {}) {
+      [`${prefix}RouteChange`]({r_query = {}, r_params = {}, r_hash = ''} = {}) {
         let router_obj = {};
         if (Object.keys(this.$route.query).length || Object.keys(r_query).length) {
           let is_query_diff = Object.keys(r_query).some(key => {

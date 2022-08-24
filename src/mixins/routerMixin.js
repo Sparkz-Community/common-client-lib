@@ -25,12 +25,12 @@ export default function (
       let self = this;
       window.addEventListener('popstate', () => {
         let route = self.$router.resolve(window.location.href.replace(window.location.origin, ''));
-        if (route) self[`${prefix}CurrentRoute`] = route.route;
+        if (route) self[`${prefix}CurrentRoute`] = route;
         // console.log('popstate', e, window.location, route);
       });
       let route = self.$router.resolve(window.location.href.replace(window.location.origin, ''));
-      if (route) self[`${prefix}CurrentRoute`] = route.route;
-      // console.log('popstate', e, window.location, route);
+      if (route) self[`${prefix}CurrentRoute`] = route;
+      // console.log('popstate', window.location, route);
     },
     watch: {
       $route: {
@@ -38,7 +38,7 @@ export default function (
         deep: true,
         handler(to) {
           if (this[`${prefix}RunWhenCust`]) { // console.log('$route');
-            Object.keys(to.query).forEach(query_key => {
+            Object.keys(to.query || {}).forEach(query_key => {
               if ((query_key in this) && (query_key in this[`${prefix}RouteQueryCust`]) && to.query[query_key] !== this[query_key]) {
                 try {
                   this[query_key] = parseQuery(to.query[query_key], query_key);
@@ -48,20 +48,10 @@ export default function (
               }
             }, this);
 
-            Object.keys(to.params).forEach(params_key => {
-              if ((params_key in this) && (params_key in this[`${prefix}RouteParamsCust`]) && to.query[params_key] !== this[params_key]) {
+            Object.keys(to.params || {}).forEach(params_key => {
+              if ((params_key in this) && (params_key in this[`${prefix}RouteParamsCust`]) && to.params[params_key] !== this[params_key]) {
                 try {
                   this[params_key] = to.params[params_key];
-                } catch (e) {
-                  console.error(e);
-                }
-              }
-            }, this);
-
-            Object.keys(to.hash).forEach(hash_key => {
-              if ((hash_key in this) && (hash_key in this[`${prefix}RouteHashCust`]) && to.query[hash_key] !== this[hash_key]) {
-                try {
-                  this[hash_key] = to.hash[hash_key];
                 } catch (e) {
                   console.error(e);
                 }
@@ -74,9 +64,9 @@ export default function (
         immediate: true,
         deep: true,
         handler(to) {
-          console.log([`${prefix}CurrentRoute`], to);
+          // console.log([`${prefix}CurrentRoute`], to);
           if (this[`${prefix}RunWhenCust`]) { // console.log('$route');
-            Object.keys(to.query).forEach(query_key => {
+            Object.keys(to.query || {}).forEach(query_key => {
               if ((query_key in this) && (query_key in this[`${prefix}RouteQueryCust`]) && to.query[query_key] !== this[query_key]) {
                 try {
                   this[query_key] = parseQuery(to.query[query_key], query_key);
@@ -86,20 +76,10 @@ export default function (
               }
             }, this);
 
-            Object.keys(to.params).forEach(params_key => {
-              if ((params_key in this) && (params_key in this[`${prefix}RouteParamsCust`]) && to.query[params_key] !== this[params_key]) {
+            Object.keys(to.params || {}).forEach(params_key => {
+              if ((params_key in this) && (params_key in this[`${prefix}RouteParamsCust`]) && to.params[params_key] !== this[params_key]) {
                 try {
                   this[params_key] = to.params[params_key];
-                } catch (e) {
-                  console.error(e);
-                }
-              }
-            }, this);
-
-            Object.keys(to.hash).forEach(hash_key => {
-              if ((hash_key in this) && (hash_key in this[`${prefix}RouteHashCust`]) && to.query[hash_key] !== this[hash_key]) {
-                try {
-                  this[hash_key] = to.hash[hash_key];
                 } catch (e) {
                   console.error(e);
                 }
@@ -116,7 +96,7 @@ export default function (
             this[`${prefix}RouteChange`]({
               r_query: {...this.$route.query, ...newVal},
               r_params: {...this.$route.params, ...this[`${prefix}RouteParamsCust`]},
-              r_hash: {...this.$route.hash, ...this[`${prefix}RouteHashCust`]},
+              r_hash: this[`${prefix}RouteHashCust`] || this.$route.hash,
             });
           }
         },
@@ -129,7 +109,7 @@ export default function (
             this[`${prefix}RouteChange`]({
               r_query: {...this.$route.query, ...this[`${prefix}RouteQueryCust`]},
               r_params: {...this.$route.params, ...newVal},
-              r_hash: {...this.$route.hash, ...this[`${prefix}RouteHashCust`]},
+              r_hash: this[`${prefix}RouteHashCust`] || this.$route.hash,
             });
           }
         },
@@ -142,7 +122,7 @@ export default function (
             this[`${prefix}RouteChange`]({
               r_query: {...this.$route.query, ...this[`${prefix}RouteQueryCust`]},
               r_params: {...this.$route.params, ...this[`${prefix}RouteParamsCust`]},
-              r_hash: {...this.$route.hash, ...newVal},
+              r_hash: newVal || this.$route.hash,
             });
           }
         },
@@ -174,14 +154,10 @@ export default function (
             router_obj.params = this.$route.params;
           }
         }
-        if (Object.keys(this.$route.hash).length || Object.keys(r_hash).length) {
-          let is_hash_diff = Object.keys(r_hash).some(key => {
-            return (!(key in this.$route.hash) || ((key in this.$route.hash) && this.$route.hash[key] !== r_hash[key]));
-          }, this);
+        if (this.$route.hash || r_hash) {
+          let is_hash_diff = this.$route.hash !== r_hash;
           if (is_hash_diff) {
-            router_obj.hash = {...this.$route.hash, ...r_hash};
-          } else if ((router_obj.query && Object.keys(router_obj.query).length) || (router_obj.params && Object.keys(router_obj.params).length)) {
-            router_obj.hash = this.$route.hash;
+            router_obj.hash = r_hash || this.$route.hash;
           }
         }
         if (this.$route.name && Object.keys(router_obj).length) router_obj.name = this.$route.name;

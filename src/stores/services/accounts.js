@@ -1,6 +1,6 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
-const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
+const {$lget, $lset, $lmergeWith} = lodash;
 
 export class Accounts extends BaseModel {
   constructor(data, options) {
@@ -8,25 +8,17 @@ export class Accounts extends BaseModel {
   }
 }
 
-export default async (
+export default (
   {
-    FeathersClient,
+    feathersClient,
     idField = '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
-    extend_instance_defaults={},
+    extend_instance_defaults= {},
     state = () => ({}),
     getters = {},
     actions = {},
   } = {}) => {
-
-  if ($lisNil(FeathersClient)) {
-    throw Error('FeathersClient argument must be set');
-  }
-  const {
-    default: feathersClient,
-  } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
-
   // Define default properties here
   Accounts.instanceDefaults = function () {
     return {
@@ -45,7 +37,7 @@ export default async (
       ...extend_instance_defaults
     };
   };
-
+  
   Accounts.setupInstance = function (data) {
     let createdAt = $lget(data, 'createdAt');
     if (typeof createdAt === 'string') {
@@ -57,15 +49,15 @@ export default async (
     }
     return data;
   };
-
+  
   const servicePath = 'accounts';
-
+  
   let Model = Accounts;
   if (typeof extend_class_fn === 'function') {
     Model = extend_class_fn(Accounts);
   }
-
-
+  
+  
   const useStore = defineStore({
     Model,
     servicePath,
@@ -75,7 +67,7 @@ export default async (
     getters,
     actions,
   });
-
+  
   // Setup the client-side Feathers hooks.
   feathersClient.service(servicePath).hooks($lmergeWith({
     before: {
@@ -106,7 +98,6 @@ export default async (
       remove: [],
     },
   }, extend_hooks, hookCustomizer));
-
+  
   return useStore;
 };
-

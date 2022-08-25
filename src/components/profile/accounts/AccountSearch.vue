@@ -47,7 +47,7 @@
     from '@sparkz-community/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput';
   import {useFindPaginate} from '../../../';
   import {computed, ref} from 'vue';
-  import useAccounts from '../../../stores/services/accounts';
+  import {Accounts} from '../../../stores/services/accounts';
 
   export default {
     name: 'AccountSearch',
@@ -104,7 +104,7 @@
         itemsCount: accountsTotal,
       } = useFindPaginate({
         limit: ref(6),
-        model: useAccounts().Model,
+        model: Accounts,
         qid: ref('searchAccounts'),
         infinite: ref(true),
         query,

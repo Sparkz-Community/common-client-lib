@@ -1,6 +1,6 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
-const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
+const {$lget, $lset, $lmergeWith} = lodash;
 
 export class QuickbooksCompanies extends BaseModel {
   constructor(data, options) {
@@ -8,25 +8,17 @@ export class QuickbooksCompanies extends BaseModel {
   }
 }
 
-export default async (
+export default (
   {
-    FeathersClient,
+    feathersClient,
     idField = '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
-    extend_instance_defaults={},
+    extend_instance_defaults = {},
     state = () => ({}),
     getters = {},
     actions = {},
   } = {}) => {
-
-  if ($lisNil(FeathersClient)) {
-    throw Error('FeathersClient argument must be set');
-  }
-  const {
-    default: feathersClient,
-  } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
-
   // Define default properties here
   QuickbooksCompanies.instanceDefaults = function () {
     return {
@@ -98,4 +90,3 @@ export default async (
 
   return useStore;
 };
-

@@ -14,7 +14,7 @@ export default (
     idField = '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
-    extend_instance_defaults= {},
+    extend_instance_defaults = {},
     state = () => ({}),
     getters = {},
     actions = {},

@@ -56,7 +56,7 @@ const stores = {
   wallets,
 };
 
-export default {
+export {
   classes,
   stores,
 };

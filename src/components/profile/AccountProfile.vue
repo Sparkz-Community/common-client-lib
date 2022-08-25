@@ -1,6 +1,6 @@
 <template>
   <account-card :tabs="accountCardTabs"
-                :value="value"
+                :model-value="modelValue"
                 :tab="tab"
                 v-bind="$attrs">
     <template #wallets="value">
@@ -37,7 +37,7 @@
     </template>
 
     <template #social-links="value">
-      <account-social-links :value="value"/>
+      <account-social-links :model-value="value"/>
     </template>
   </account-card>
 </template>
@@ -65,7 +65,7 @@
       AccountCard,
     },
     props: {
-      value: {
+      modelValue: {
         type: Object,
         required: true,
       },

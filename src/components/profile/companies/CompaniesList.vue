@@ -1,7 +1,7 @@
 <template>
   <div :class="`${companies.length ? ($q.screen.sm || $q.screen.xs) ?'column': 'row': ''} q-gutter-lg q-pa-md`">
 
-    <add-company class="col" :model-value="value" :style="companies.length ? 'max-width: 450px;': 'max-width: 450px;'"/>
+    <add-company class="col" :model-value="modelValue" :style="companies.length ? 'max-width: 450px;': 'max-width: 450px;'"/>
 
     <div class="col" v-for="company in companies" :key="$lget(company,'_id')">
       <div class="box column items-center justify-center q-pa-xl" style=" position: relative">

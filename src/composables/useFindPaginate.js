@@ -1,9 +1,6 @@
 import {computed, reactive, ref} from 'vue';
 import {useFind, usePagination} from 'feathers-pinia';
 
-import {lodash} from '../packages';
-const {$lget} = lodash;
-
 
 export default function useFindPaginate(
   {

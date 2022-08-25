@@ -98,7 +98,11 @@
         debounce: 500,
       }));
 
-      const {items: accounts} = useFindPaginate({
+      const {
+        items: accounts,
+        currentPage: accountsCurrentPage,
+        itemsCount: accountsTotal,
+      } = useFindPaginate({
         limit: ref(6),
         model: Accounts,
         qid: ref('searchAccounts'),
@@ -109,12 +113,15 @@
 
       return {
         accounts,
+        accountsCurrentPage,
+        accountsTotal,
+
+        search,
       };
     },
     data() {
       return {
         sort: undefined,
-        search: '',
         selection: null,
       };
     },

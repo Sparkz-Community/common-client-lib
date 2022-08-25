@@ -1,9 +1,6 @@
 import {computed, reactive, ref} from 'vue';
 import {useFind, usePagination} from 'feathers-pinia';
 
-import {lodash} from '../packages';
-const {$lget} = lodash;
-
 
 export default function useFindPaginate(
   {
@@ -57,15 +54,10 @@ export default function useFindPaginate(
 
   const paginationMeta = usePagination(pagination, latestQuery);
 
-  const total = computed(() => {
-    return $lget(latestQuery, 'response.total', $lget(paginationData, `${qid.value}.mostRecent.total`, 0));
-  });
-
   return {
     ...findMeta,
     ...paginationMeta,
     items: newItems,
     pagination,
-    total,
   };
 }

@@ -409,7 +409,7 @@
           ...props.params,
         };
       });
-      const {items: data, isPending, pagination, toPage, total} = useFindPaginate({
+      const {items: data, isPending, pagination, toPage, itemsCount: total} = useFindPaginate({
         limit: toRef(props, 'limit'),
         skip: toRef(props, 'skip'),
         model: props.model,

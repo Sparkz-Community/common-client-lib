@@ -1,41 +1,40 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
-const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
+import {commonSettings, coreFields} from '@/utils/common-instance-defaults';
 
-export class QuickbooksCompanies extends BaseModel {
+const {$lget, $lset, $lmergeWith} = lodash;
+
+export class IntegrationAuths extends BaseModel {
   constructor(data, options) {
     super(data, options);
   }
 }
 
-export default async (
+export default (
   {
-    FeathersClient,
+    feathersClient,
     idField = '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
-    extend_instance_defaults={},
+    extend_instance_defaults = {},
     state = () => ({}),
     getters = {},
     actions = {},
   } = {}) => {
-
-  if ($lisNil(FeathersClient)) {
-    throw Error('FeathersClient argument must be set');
-  }
-  const {
-    default: feathersClient,
-  } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
-
   // Define default properties here
-  QuickbooksCompanies.instanceDefaults = function () {
+  IntegrationAuths.instanceDefaults = function () {
     return {
       name: undefined,
+      secretKey: undefined,
+      integration: undefined,
+      environments:[],
+      settings: commonSettings,
+      ...coreFields,
       ...extend_instance_defaults
     };
   };
 
-  QuickbooksCompanies.setupInstance = function (data) {
+  IntegrationAuths.setupInstance = function (data) {
     let createdAt = $lget(data, 'createdAt');
     if (typeof createdAt === 'string') {
       $lset(data, 'createdAt', new Date(createdAt));
@@ -47,11 +46,11 @@ export default async (
     return data;
   };
 
-  const servicePath = 'quickbooks/companies';
+  const servicePath = 'integration-auths';
 
-  let Model = QuickbooksCompanies;
+  let Model = IntegrationAuths;
   if (typeof extend_class_fn === 'function') {
-    Model = extend_class_fn(QuickbooksCompanies);
+    Model = extend_class_fn(IntegrationAuths);
   }
 
 
@@ -98,4 +97,3 @@ export default async (
 
   return useStore;
 };
-

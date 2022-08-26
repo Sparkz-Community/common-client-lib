@@ -54,7 +54,7 @@
   import {reactive, ref} from 'vue';
   import {computed, inject} from 'vue';
   import {Accounts} from '../../../stores/services/accounts';
-  import {QuickbooksCompanies} from '../../../stores/services/quickbookCompanies';
+  import {QuickbooksCompanies} from '../../../stores/services/quickbook-companies';
 
 
   export default {

@@ -1,6 +1,7 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
-const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
+import {coreFields} from '@/utils/common-instance-defaults';
+const {$lget, $lset, $lmergeWith} = lodash;
 
 export class Instances extends BaseModel {
   constructor(data, options) {
@@ -8,30 +9,24 @@ export class Instances extends BaseModel {
   }
 }
 
-export default async (
+export default (
   {
-    FeathersClient,
+    feathersClient,
     idField = '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
-    extend_instance_defaults={},
+    extend_instance_defaults = {},
     state = () => ({}),
     getters = {},
     actions = {},
   } = {}) => {
-
-  if ($lisNil(FeathersClient)) {
-    throw Error('FeathersClient argument must be set');
-  }
-  const {
-    default: feathersClient,
-  } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
-
   // Define default properties here
   Instances.instanceDefaults = function () {
     return {
       name: undefined,
-      controllers: [],
+      vInstances: [],
+      // controllers: [],
+      ...coreFields,
       ...extend_instance_defaults
     };
   };
@@ -99,4 +94,3 @@ export default async (
 
   return useStore;
 };
-

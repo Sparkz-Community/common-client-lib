@@ -1,6 +1,7 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
-const {$lget, $lset, $lisNil, $lmergeWith} = lodash;
+import {commonSettings, coreFields} from '@/utils/common-instance-defaults';
+const {$lget, $lset, $lmergeWith} = lodash;
 
 export class Devices extends BaseModel {
   constructor(data, options) {
@@ -8,37 +9,36 @@ export class Devices extends BaseModel {
   }
 }
 
-export default async (
+export default (
   {
-    FeathersClient,
+    feathersClient,
     idField = '_id',
     extend_hooks = {},
     extend_class_fn = (superClass) => superClass,
-    extend_instance_defaults={},
+    extend_instance_defaults = {},
     state = () => ({}),
     getters = {},
     actions = {},
   } = {}) => {
-
-  if ($lisNil(FeathersClient)) {
-    throw Error('FeathersClient argument must be set');
-  }
-  const {
-    default: feathersClient,
-  } = typeof FeathersClient === 'function' ? await FeathersClient() : FeathersClient;
-
   // Define default properties here
   Devices.instanceDefaults = function () {
     return {
       fingerprints: [],
-      visits: [],
+      // visits: [],
       counter: undefined,
-      platform: undefined,
+      // platform: undefined,
       publicKey: undefined,
-      userAgent: undefined,
-      user: undefined,
-      users: [],
-      lastRoute: undefined,
+      // userAgent: undefined,
+      lastRoute: {
+        name: undefined,
+        path: undefined,
+        query: undefined,
+        params: undefined,
+        meta: undefined,
+        props: undefined,
+      },
+      settings: commonSettings,
+      ...coreFields,
       ...extend_instance_defaults
     };
   };
@@ -76,7 +76,7 @@ export default async (
   // Setup the client-side Feathers hooks.
   feathersClient.service(servicePath).hooks($lmergeWith({
     before: {
-      all: [/*beforeHook*/],
+      all: [],
       find: [],
       get: [],
       create: [],
@@ -106,4 +106,3 @@ export default async (
 
   return useStore;
 };
-

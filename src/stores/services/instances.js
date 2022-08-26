@@ -23,7 +23,7 @@ export default (
   // Define default properties here
   Instances.instanceDefaults = function () {
     return {
-      name: '',
+      name: undefined,
       vInstances: [],
       // controllers: [],
       ...coreFields,

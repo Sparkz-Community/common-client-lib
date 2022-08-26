@@ -24,14 +24,14 @@ export default (
   Wallets.instanceDefaults = function () {
     return {
       tally_bank_business_profile: {
-        accountId: '',
-        accountName: '',
-        accountType: '',
-        accountEmail: '',
-        accountStatus: '',
-        accountBusinessType: '',
+        accountId: undefined,
+        accountName: undefined,
+        accountType: undefined,
+        accountEmail: undefined,
+        accountStatus: undefined,
+        accountBusinessType: undefined,
         externalBanks: [],
-        activeExternalBank: '',
+        activeExternalBank: undefined,
       },
       account: undefined,
       ...coreFields,

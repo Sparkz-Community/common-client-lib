@@ -23,7 +23,7 @@ export default (
   // Define default properties here
   Environments.instanceDefaults = function () {
     return {
-      name: '',
+      name: undefined,
       applications: [],
       hosts: [],
       integrationAuths: [],

@@ -23,7 +23,7 @@ export default (
   // Define default properties here
   Domains.instanceDefaults = function () {
     return {
-      name: '',
+      name: undefined,
       vInstance: undefined,
       hosts: [],
       ...coreFields,

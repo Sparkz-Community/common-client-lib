@@ -23,8 +23,8 @@ export default async (
   // Define default properties here
   Features.instanceDefaults = function () {
     return {
-      name: '',
-      description: '',
+      name: undefined,
+      description: undefined,
       applications: [],
       parent: undefined,
       children: [],

@@ -24,8 +24,8 @@ export default (
   // Define default properties here
   IntegrationAuths.instanceDefaults = function () {
     return {
-      name: '',
-      secretKey: '',
+      name: undefined,
+      secretKey: undefined,
       integration: undefined,
       environments:[],
       settings: commonSettings,

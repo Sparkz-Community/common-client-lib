@@ -23,7 +23,7 @@ export default (
   // Define default properties here
   Applications.instanceDefaults = function () {
     return {
-      name: '',
+      name: undefined,
       features: [],
       hosts: [],
       environments: [],

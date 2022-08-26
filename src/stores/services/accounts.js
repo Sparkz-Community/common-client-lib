@@ -23,12 +23,12 @@ export default (
   // Define default properties here
   Accounts.instanceDefaults = function () {
     return {
-      name: '',
-      email: '',
-      description: '',
+      name: undefined,
+      email: undefined,
+      description: undefined,
       phone: undefined,
       avatar: undefined,
-      banner: {},
+      banner: undefined,
       profileImg: undefined,
       // address: undefined,
       addresses: [],
@@ -43,7 +43,7 @@ export default (
         members: [],
         membersOf: [],
       },
-      authModelName: '',
+      authModelName: undefined,
       // peoples: [],
       responsibleForEnvironments: [],
       settings: commonSettings,

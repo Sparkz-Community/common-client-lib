@@ -1,11 +1,11 @@
 export const commonSettings = {
   theme: undefined,
-  hosts: {},
-  instances: {},
-  applications: {},
-  domains: {},
-  environments: {},
-  accounts: {},
+  hosts: undefined,
+  instances: undefined,
+  applications: undefined,
+  domains: undefined,
+  environments: undefined,
+  accounts: undefined,
 };
 
 export const commonFields = {
@@ -31,16 +31,16 @@ export const commonFields = {
   updatedByHistory: [],
   external: {
     createdBySource: {
-      id: '',
-      Model: '',
+      id: undefined,
+      Model: undefined,
     },
     updatedBySource: {
-      id: '',
-      Model: '',
+      id: undefined,
+      Model: undefined,
     },
     updatedBySourceHistory: {
-      updatedBy: '',
-      updatedByHistoryModel: '',
+      updatedBy: undefined,
+      updatedByHistoryModel: undefined,
       updatedAt: undefined,
     },
     meta: undefined,
@@ -54,6 +54,6 @@ export const coreFields = {
   createdBy: undefined,
   updatedBy: undefined,
   updatedByHistory: [],
-  settings: {},
-  external: {},
+  settings: undefined,
+  external: undefined,
 };

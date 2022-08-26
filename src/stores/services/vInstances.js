@@ -23,7 +23,7 @@ export default (
   // Define default properties here
   VInstances.instanceDefaults = function () {
     return {
-      name: '',
+      name: undefined,
       instance: undefined,
       domains: [],
       ...coreFields,

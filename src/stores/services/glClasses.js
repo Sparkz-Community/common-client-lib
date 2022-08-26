@@ -23,7 +23,7 @@ export default (
   // Define default properties here
   GLClasses.instanceDefaults = function () {
     return {
-      name: '',
+      name: undefined,
       ...commonFields,
       ...extend_instance_defaults
     };

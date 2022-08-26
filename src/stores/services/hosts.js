@@ -23,7 +23,7 @@ export default (
   // Define default properties here
   Hosts.instanceDefaults = function () {
     return {
-      name: '',
+      name: undefined,
       domain: undefined,
       environment: undefined,
       // whiteLabel: undefined,

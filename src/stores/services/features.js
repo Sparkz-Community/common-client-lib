@@ -9,7 +9,7 @@ export class Features extends BaseModel {
   }
 }
 
-export default async (
+export default (
   {
     feathersClient,
     idField = '_id',

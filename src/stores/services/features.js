@@ -1,6 +1,6 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
-import {coreFields} from '@/utils/common-instance-defaults';
+import {coreFields} from './common/instanceDefaults';
 const {$lget, $lset, $lmergeWith} = lodash;
 
 export class Features extends BaseModel {
@@ -9,7 +9,7 @@ export class Features extends BaseModel {
   }
 }
 
-export default async (
+export default (
   {
     feathersClient,
     idField = '_id',

@@ -1,6 +1,6 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
-import {commonFields} from '../../utils/common-instance-defaults';
+import {commonFields} from './common/instanceDefaults';
 const {$lget, $lset, $lmergeWith} = lodash;
 
 export class GLDepartments extends BaseModel {

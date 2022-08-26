@@ -342,7 +342,7 @@
   import {computed} from 'vue';
 
   import useApplicationStore from '../stores/services/applications';
-  import useIntegrationAuthStore from '../stores/services/integrationAuths';
+  import useIntegrationAuthStore from '../stores/services/integration-auths';
   import useAccountStore from '../stores/services/accounts';
 
   export default {

@@ -1,5 +1,6 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
+import {commonSettings, commonFields} from '@/utils/common-instance-defaults';
 const {$lget, $lset, $lmergeWith} = lodash;
 
 export class Accounts extends BaseModel {
@@ -27,13 +28,26 @@ export default (
       description: undefined,
       phone: undefined,
       avatar: undefined,
+      banner: undefined,
       profileImg: undefined,
-      address: undefined,
+      // address: undefined,
       addresses: [],
       phones: [],
       socialLinks: [],
       images: [],
-      peoples: [],
+      ownership: {
+        owners: [],
+        owns: [],
+      },
+      membership: {
+        members: [],
+        membersOf: [],
+      },
+      authModelName: undefined,
+      // peoples: [],
+      responsibleForEnvironments: [],
+      settings: commonSettings,
+      ...commonFields,
       ...extend_instance_defaults
     };
   };

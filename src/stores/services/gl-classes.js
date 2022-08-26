@@ -1,8 +1,9 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
+import {commonFields} from '@/utils/common-instance-defaults';
 const {$lget, $lset, $lmergeWith} = lodash;
 
-export class IntegrationAuths extends BaseModel {
+export class GLClasses extends BaseModel {
   constructor(data, options) {
     super(data, options);
   }
@@ -20,16 +21,15 @@ export default (
     actions = {},
   } = {}) => {
   // Define default properties here
-  IntegrationAuths.instanceDefaults = function () {
+  GLClasses.instanceDefaults = function () {
     return {
       name: undefined,
-      integration: undefined,
-      environments:[],
+      ...commonFields,
       ...extend_instance_defaults
     };
   };
 
-  IntegrationAuths.setupInstance = function (data) {
+  GLClasses.setupInstance = function (data) {
     let createdAt = $lget(data, 'createdAt');
     if (typeof createdAt === 'string') {
       $lset(data, 'createdAt', new Date(createdAt));
@@ -41,11 +41,11 @@ export default (
     return data;
   };
 
-  const servicePath = 'integration-auths';
+  const servicePath = 'gl-classes';
 
-  let Model = IntegrationAuths;
+  let Model = GLClasses;
   if (typeof extend_class_fn === 'function') {
-    Model = extend_class_fn(IntegrationAuths);
+    Model = extend_class_fn(GLClasses);
   }
 
 

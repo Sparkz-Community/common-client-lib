@@ -1,6 +1,6 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
-import {commonSettings, commonFields} from '@/utils/common-instance-defaults';
+import {commonSettings, commonFields} from '../../utils/common-instance-defaults';
 const {$lget, $lset, $lmergeWith} = lodash;
 
 export class Accounts extends BaseModel {
@@ -51,7 +51,7 @@ export default (
       ...extend_instance_defaults
     };
   };
-  
+
   Accounts.setupInstance = function (data) {
     let createdAt = $lget(data, 'createdAt');
     if (typeof createdAt === 'string') {
@@ -63,15 +63,15 @@ export default (
     }
     return data;
   };
-  
+
   const servicePath = 'accounts';
-  
+
   let Model = Accounts;
   if (typeof extend_class_fn === 'function') {
     Model = extend_class_fn(Accounts);
   }
-  
-  
+
+
   const useStore = defineStore({
     Model,
     servicePath,
@@ -81,7 +81,7 @@ export default (
     getters,
     actions,
   });
-  
+
   // Setup the client-side Feathers hooks.
   feathersClient.service(servicePath).hooks($lmergeWith({
     before: {
@@ -112,6 +112,6 @@ export default (
       remove: [],
     },
   }, extend_hooks, hookCustomizer));
-  
+
   return useStore;
 };

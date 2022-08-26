@@ -1,5 +1,6 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
+import {commonSettings, coreFields} from '@/utils/common-instance-defaults';
 const {$lget, $lset, $lmergeWith} = lodash;
 
 export class Devices extends BaseModel {
@@ -23,14 +24,21 @@ export default (
   Devices.instanceDefaults = function () {
     return {
       fingerprints: [],
-      visits: [],
+      // visits: [],
       counter: undefined,
-      platform: undefined,
-      publicKey: undefined,
-      userAgent: undefined,
-      user: undefined,
-      users: [],
-      lastRoute: undefined,
+      // platform: undefined,
+      publicKey: '',
+      // userAgent: undefined,
+      lastRoute: {
+        name: '',
+        path: '',
+        query: {},
+        params: {},
+        meta: {},
+        props: {},
+      },
+      settings: commonSettings,
+      ...coreFields,
       ...extend_instance_defaults
     };
   };

@@ -1,5 +1,6 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
+import {coreFields} from '@/utils/common-instance-defaults';
 const {$lget, $lset, $lmergeWith} = lodash;
 
 export class Features extends BaseModel {
@@ -22,12 +23,12 @@ export default async (
   // Define default properties here
   Features.instanceDefaults = function () {
     return {
-      name: undefined,
-      description: undefined,
+      name: '',
+      description: '',
       applications: [],
       parent: undefined,
       children: [],
-      contents: [],
+      ...coreFields,
       ...extend_instance_defaults
     };
   };

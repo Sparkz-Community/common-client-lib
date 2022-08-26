@@ -1,5 +1,6 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
+import {commonFields} from '@/utils/common-instance-defaults';
 const {$lget, $lset, $lmergeWith} = lodash;
 
 export class GLClasses extends BaseModel {
@@ -22,7 +23,8 @@ export default (
   // Define default properties here
   GLClasses.instanceDefaults = function () {
     return {
-      name: undefined,
+      name: '',
+      ...commonFields,
       ...extend_instance_defaults
     };
   };

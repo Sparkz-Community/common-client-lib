@@ -22,7 +22,7 @@ export default (
   // Define default properties here
   QuickbooksCompanies.instanceDefaults = function () {
     return {
-      name: undefined,
+      name: '',
       ...extend_instance_defaults
     };
   };

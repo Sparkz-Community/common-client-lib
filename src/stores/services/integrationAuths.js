@@ -1,5 +1,7 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
+import {commonSettings, coreFields} from '@/utils/common-instance-defaults';
+
 const {$lget, $lset, $lmergeWith} = lodash;
 
 export class IntegrationAuths extends BaseModel {
@@ -22,9 +24,12 @@ export default (
   // Define default properties here
   IntegrationAuths.instanceDefaults = function () {
     return {
-      name: undefined,
+      name: '',
+      secretKey: '',
       integration: undefined,
       environments:[],
+      settings: commonSettings,
+      ...coreFields,
       ...extend_instance_defaults
     };
   };

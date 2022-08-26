@@ -5,12 +5,14 @@ import devices, { Devices } from './services/devices';
 import domains, { Domains } from './services/domains';
 import environments, { Environments } from './services/environments';
 import features, { Features } from './services/features';
+import geocode, { Geocode } from './services/geocode';
 import glClasses, { GLClasses } from './services/glClasses';
 import glDepartments, { GLDepartments } from './services/glDepartments';
 import hosts, { Hosts } from './services/hosts';
 import instances, { Instances } from './services/instances';
 import integrationAuths, { IntegrationAuths } from './services/integrationAuths';
 import integrations, { Integrations } from './services/integrations';
+import placesAutoComplete, { PlacesAutoComplete } from './services/places-auto-complete';
 import quickbookCompanies, { QuickbooksCompanies } from './services/quickbookCompanies';
 import vInstances, { VInstances } from './services/vInstances';
 import wallets, { Wallets } from './services/wallets';
@@ -27,12 +29,14 @@ const classes = {
   Domains,
   Environments,
   Features,
+  Geocode,
   GLClasses,
   GLDepartments,
   Hosts,
   Instances,
   IntegrationAuths,
   Integrations,
+  PlacesAutoComplete,
   QuickbooksCompanies,
   VInstances,
   Wallets,
@@ -45,12 +49,14 @@ const stores = {
   domains,
   environments,
   features,
+  geocode,
   glClasses,
   glDepartments,
   hosts,
   instances,
   integrationAuths,
   integrations,
+  placesAutoComplete,
   quickbookCompanies,
   vInstances,
   wallets,

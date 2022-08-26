@@ -1,5 +1,6 @@
 import { defineStore, BaseModel } from 'feathers-pinia';
 import {lodash, hookCustomizer} from '../../index';
+import {coreFields} from '@/utils/common-instance-defaults';
 const {$lget, $lset, $lmergeWith} = lodash;
 
 export class Wallets extends BaseModel {
@@ -22,7 +23,18 @@ export default (
   // Define default properties here
   Wallets.instanceDefaults = function () {
     return {
+      tally_bank_business_profile: {
+        accountId: '',
+        accountName: '',
+        accountType: '',
+        accountEmail: '',
+        accountStatus: '',
+        accountBusinessType: '',
+        externalBanks: [],
+        activeExternalBank: '',
+      },
       account: undefined,
+      ...coreFields,
       ...extend_instance_defaults
     };
   };

@@ -19,9 +19,9 @@ export default function useFindPaginate(
 
   const newParams = computed(() => {
     return {
+      paginate: true,
       ...params.value,
       qid: qid.value,
-      paginate: true,
       query: {
         ...query.value,
         ...pagination,

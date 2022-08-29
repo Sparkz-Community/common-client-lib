@@ -22,7 +22,7 @@
 
         <q-table dense
                  flat
-                 :data="$lget(props,['row','_fastjoin','vInstances'])"
+                 :rows="$lget(props,['row','_fastjoin','vInstances'])"
                  :visible-columns="['name','instance','createdAt','updatedAt']"
         >
           <template #header-cell="props">
@@ -46,7 +46,7 @@
 
           </template>
         </q-table>
-        <!--        <q-table :data="$lget(props,['row','_fastjoin','vInstances'])">
+        <!--        <q-table :rows="$lget(props,['row','_fastjoin','vInstances'])">
                   <q-td caption v-if="!Object.keys($lget(props,['row','_fastjoin'])).includes(props.col.name)" size="18px"
                         :props="props">
 
@@ -62,7 +62,7 @@
         grid
         dense
         flat
-        :data="$lget(props,['row','_fastjoin','vInstances'])"
+        :rows="$lget(props,['row','_fastjoin','vInstances'])"
         :visible-columns="['name','instance','createdAt','updatedAt']"
       >
         <template #item="scope">

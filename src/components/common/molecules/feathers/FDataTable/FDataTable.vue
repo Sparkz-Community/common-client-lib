@@ -1,7 +1,7 @@
 <template>
   <div id="FDataTable" :style="{...cssVars}" v-bind="attrs['div-attrs']">
     <q-table :title="title"
-             :data="data"
+             :rows="rows"
              :columns="finalColumns"
              v-model:selected="selected"
              :visible-columns="visibleColumns"
@@ -409,7 +409,7 @@
           ...props.params,
         };
       });
-      const {items: data, isPending, pagination, toPage, itemsCount: total} = useFindPaginate({
+      const {items: rows, isPending, pagination, toPage, itemsCount: total} = useFindPaginate({
         limit: toRef(props, 'limit'),
         skip: toRef(props, 'skip'),
         model: props.model,
@@ -421,7 +421,7 @@
       return {
         search,
         sort,
-        data,
+        rows,
         isPending,
         pagination,
         toPage,

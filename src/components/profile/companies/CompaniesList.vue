@@ -72,19 +72,19 @@
       let $Accounts = inject('$Accounts');
       let $QuickbooksCompanies = inject('$QuickbooksCompanies');
 
-      const query = computed(()=>{
+      const query = computed(() => {
         return {
           _id: {$in: $lget(props.modelValue, ['account', 'quickbooks', 'connections'], [])}
         };
       });
 
-      const params = computed(() =>({
+      const params = computed(() => ({
         'quickbooks/companies_fJoinHookResolversQuery': {
           accounts: true,
         },
       }));
 
-      const {items:companies, isPending} = useFindPaginate({
+      const {items: companies, isPending} = useFindPaginate({
         limit: ref(5),
         qid: ref('companies'),
         model: $QuickbooksCompanies,
@@ -92,7 +92,7 @@
         query,
         params
       });
-      const  {items:accounts} = useFindPaginate({
+      const  {items: accounts} = useFindPaginate({
         limit: 5,
         qid: 'accounts',
         model: $Accounts,

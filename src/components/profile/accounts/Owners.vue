@@ -83,13 +83,13 @@
       let accountSelection = ref(null);
 
       watch(modelValue, (newVal, oldVal) => {
-        if (newVal && Object.keys(newVal).length && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-          accountData.value = $lcloneDeep(newVal);
+        if (newVal?.value && Object.keys(newVal?.value).length && JSON.stringify(newVal?.value) !== JSON.stringify(oldVal?.value)) {
+          accountData.value = $lcloneDeep(newVal.value);
         }
       }, {deep: true, immediate: true});
 
       let account = computed(() => $lget(accountData.value, 'account', {}));
-      let ownerIds = computed(() => $lget(account, 'ownership.owners', []).map(i => i.id));
+      let ownerIds = computed(() => $lget(account.value, 'ownership.owners', []).map(i => i.id));
 
       function addOwner(account) {
         if (account !== null) {
@@ -135,6 +135,7 @@
                   },
                 ],
               });
+              isAdding.value = false;
             });
         }
       }
@@ -178,19 +179,24 @@
                 },
               ],
             });
+            isDeleting.value = false;
           });
       }
 
-      const query = computed(() => ({
-        _id: {
-          $in: ownerIds,
-        },
-        $select: ['_id', 'name', 'email', 'avatar'],
-      }));
+      const query = computed(() => {
+        return {
+          _id: {
+            $in: ownerIds.value,
+          },
+          $select: ['_id', 'name', 'email', 'avatar'],
+        };
+      });
 
-      const params = computed(()=>({
-        qid: `accountOwners-${$lget(account, '_id')}`,
-      }));
+      const params = computed(() => {
+        return {
+          qid: `accountOwners-${$lget(account.value, '_id')}`,
+        };
+      });
 
       const {items: owners} = useFindPaginate({
         limit: ref(12),

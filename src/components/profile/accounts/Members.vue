@@ -42,7 +42,7 @@
         v-model="newMemberDialog"
         @saved="addMember"
         @close="newMemberDialog=false"
-        :filter-out="[account._id, ...account?.membership?.member]"
+        :filter-out="[account._id, ...(account?.membership?.member || [])]"
     />
 
 
@@ -86,8 +86,8 @@
       let accountSelection = ref(null);
 
       watch(modelValue, (newVal, oldVal) => {
-        if (newVal && Object.keys(newVal).length && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-          accountData.value = $lcloneDeep(newVal);
+        if (newVal?.value && Object.keys(newVal?.value).length && JSON.stringify(newVal?.value) !== JSON.stringify(oldVal?.value)) {
+          accountData.value = $lcloneDeep(newVal.value);
         }
       }, {deep: true, immediate: true});
 
@@ -109,6 +109,7 @@
             },
           })
             .then(() => {
+              membersRefresh();
               $q.notify({
                 type: 'positive',
                 message: 'Successfully added member',
@@ -144,14 +145,20 @@
 
       function removeMember(accountId) {
         isDeleting.value = true;
-        const index = $lget(accountData.value, 'account.membership.members', []).indexOf(accountId);
-        $lget(accountData.value, 'account.membership.members', []).splice(index, 1);
+        let newMembers = $lget(accountData.value, 'account.membership.members', []).filter(id => {
+          return id !== accountId;
+        });
+        $lset(accountData.value, 'account.membership.members', newMembers);
+
+        // const index = $lget(accountData.value, 'account.membership.members', []).indexOf(accountId);
+        // $lget(accountData.value, 'account.membership.members', []).splice(index, 1);
         $lget(accountData.value, 'account').patch({
           data: {
             'membership.members': $lget(accountData.value, 'account.membership.members'),
           },
         })
           .then(() => {
+            // membersRefresh();
             $q.notify({
               type: 'positive',
               message: 'Successfully removed member',
@@ -183,24 +190,28 @@
           });
       }
 
-      const query = computed(() =>({
-        _id: {
-          $in: $lget(account, 'membership.members', []),
-        },
-        $select: ['_id', 'name', 'email', 'avatar'],
-      }));
+      const query = computed(() => {
+        return {
+          _id: {
+            $in: $lget(account.value, 'membership.members', []),
+          },
+          $select: ['_id', 'name', 'email', 'avatar'],
+        }
+      });
 
-      const params = computed(() =>({
-        qid: `accountMembers-${$lget(account, '_id')}`,
-      }));
+      const params = computed(() => {
+        return {
+          qid: `accountMembers-${$lget(account.value, '_id')}`,
+        }
+      });
 
-      const {items: members} = useFindPaginate({
+      const {items: members, find: membersRefresh} = useFindPaginate({
         limit: ref(12),
         model: $Accounts,
         qid: ref('members'),
         infinite: ref(true),
         query,
-        params
+        params,
       });
 
       return {
@@ -213,6 +224,7 @@
         addMember,
         removeMember,
         members,
+        membersRefresh,
       };
     },
   };

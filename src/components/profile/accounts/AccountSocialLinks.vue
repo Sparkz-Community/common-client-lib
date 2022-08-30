@@ -87,8 +87,8 @@
 
 <script>
   import {models} from 'feathers-pinia';
-  import {mapActions} from 'pinia';
-  import useAccounts from '../../../stores/services/accounts';
+  // import {mapActions} from 'pinia';
+  // import useAccounts from '../../../stores/services/accounts';
 
   export default {
     name: 'AccountSocialLinks',
@@ -103,7 +103,7 @@
     data() {
       return {
         accountData: {
-          account: new models.api.Accounts().clone(),
+          account: new models.api.Accounts(),
         },
         currentSocialLink: {
           icon: '',
@@ -148,12 +148,18 @@
           return params[`socialLinks.$.${item}`] = this.currentSocialLink[`${item}`];
         });
         return params;
+      },
+      accounts() {
+        return this.$useAccountsStore();
       }
     },
     methods: {
-      ...mapActions(useAccounts, {
-        patchAccount: 'patch',
-      }),
+      // ...mapActions(useAccounts, {
+      //   patchAccount: 'patch',
+      // }),
+      patchAccount(params) {
+        return this.accounts.patch(params);
+      },
       stopEdit() {
         this.addingNewLink ? this.addingNewLink = false : this.editExistingLink = false;
         this.currentSocialLink = {icon: '', type: '', name: '', url: '', color: ''};

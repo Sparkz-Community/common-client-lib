@@ -72,9 +72,9 @@
 
 <script>
   import {models} from 'feathers-pinia';
-  import {mapActions} from 'pinia';
+  // import {mapActions} from 'pinia';
   import PlacesAutoCompleteBox from '../../formGeneratorCustom/PlacesAutoCompleteBox/PlacesAutoCompleteBox';
-  import useAccounts from '../../../stores/services/accounts';
+  // import useAccounts from '../../../stores/services/accounts';
 
   export default {
     name: 'account-addresses',
@@ -99,7 +99,7 @@
         selectedAddress: {},
         addressTypes: [],
         accountData: {
-          account: new models.api.Accounts().clone(),
+          account: new models.api.Accounts(),
         },
       };
     },
@@ -114,10 +114,18 @@
         },
       },
     },
+    computed: {
+      accounts() {
+        return this.$useAccountsStore();
+      },
+    },
     methods: {
-      ...mapActions(useAccounts, {
-        patchAccount: 'patch',
-      }),
+      // ...mapActions(useAccounts, {
+      //   patchAccount: 'patch',
+      // }),
+      patchAccount(params) {
+        return this.accounts.patch(params);
+      },
       getAddress(e) {
         this.newAddress = e;
       },

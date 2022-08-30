@@ -71,6 +71,16 @@ const environmentRoutes = {
   ],
 };
 
+const packageRoutes = [
+  {
+    path: 'quickbooks-connect',
+    name: 'quickbooks-connect',
+    meta: {requiresAuth: true},
+    component: () => import ('../pages/ConnectQuickbooks.vue'),
+  },
+];
+
 export {
   environmentRoutes,
+  packageRoutes,
 };

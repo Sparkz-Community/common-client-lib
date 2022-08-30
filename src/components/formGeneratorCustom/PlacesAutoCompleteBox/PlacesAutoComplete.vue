@@ -138,10 +138,10 @@
         this.placesAutoComplete.clearAll();
       },
       findAddresses(params) {
-        this.placesAutoComplete.find(params);
+        return this.placesAutoComplete.find(params);
       },
       findGeocoded(params) {
-        this.placesAutoComplete.find(params);
+        return this.placesAutoComplete.find(params);
       },
       // ...mapActions(usePlacesAutoComplete, {clearAll: 'clearAll'}),
       // ...mapActions(usePlacesAutoComplete, {findAddresses: 'find'}),

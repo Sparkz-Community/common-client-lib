@@ -52,7 +52,7 @@
           v-model="selectedTab"
           animated>
           <q-tab-panel class="q-px-none" v-for="tab in tabs" :name="$lget(tab,'name')" :key="$lget(tab,'name')">
-            <slot :name="$lget(tab,'name')" v-bind="modelValue">
+            <slot :name="$lget(tab,'name')" :value="modelValue">
 
             </slot>
           </q-tab-panel>

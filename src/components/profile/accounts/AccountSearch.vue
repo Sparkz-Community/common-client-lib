@@ -46,8 +46,8 @@
   import SelectInput
     from '@sparkz-community/form-gen-client-lib/src/components/common/atoms/SelectInput/SelectInput';
   import {useFindPaginate} from '../../../';
-  import {computed, ref} from 'vue';
-  import {Accounts} from '../../../stores/services/accounts';
+  import {computed, inject, ref} from 'vue';
+  // import {Accounts} from '../../../stores/services/accounts';
 
   export default {
     name: 'AccountSearch',
@@ -70,6 +70,7 @@
     ],
     setup(props) {
       let search = ref('');
+      let $Accounts = inject('$Accounts');
 
       let query = computed(() => {
         let queryD = {
@@ -104,7 +105,7 @@
         itemsCount: accountsTotal,
       } = useFindPaginate({
         limit: ref(6),
-        model: Accounts,
+        model: $Accounts,
         qid: ref('searchAccounts'),
         infinite: ref(true),
         query,

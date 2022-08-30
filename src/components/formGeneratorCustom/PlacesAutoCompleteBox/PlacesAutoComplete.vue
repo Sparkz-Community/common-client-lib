@@ -3,7 +3,7 @@
     <q-form autocomplete="off">
       <q-select :model-value="input"
                 @input-value="setInput"
-                @update:model-value="geocode"
+                @update:model-value="findGeocode"
                 @clear="clearInput"
                 @filter="filterFn"
                 :options="addresses"
@@ -25,9 +25,9 @@
 </template>
 
 <script>
-  import {mapState, mapActions} from 'pinia';
-  import usePlacesAutoComplete from '../../../stores/services/places-auto-complete';
-  import useGeocode from '../../../stores/services/geocode';
+  // import {mapState, mapActions} from 'pinia';
+  // import usePlacesAutoComplete from '../../../stores/services/places-auto-complete';
+  // import useGeocode from '../../../stores/services/geocode';
 
   export default {
     name: 'PlacesAutoComplete',
@@ -97,13 +97,22 @@
       },
     },
     computed: {
-      ...mapState(usePlacesAutoComplete, {
-        placeloading: 'isFindPending',
-        addresses: 'items',
-      }),
-      ...mapState(useGeocode, {geoloading: 'isFindPending'}),
+      placesAutoComplete() {
+        return this.$usePlacesAutoCompleteStore();
+      },
+      geocode() {
+        return this.$useGeocodeStore();
+      },
+      addresses: {
+        get() {
+          return this.placesAutoComplete.items;
+        },
+        set(val) {
+          return val;
+        },
+      },
       loading() {
-        return this.placeloading || this.geoloading;
+        return this.placesAutoComplete.pendingById.Model.find || this.geocode.pendingById.Model.find;
       },
       attrs() {
         let newVal = {...this.$attrs};
@@ -125,9 +134,18 @@
     },
     methods: {
       // ...mapMutations('places-auto-complete', {clearAddresses: 'clearAll'}),
-      ...mapActions(usePlacesAutoComplete, {clearAll: 'clearAll'}),
-      ...mapActions(usePlacesAutoComplete, {findAddresses: 'find'}),
-      ...mapActions(useGeocode, {findgeocoded: 'find'}),
+      clearAll() {
+        this.placesAutoComplete.clearAll();
+      },
+      findAddresses(params) {
+        this.placesAutoComplete.find(params);
+      },
+      findGeocoded(params) {
+        this.placesAutoComplete.find(params);
+      },
+      // ...mapActions(usePlacesAutoComplete, {clearAll: 'clearAll'}),
+      // ...mapActions(usePlacesAutoComplete, {findAddresses: 'find'}),
+      // ...mapActions(useGeocode, {findgeocoded: 'find'}),
 
       clearInput() {
         this.input = null;
@@ -158,7 +176,7 @@
           });
         }
       },
-      geocode(val) {
+      findGeocode(val) {
         // TODO: need to parse formated_adress by name and not index ...
         //   _.each(address_components, function(k, v1) {
         //   _.each(address_components[v1].types, function(k2, v2){
@@ -167,7 +185,7 @@
         // });
         // eslint-disable-next-line no-console
         // console.log('val:', val);
-        this.findgeocoded({
+        this.findGeocoded({
           query: {
             address: val.description,
           },

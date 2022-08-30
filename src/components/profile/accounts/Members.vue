@@ -53,8 +53,8 @@
   import {models} from 'feathers-pinia';
   import {useFindPaginate} from '../../../';
   import AccountFormDialog from './AccountFormDialog';
-  import {Accounts} from '../../../stores/services/accounts';
-  import {computed, inject, ref, reactive, watch} from 'vue';
+  // import {Accounts} from '../../../stores/services/accounts';
+  import {computed, inject, ref, watch, toRef} from 'vue';
   import {useQuasar} from 'quasar';
 
   export default {
@@ -69,13 +69,15 @@
       },
     },
     setup(props) {
+      const modelValue = toRef(props, 'modelValue');
       let $lget = inject('$lget');
       let $lset = inject('$lset');
       let $lcloneDeep = inject('$lcloneDeep');
       let $q = useQuasar();
+      let $Accounts = inject('$Accounts');
 
-      let accountData = reactive({
-        account: new models.api.Accounts().clone(),
+      let accountData = ref({
+        account: new models.api.Accounts(),
       });
 
       let newMemberDialog = ref(false);
@@ -83,27 +85,27 @@
       let isAdding = ref(false);
       let accountSelection = ref(null);
 
-      watch(props.modelValue, (newVal, oldVal) => {
+      watch(modelValue, (newVal, oldVal) => {
         if (newVal && Object.keys(newVal).length && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-          accountData = $lcloneDeep(newVal);
+          accountData.value = $lcloneDeep(newVal);
         }
       }, {deep: true, immediate: true});
 
-      let account = computed(() => $lget(accountData, 'account', {}));
+      let account = computed(() => $lget(accountData.value, 'account', {}));
 
       function addMember(account) {
         if (account !== null) {
           isAdding.value = true;
 
           // if the members array doesn't exist on the account, this adds it
-          if (!$lget(accountData, 'account.membership.members')) {
-            $lset(accountData, 'account.membership.members', []);
+          if (!$lget(accountData.value, 'account.membership.members')) {
+            $lset(accountData.value, 'account.membership.members', []);
           }
 
-          $lget(accountData, 'account.membership.members', []).push(account._id);
-          $lget(accountData, 'account').patch({
+          $lget(accountData.value, 'account.membership.members', []).push(account._id);
+          $lget(accountData.value, 'account').patch({
             data: {
-              'membership.members': $lget(accountData, 'account.membership.members'),
+              'membership.members': $lget(accountData.value, 'account.membership.members'),
             },
           })
             .then(() => {
@@ -142,11 +144,11 @@
 
       function removeMember(accountId) {
         isDeleting.value = true;
-        const index = $lget(accountData, 'account.membership.members', []).indexOf(accountId);
-        $lget(accountData, 'account.membership.members', []).splice(index, 1);
-        $lget(accountData, 'account').patch({
+        const index = $lget(accountData.value, 'account.membership.members', []).indexOf(accountId);
+        $lget(accountData.value, 'account.membership.members', []).splice(index, 1);
+        $lget(accountData.value, 'account').patch({
           data: {
-            'membership.members': $lget(accountData, 'account.membership.members'),
+            'membership.members': $lget(accountData.value, 'account.membership.members'),
           },
         })
           .then(() => {
@@ -194,7 +196,7 @@
 
       const {items: members} = useFindPaginate({
         limit: ref(12),
-        model: Accounts,
+        model: $Accounts,
         qid: ref('members'),
         infinite: ref(true),
         query,

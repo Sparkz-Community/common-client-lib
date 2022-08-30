@@ -28,7 +28,7 @@
     data() {
       return {
         accountData: {
-          account: new models.api.Accounts().clone(),
+          account: new models.api.Accounts(),
         },
       };
     },

@@ -1,7 +1,8 @@
 <template>
   <div :class="`${wallets.length ? ($q.screen.sm || $q.screen.xs) ?'column': 'row': ''} q-gutter-lg q-pa-md`">
 
-    <div @click="newWalletDio = true" :style="{backgroundColor: $q.dark.mode ? $lightenHex('--q-color-dark') : '', maxWidth: '450px'}">
+    <div @click="newWalletDio = true"
+         :style="{backgroundColor: $q.dark.mode ? $lightenHex('--q-color-dark') : '', maxWidth: '450px'}">
       <div class=" box column items-center justify-center q-pa-xl" style=" position: relative">
         <q-icon name="sp:add_walletIcon_1"
                 style="font-size: clamp(60px, 20vw, 90px)"/>
@@ -15,8 +16,10 @@
     <div class="col" v-for="wallet in wallets" :key="$lget(wallet,'_id')">
       <div class="box column items-center justify-center q-pa-xl" style=" position: relative">
         <div class="q-pa-md" style="width: 100%;">
-          <p class="text-center text-h4 text-primary text-bold">{{ $lget(wallet,['tally_bank_business_profile','accountName']) }}</p>
-          <p class="text-center text-h5 text-positive text-bold">{{ $lget(wallet,['tally_bank_business_profile','availableBalance'],'5400 available') }}</p>
+          <p class="text-center text-h4 text-primary text-bold">
+            {{ $lget(wallet, ['tally_bank_business_profile', 'accountName']) }}</p>
+          <p class="text-center text-h5 text-positive text-bold">
+            {{ $lget(wallet, ['tally_bank_business_profile', 'availableBalance'], '5400 available') }}</p>
         </div>
         <div class="full-width row justify-end q-gutter-md q-ma-sm" style="position: absolute; bottom: 0; right: 1rem;">
           <q-btn flat color="primary" icon="edit" label="edit" @click="openEditWalletDialog(wallet)"/>
@@ -31,8 +34,8 @@
 
 
     <q-dialog v-model="newWalletDio">
-        <add-wallet-form :account="accountData" @close="newWalletDio=false"/>
-      </q-dialog>
+      <add-wallet-form :account="accountData" @close="newWalletDio=false"/>
+    </q-dialog>
 
 
   </div>
@@ -40,12 +43,12 @@
 
 <script>
 
-  import {mapActions} from 'pinia';
+  // import {mapActions} from 'pinia';
   import AddWalletForm from './AddWalletForm';
   import {useFindPaginate} from '../../';
-  import {reactive, ref} from 'vue';
+  import {inject, reactive, ref} from 'vue';
   import {models} from 'feathers-pinia';
-  import useAccounts from '../../stores/services/accounts';
+  // import useAccountsStore, {Accounts} from '../../stores/services/accounts';
 
   export default {
     name: 'my-wallets',
@@ -60,17 +63,19 @@
     },
     setup() {
 
-      const account =  new models.api.Accounts().clone();
+      const account = new models.api.Accounts();
+      const $Accounts = inject('$Accounts');
 
       const {items: wallets, isPending} = useFindPaginate({
         limit: 12,
+        model: $Accounts,
         qid: 'wallets',
         query: {
-          account
+          account,
         },
         params: {
           debounce: 500,
-        }
+        },
       });
 
       return {
@@ -78,8 +83,7 @@
         isPending,
         formData: reactive(undefined),
         newWalletDio: ref(false),
-        accountData: reactive({
-        })
+        accountData: reactive({}),
       };
     },
 
@@ -95,9 +99,9 @@
       },
     },
     methods: {
-      ...mapActions(useAccounts, {
-        patchAccount: 'patch',
-      }),
+      // ...mapActions(this.$useAccountsStore, {
+      //   patchAccount: 'patch',
+      // }),
       openEditWalletDialog(value) {
         this.newWalletDio = true;
         this.formData = value;
@@ -105,7 +109,7 @@
       async remove(data) {
         this.$q.dialog({
           title: 'Confirm',
-          message: `Would you like to delete this wallet from your ${this.$lget(this.modelValue, ['account','name'])} account?`,
+          message: `Would you like to delete this wallet from your ${this.$lget(this.modelValue, ['account', 'name'])} account?`,
           ok: {
             push: true,
             color: 'primary',

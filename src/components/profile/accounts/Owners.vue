@@ -50,8 +50,8 @@
   import {models} from 'feathers-pinia';
   import {useFindPaginate} from '../../../';
   import AccountFormDialog from './AccountFormDialog';
-  import {Accounts} from '../../../stores/services/accounts';
-  import {computed, inject, reactive, ref, watch} from 'vue';
+  // import {Accounts} from '../../../stores/services/accounts';
+  import {computed, inject, ref, watch, toRef} from 'vue';
   import {useQuasar} from 'quasar';
 
   export default {
@@ -66,13 +66,15 @@
       },
     },
     setup(props) {
+      const modelValue = toRef(props, 'modelValue');
       let $lget = inject('$lget');
       let $lset = inject('$lset');
       let $lcloneDeep = inject('$lcloneDeep');
       let $q = useQuasar();
+      let $Accounts = inject('$Accounts');
 
-      let accountData = reactive({
-        account: new models.api.Accounts().clone(),
+      let accountData = ref({
+        account: new models.api.Accounts(),
       });
 
       let newOwnerDialog = ref(false);
@@ -80,13 +82,13 @@
       let isAdding = ref(false);
       let accountSelection = ref(null);
 
-      watch(props.modelValue, (newVal, oldVal) => {
+      watch(modelValue, (newVal, oldVal) => {
         if (newVal && Object.keys(newVal).length && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-          accountData = $lcloneDeep(newVal);
+          accountData.value = $lcloneDeep(newVal);
         }
       }, {deep: true, immediate: true});
 
-      let account = computed(() => $lget(accountData, 'account', {}));
+      let account = computed(() => $lget(accountData.value, 'account', {}));
       let ownerIds = computed(() => $lget(account, 'ownership.owners', []).map(i => i.id));
 
       function addOwner(account) {
@@ -94,14 +96,14 @@
           isAdding.value = true;
 
           // if the owners array doesn't exist on the account, this adds it
-          if (!$lget(accountData, 'account.ownership.owners')) {
-            $lset(accountData, 'account.ownership.owners', []);
+          if (!$lget(accountData.value, 'account.ownership.owners')) {
+            $lset(accountData.value, 'account.ownership.owners', []);
           }
 
-          $lget(accountData, 'account.ownership.owners', []).push({id: account._id});
-          $lget(accountData, 'account').patch({
+          $lget(accountData.value, 'account.ownership.owners', []).push({id: account._id});
+          $lget(accountData.value, 'account').patch({
             data: {
-              'ownership.owners': $lget(accountData, 'account.ownership.owners'),
+              'ownership.owners': $lget(accountData.value, 'account.ownership.owners'),
             },
           })
             .then(() => {
@@ -139,13 +141,13 @@
 
       function removeOwner(accountId) {
         isDeleting.value = true;
-        let newOwners = $lget(accountData, 'account.ownership.owners', []).filter(obj => {
+        let newOwners = $lget(accountData.value, 'account.ownership.owners', []).filter(obj => {
           return obj.id !== accountId;
         });
-        $lset(accountData, 'account.ownership.owners', newOwners);
-        $lget(accountData, 'account').patch({
+        $lset(accountData.value, 'account.ownership.owners', newOwners);
+        $lget(accountData.value, 'account').patch({
           data: {
-            'ownership.owners': $lget(accountData, 'account.ownership.owners'),
+            'ownership.owners': $lget(accountData.value, 'account.ownership.owners'),
           },
         })
           .then(() => {
@@ -192,7 +194,7 @@
 
       const {items: owners} = useFindPaginate({
         limit: ref(12),
-        model: Accounts,
+        model: $Accounts,
         qid: ref('owners'),
         infinite: ref(true),
         query,

@@ -53,8 +53,8 @@
   import {useFindPaginate} from '../../../';
   import {reactive, ref} from 'vue';
   import {computed, inject} from 'vue';
-  import {Accounts} from '../../../stores/services/accounts';
-  import {QuickbooksCompanies} from '../../../stores/services/quickbook-companies';
+  // import {Accounts} from '../../../stores/services/accounts';
+  // import {QuickbooksCompanies} from '../../../stores/services/quickbook-companies';
 
 
   export default {
@@ -69,6 +69,8 @@
 
     setup(props) {
       let $lget = inject('$lget');
+      let $Accounts = inject('$Accounts');
+      let $QuickbooksCompanies = inject('$QuickbooksCompanies');
 
       const query = computed(()=>{
         return {
@@ -85,15 +87,15 @@
       const {items:companies, isPending} = useFindPaginate({
         limit: ref(5),
         qid: ref('companies'),
-        model: QuickbooksCompanies,
+        model: $QuickbooksCompanies,
         infinite: ref(true),
         query,
         params
       });
-      const  {items:accounts} =useFindPaginate({
+      const  {items:accounts} = useFindPaginate({
         limit: 5,
         qid: 'accounts',
-        model: Accounts,
+        model: $Accounts,
         infinite: true,
       });
 

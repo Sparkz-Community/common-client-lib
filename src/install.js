@@ -18,7 +18,9 @@ import {lodash} from './packages';
 import {useCssVars} from './composables';
 
 
-const install = (app, {prefix, loadComponents = true} = {}) => {
+const install = (app, {prefix, useStores, serviceModels, loadComponents = true} = {}) => {
+  if (!useStores || !serviceModels) throw new Error('useStores and serviceModels are required');
+  
   if (loadComponents) {
     for (let key in components) {
       let _key = prefix ? prefix + key : key;
@@ -27,6 +29,16 @@ const install = (app, {prefix, loadComponents = true} = {}) => {
   }
 
   import('./public/icons/svg/icons.css');
+  
+  function addGlobalAndProvide(Object) {
+    for (let key in Object) {
+      app.config.globalProperties[`$${key}`] = Object[key];
+      app.provide(`$${key}`, Object[key]);
+    }
+  }
+  
+  addGlobalAndProvide(useStores);
+  addGlobalAndProvide(serviceModels);
 
   Object.keys(lodash).forEach(k => {
     app.config.globalProperties[k] = lodash[k];

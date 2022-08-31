@@ -39,7 +39,7 @@ export default function (
         handler(to) {
           if (this[`${prefix}RunWhenCust`]) { // console.log('$route');
             Object.keys(to.query || {}).forEach(query_key => {
-              if ((query_key in this) && (query_key in this[`${prefix}RouteQueryCust`]) && to.query[query_key] !== this[query_key]) {
+              if ((query_key in this) && (query_key in this[`${prefix}RouteQueryCust`]) && to.query[query_key] !== JSON.stringify(this[query_key])) {
                 try {
                   this[query_key] = parseQuery(to.query[query_key], query_key);
                 } catch (e) {
@@ -67,7 +67,7 @@ export default function (
           // console.log([`${prefix}CurrentRoute`], to);
           if (this[`${prefix}RunWhenCust`]) { // console.log('$route');
             Object.keys(to.query || {}).forEach(query_key => {
-              if ((query_key in this) && (query_key in this[`${prefix}RouteQueryCust`]) && to.query[query_key] !== this[query_key]) {
+              if ((query_key in this) && (query_key in this[`${prefix}RouteQueryCust`]) && to.query[query_key] !== JSON.stringify(this[query_key])) {
                 try {
                   this[query_key] = parseQuery(to.query[query_key], query_key);
                 } catch (e) {

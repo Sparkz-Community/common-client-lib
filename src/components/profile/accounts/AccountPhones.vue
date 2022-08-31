@@ -28,7 +28,7 @@
     data() {
       return {
         accountData: {
-          account: new models.api.Accounts().clone(),
+          account: new models.api.Accounts(),
         },
         valid: false,
       };
@@ -114,14 +114,14 @@
           },
         })
           .then(res => {
-            console.log('res in updatePhone patch.then: ', res);
+            // console.log('res in updatePhone patch.then: ', res);
             this.$q.notify({
               type: 'positive',
               message: 'Saved',
             });
           })
           .catch(err => {
-            console.log('err in updatePhone patch.catch: ', err);
+            // console.log('err in updatePhone patch.catch: ', err);
             this.$q.notify({
               type: 'negative',
               message: `Error: ${err}`,

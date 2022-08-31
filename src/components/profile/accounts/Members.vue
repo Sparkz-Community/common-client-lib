@@ -86,8 +86,8 @@
       let accountSelection = ref(null);
 
       watch(modelValue, (newVal, oldVal) => {
-        if (newVal?.value && Object.keys(newVal?.value).length && JSON.stringify(newVal?.value) !== JSON.stringify(oldVal?.value)) {
-          accountData.value = $lcloneDeep(newVal.value);
+        if (newVal && Object.keys(newVal).length && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+          accountData.value = $lcloneDeep(newVal);
         }
       }, {deep: true, immediate: true});
 

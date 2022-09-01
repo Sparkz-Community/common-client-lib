@@ -24,7 +24,7 @@
 
         <q-table dense
                  flat
-                 :data="$lget(props,['row','_fastjoin','environments'])"
+                 :rows="$lget(props,['row','_fastjoin','environments'])"
                  :visible-columns="['name','createdAt','updatedAt']"
         >
           <template #header-cell="props">
@@ -53,7 +53,7 @@
 
         <q-table dense
                  flat
-                 :data="$lget(props,['row','_fastjoin','hosts'])"
+                 :rows="$lget(props,['row','_fastjoin','hosts'])"
                  :visible-columns="['name','createdAt','updatedAt']"
         >
           <template #header-cell="props">
@@ -82,7 +82,7 @@
 
         <q-table dense
                  flat
-                 :data="$lget(props,['row','_fastjoin','features'])"
+                 :rows="$lget(props,['row','_fastjoin','features'])"
                  :visible-columns="['name','createdAt','updatedAt']"
         >
           <template #header-cell="props">
@@ -114,7 +114,7 @@
           grid
           dense
           flat
-          :data="$lget(props,['row','_fastjoin','environments'])"
+          :rows="$lget(props,['row','_fastjoin','environments'])"
           :visible-columns="['name','createdAt','updatedAt']"
         >
 
@@ -151,7 +151,7 @@
           grid
           dense
           flat
-          :data="$lget(props,['row','_fastjoin','hosts'])"
+          :rows="$lget(props,['row','_fastjoin','hosts'])"
           :visible-columns="['name','createdAt','updatedAt']"
         >
 
@@ -190,7 +190,7 @@
           grid
           dense
           flat
-          :data="$lget(props,['row','_fastjoin','features'])"
+          :rows="$lget(props,['row','_fastjoin','features'])"
           :visible-columns="['name','createdAt','updatedAt']"
         >
 

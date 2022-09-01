@@ -23,7 +23,7 @@
 
         <q-table dense
                  flat
-                 :data="$lget(props,['row','_fastjoin','domains'])"
+                 :rows="$lget(props,['row','_fastjoin','domains'])"
                  :visible-columns="['name','vInstance','createdAt','updatedAt']"
         >
           <template #header-cell="props">
@@ -57,7 +57,7 @@
         grid
         dense
         flat
-        :data="$lget(props,['row','_fastjoin','domains'])"
+        :rows="$lget(props,['row','_fastjoin','domains'])"
         :visible-columns="['name','vInstance','createdAt','updatedAt']"
       >
 

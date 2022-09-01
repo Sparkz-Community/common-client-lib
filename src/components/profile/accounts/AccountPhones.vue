@@ -97,7 +97,7 @@
                   },
                 },
                 'q-field-attrs': {
-                  rules: [val => self.$lget(self.accountData, 'account.phones', []).length === 0 || this.$lget(val, 'isValid') || 'Invalid Number'],
+                  rules: [val => self.$lget(self.accountData, 'account.phones', []).length === 0 || this.$lget(val, 'valid') || 'Invalid Number'],
                 },
               },
             ],
